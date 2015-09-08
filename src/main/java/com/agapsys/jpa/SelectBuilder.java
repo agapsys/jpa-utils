@@ -31,7 +31,7 @@ public class SelectBuilder<T> extends AbstractSelectBuilder<T> {
 
 	@Override
 	public AbstractSelectBuilder join(JoinType joinType, String joinField, String joinFieldAlias) {
-		return super.join(joinType, joinField, joinFieldAlias); //To change body of generated methods, choose Tools | Templates.
+		return super.join(joinType, joinField, joinFieldAlias);
 	}
 	
 	@Override
@@ -46,7 +46,7 @@ public class SelectBuilder<T> extends AbstractSelectBuilder<T> {
 
 	@Override
 	public AbstractSelectBuilder groupBy(String groupBy) {
-		return super.groupBy(groupBy); //To change body of generated methods, choose Tools | Templates.
+		return super.groupBy(groupBy);
 	}
 	
 	@Override
