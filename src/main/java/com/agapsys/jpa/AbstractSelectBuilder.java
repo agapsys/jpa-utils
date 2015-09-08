@@ -58,11 +58,11 @@ public abstract class AbstractSelectBuilder<T> {
 		this.alias = alias;
 
 		if (entityClass == null)
-			throw new IllegalArgumentException("entityClass == null");
+			throw new IllegalArgumentException("Null entityClass");
 		
 		Entity entityAnnotation = entityClass.getAnnotation(Entity.class);
 		if (entityAnnotation == null)
-			throw new IllegalArgumentException("entityClass is not a valid entity: " + entityClass.getName());
+			throw new IllegalArgumentException("invalid entity class: " + entityClass.getName());
 
 		this.entityClass = entityClass;
 		String en = entityAnnotation.name();
@@ -109,11 +109,11 @@ public abstract class AbstractSelectBuilder<T> {
 		return where;
 	}
 	
-	protected String getGroubByClause() {
+	protected String getGroupByClause() {
 		return groupBy;
 	}
 
-	protected String getOrdering() {
+	protected String getOrderByClause() {
 		return orderBy;
 	}
 
@@ -129,20 +129,20 @@ public abstract class AbstractSelectBuilder<T> {
 	// Builder methods ---------------------------------------------------------
 	protected AbstractSelectBuilder join(JoinType joinType, String joinField, String joinFieldAlias) {
 		if (joinType == null)
-			throw new IllegalArgumentException("joinType == null");
+			throw new IllegalArgumentException("Null join type");
 		
 		if (joinField == null || joinField.trim().isEmpty())
-			throw new IllegalArgumentException("Null/Empty joinfield");
+			throw new IllegalArgumentException("Null/Empty join field");
 		
 		if (joinFieldAlias == null || joinFieldAlias.trim().isEmpty()) {
-			throw new IllegalArgumentException("Null/Empty joinFieldAlias");
+			throw new IllegalArgumentException("Null/Empty join field alias");
 		}
 		
 		joinField = joinField.trim();
 		joinFieldAlias = joinFieldAlias.trim();
 		
 		if (this.joinField != null)
-			throw new IllegalStateException("joinField is already set");
+			throw new IllegalStateException("Join field is already set");
 		
 		this.joinField = joinField;
 		this.joinFieldAlias = joinFieldAlias;
@@ -151,14 +151,14 @@ public abstract class AbstractSelectBuilder<T> {
 		return this;
 	}
 	
-	protected AbstractSelectBuilder joinFetch(String joinField) {
+	protected AbstractSelectBuilder joinFetch(String joinField){
 		if (joinField == null || joinField.trim().isEmpty())
-			throw new IllegalArgumentException("Null/Empty joinField");
+			throw new IllegalArgumentException("Null/Empty join field");
 		
 		joinField = joinField.trim();
 		
 		if (this.joinField != null)
-			throw new IllegalStateException("joinField is already set");
+			throw new IllegalStateException("Join field is already set");
 		
 		this.joinField = joinField;
 		return this;
@@ -166,10 +166,10 @@ public abstract class AbstractSelectBuilder<T> {
 	
 	protected AbstractSelectBuilder where(String whereClause) {
 		if (this.where != null)
-			throw new IllegalStateException("whereClause already set");
+			throw new IllegalStateException("Where clause is already set");
 
 		if (whereClause == null || whereClause.trim().isEmpty())
-			throw new IllegalArgumentException("Null/Empty whereClause");
+			throw new IllegalArgumentException("Null/Empty where clause");
 		
 		this.where = whereClause.trim();
 		return this;
@@ -177,12 +177,12 @@ public abstract class AbstractSelectBuilder<T> {
 	
 	protected AbstractSelectBuilder groupBy(String groupBy) {
 		if (groupBy == null || groupBy.trim().isEmpty())
-			throw new IllegalArgumentException("Null/Empty groupBy");
+			throw new IllegalArgumentException("Null/Empty group by clause");
 		
 		groupBy = groupBy.trim();
 		
 		if (this.groupBy != null)
-			throw new IllegalStateException("groupBy clause is already set");
+			throw new IllegalStateException("Group by clause is already set");
 		
 		this.groupBy = groupBy;
 		return this;
@@ -190,10 +190,10 @@ public abstract class AbstractSelectBuilder<T> {
 	
 	protected AbstractSelectBuilder value(String key, Object value) {
 		if (values.containsKey(key))
-			throw new IllegalArgumentException("key already set: " + key);
+			throw new IllegalArgumentException("Key already set: " + key);
 
-		if (key == null)
-			throw new IllegalArgumentException("key == null");
+		if (key == null || key.trim().isEmpty())
+			throw new IllegalArgumentException("Null/Empty key");
 		
 		values.put(key, value);
 		return this;
@@ -215,7 +215,7 @@ public abstract class AbstractSelectBuilder<T> {
 			throw new IllegalArgumentException("Invalid offset: " + offset);
 
 		if (this.offset != null)
-			throw new IllegalStateException("offset is already set");
+			throw new IllegalStateException("Offset is already set");
 
 		this.offset = offset;
 
@@ -224,10 +224,10 @@ public abstract class AbstractSelectBuilder<T> {
 			
 	protected AbstractSelectBuilder maxResults(int maxResults) {
 		if (maxResults < 1)
-			throw new IllegalArgumentException("Invalid maxResults: " + maxResults);
+			throw new IllegalArgumentException("Invalid 'maxResults' value: " + maxResults);
 
 		if (this.maxResults != null)
-			throw new IllegalStateException("maxResults is already set");
+			throw new IllegalStateException("'maxResults' is already set");
 
 		this.maxResults = maxResults;
 
@@ -238,7 +238,7 @@ public abstract class AbstractSelectBuilder<T> {
 	protected Query prepareQuery(EntityManager entityManager)  {
 		StringBuilder sb = new StringBuilder();
 		sb.append(
-			String.format("SELECT %s FROM %s %s", isDistinct() ? "DISTINCT " : "", getAlias(), getEntityName(), getAlias()));
+			String.format("SELECT %s%s FROM %s %s", isDistinct() ? "DISTINCT " : "", getAlias(), getEntityName(), getAlias()));
 
 		if (getJoinType() != null) {
 			sb.append(String.format(" %s %s %s", getJoinType().getSQl(), getJoinField(), getJoinFieldAlias()));
@@ -251,25 +251,28 @@ public abstract class AbstractSelectBuilder<T> {
 		if (getWhereClause() != null)
 			sb.append(String.format(" WHERE %s", getWhereClause()));
 		
-		if (getGroubByClause() != null)
-			sb.append(String.format(" GROUP BY %s", getGroubByClause()));
+		if (getGroupByClause() != null)
+			sb.append(String.format(" GROUP BY %s", getGroupByClause()));
 
-		if (getOrdering() != null)
-			sb.append(String.format(" ORDER BY %s", getOrdering()));
+		if (getOrderByClause() != null)
+			sb.append(String.format(" ORDER BY %s", getOrderByClause()));
 		
 		return entityManager.createQuery(sb.toString());
 	}
 		
 	protected List<T> select(EntityManager entityManager) {
 		if (entityManager == null)
-			throw new IllegalArgumentException("Null entityManager");
+			throw new IllegalArgumentException("Null entity manager");
 		
 		Query query = prepareQuery(entityManager);
+		
 		for (Map.Entry<String, Object> entry : getValues().entrySet()) {
 			query.setParameter(entry.getKey(), entry.getValue());
 		}
+		
 		query.setFirstResult(getOffset());
 		query.setMaxResults(getMaxResults());
+		
 		return query.getResultList();
 	}
 }
