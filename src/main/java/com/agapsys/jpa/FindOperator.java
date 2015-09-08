@@ -16,7 +16,6 @@
 package com.agapsys.jpa;
 
 /**
- *
  * @author Leandro Oliveira (leandro@agapsys.com)
  */
 public enum FindOperator {
@@ -27,7 +26,7 @@ public enum FindOperator {
 	LIKE                (":field LIKE :value"),
 	EQUALS              (":field = :value"),
 	NOT_EQUAL           (":field != :value"),
-	ILIKE               ("LOWER (:field) LIKE :value"),
+	ILIKE               ("LOWER(:field) LIKE :value"),
 	IS_NOT_NULL         (":field IS NOT NULL"),
 	IS_NULL             (":field IS NULL"),
 	NOT                 ("NOT :field");
@@ -38,7 +37,7 @@ public enum FindOperator {
 		this.sqlExpression = sqlExpression;
 	}
 
-	public String getSqlExpression() {
+	String getSqlExpression() {
 		return sqlExpression;
 	}
 }
