@@ -23,6 +23,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class FindBuilderTest {
+	// CLASS SCOPE =============================================================
 	private static class TestFindBuilder<T> extends FindBuilder<T> {
 
 		public TestFindBuilder(boolean distinct, Class<T> entityClass) {
@@ -43,7 +44,9 @@ public class FindBuilderTest {
 			return super.getValues();
 		}
 	}
+	// =========================================================================
 	
+	// INSTANCE SCOPE ==========================================================
 	// CONSTRUCTORS ------------------------------------------------------------
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullClass() {
@@ -56,17 +59,17 @@ public class FindBuilderTest {
 	public void SIMPLE_BY_valid() {
 		TestFindBuilder findBuilder;
 		
-		findBuilder = new TestFindBuilder(TestEntity.class);
+		findBuilder = new TestFindBuilder(true, TestEntity.class);
 		findBuilder.by("field", "123");
-		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0)", findBuilder.getQueryString());
+		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (field = :f0)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field", "123").by("field2", "456", "789");
 		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0) AND (field2 = :f1 AND field2 = :f2)", findBuilder.getQueryString());
 		
-		findBuilder = new TestFindBuilder(TestEntity.class);
+		findBuilder = new TestFindBuilder(true, TestEntity.class);
 		findBuilder.by("field", "123", "456", "789").by("field2", "456");
-		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0 AND field = :f1 AND field = :f2) AND (field2 = :f3)", findBuilder.getQueryString());
+		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (field = :f0 AND field = :f1 AND field = :f2) AND (field2 = :f3)", findBuilder.getQueryString());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -306,11 +309,11 @@ public class FindBuilderTest {
 		// ---------------------------------------------------------------------
 		
 		// GREATER THAN EQUALS -------------------------------------------------
-		findBuilder = new TestFindBuilder(TestEntity.class);
+		findBuilder = new TestFindBuilder(true, TestEntity.class);
 		findBuilder.by("field",FindOperator.GREATER_THAN_EQUALS, 2);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field >= :f0)", findBuilder.getQueryString());
+		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (field >= :f0)", findBuilder.getQueryString());
 		
-		findBuilder = new TestFindBuilder(TestEntity.class);
+		findBuilder = new TestFindBuilder(false, TestEntity.class);
 		findBuilder.by("field",FindOperator.GREATER_THAN_EQUALS, 2, 3);
 		assertEquals("SELECT t FROM TestEntity t WHERE (field >= :f0 AND field >= :f1)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
@@ -466,4 +469,5 @@ public class FindBuilderTest {
 		assertEquals(expectedParamMap, findBuilder.getValues());
 		// ---------------------------------------------------------------------
 	}
+	// =========================================================================
 }
