@@ -82,7 +82,10 @@ public abstract class AbstractSelectBuilder<T> {
 	}
 
 	protected String getAlias() {
-		return alias;
+		if (isDistinct())
+			return "DISTINCT " + alias;
+		else
+			return alias;
 	}
 
 	protected String getEntityName() {
@@ -238,7 +241,7 @@ public abstract class AbstractSelectBuilder<T> {
 	protected Query prepareQuery(EntityManager entityManager)  {
 		StringBuilder sb = new StringBuilder();
 		sb.append(
-			String.format("SELECT %s%s FROM %s %s", isDistinct() ? "DISTINCT " : "", getAlias(), getEntityName(), getAlias()));
+			String.format("SELECT %s FROM %s %s", getAlias(), getEntityName(), getAlias()));
 
 		if (getJoinType() != null) {
 			sb.append(String.format(" %s %s %s", getJoinType().getSQl(), getJoinField(), getJoinFieldAlias()));
