@@ -39,26 +39,26 @@ public abstract class AbstractSelectBuilder<T> {
 	private String   orderBy        = null;
 	private Integer  offset         = null;
 	private Integer  maxResults     = null;
-		
-	public AbstractSelectBuilder(Class<T> entityClass, String alias) {
-		this(false, entityClass, alias);
-	}
-		
-	public AbstractSelectBuilder(boolean distinct, Class<T> entityClass, String alias) {
+	
+	private AbstractSelectBuilder(boolean distinct, Class<T> entityClass, String alias, boolean ignoreAlias) {
 		this.distinct = distinct;
-
-		if (alias == null || alias.trim().isEmpty())
-			throw new IllegalArgumentException("Null/Empty alias");
-
-		alias = alias.trim();
-
-		if (alias.contains(" "))
-			throw new IllegalArgumentException("alias cannot contain whitspaces");
-
-		this.alias = alias;
-
+		
 		if (entityClass == null)
 			throw new IllegalArgumentException("Null entityClass");
+		
+		if (!ignoreAlias) {
+			if (alias == null || alias.trim().isEmpty())
+				throw new IllegalArgumentException("Null/Empty alias");
+
+			alias = alias.trim();
+
+			if (alias.contains(" "))
+				throw new IllegalArgumentException("alias cannot contain whitspaces");
+		} else {
+			alias = entityClass.getSimpleName().substring(0, 1).toLowerCase();
+		}
+		
+		this.alias = alias;
 		
 		Entity entityAnnotation = entityClass.getAnnotation(Entity.class);
 		if (entityAnnotation == null)
@@ -72,6 +72,22 @@ public abstract class AbstractSelectBuilder<T> {
 			entityName = en;
 	}
 	
+	public AbstractSelectBuilder(Class<T> entityClass) {
+		this(false, entityClass, null, true);
+	}
+	
+	public AbstractSelectBuilder(boolean distinct, Class<T> entityClass) {
+		this(distinct, entityClass, null, true);
+	}
+	
+	public AbstractSelectBuilder(Class<T> entityClass, String alias) {
+		this(false, entityClass, alias, false);
+	}
+	
+	public AbstractSelectBuilder(boolean distinct, Class<T> entityClass, String alias) {
+		this(distinct, entityClass, alias, false);
+	}
+	
 	// Getters -----------------------------------------------------------------
 	protected Class<T> getEntityClass() {
 		return entityClass;
@@ -82,10 +98,7 @@ public abstract class AbstractSelectBuilder<T> {
 	}
 
 	protected String getAlias() {
-		if (isDistinct())
-			return "DISTINCT " + alias;
-		else
-			return alias;
+		return alias;
 	}
 
 	protected String getEntityName() {
@@ -240,7 +253,7 @@ public abstract class AbstractSelectBuilder<T> {
 	protected String getQueryString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(
-			String.format("SELECT %s FROM %s %s", getAlias(), getEntityName(), getAlias()));
+			String.format("SELECT %s%s FROM %s %s", (isDistinct() ? "DISTINCT " : ""), getAlias(), getEntityName(), getAlias()));
 
 		if (getJoinType() != null) {
 			sb.append(String.format(" %s %s %s", getJoinType().getSQl(), getJoinField(), getJoinFieldAlias()));

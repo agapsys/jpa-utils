@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package com.agapsys.jpa;
+package com.agapsys.jpa.entity;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
-public class CountBuilder<T> extends AbstractFindBuilder<T> {
-	public CountBuilder(Class<T> entityClass) {
-		super(false, entityClass);
-	}
+@Entity(name = "NamedTestEntity")
+public class NamedEntity {
+	@Id
+	@GeneratedValue
+	int id;
+
+	private String field;
 	
-	public CountBuilder(boolean distinct, Class<T> entityClass) {
-		super(distinct, entityClass);
-	}
-
-	@Override
-	protected String getAlias() {
-		return String.format("COUNT(%s%s)", (isDistinct() ? "DISTINCT " : ""), super.getAlias());
-	}
-	
-	public long count(EntityManager entityManager) {
-		Query query = prepareQuery(entityManager);
-		return (long) query.getSingleResult();
-	}
+	@ManyToOne
+	private NamedEntity fkField;
 }

@@ -16,25 +16,32 @@
 
 package com.agapsys.jpa;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class CountBuilder<T> extends AbstractFindBuilder<T> {
-	public CountBuilder(Class<T> entityClass) {
-		super(false, entityClass);
+public class RangeTest {
+	@Test(expected = IllegalArgumentException.class)
+	public void nullMin() {
+		new Range<Integer>(null, 2);
 	}
 	
-	public CountBuilder(boolean distinct, Class<T> entityClass) {
-		super(distinct, entityClass);
-	}
-
-	@Override
-	protected String getAlias() {
-		return String.format("COUNT(%s%s)", (isDistinct() ? "DISTINCT " : ""), super.getAlias());
+	@Test(expected = IllegalArgumentException.class)
+	public void nullMax() {
+		new Range<Integer>(2, null);
 	}
 	
-	public long count(EntityManager entityManager) {
-		Query query = prepareQuery(entityManager);
-		return (long) query.getSingleResult();
+	@Test(expected = IllegalArgumentException.class)
+	public void invalidRange() {
+		new Range<Integer>(3, 2);
+	}
+	
+	@Test
+	public void checkGetters() {
+		Integer min = 2;
+		Integer max = 3;
+		
+		Range<Integer> range = new Range<>(min, max);
+		Assert.assertEquals(min, range.getMin());
+		Assert.assertEquals(max, range.getMax());
 	}
 }

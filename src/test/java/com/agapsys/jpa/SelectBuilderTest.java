@@ -15,9 +15,8 @@
  */
 package com.agapsys.jpa;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.agapsys.jpa.entity.NamedEntity;
+import com.agapsys.jpa.entity.TestEntity;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -41,24 +40,6 @@ public class SelectBuilderTest {
 		public String getQueryString() {
 			return super.getQueryString();
 		}
-	}
-	
-	@Entity
-	private static class TestEntity {
-		@Id
-		@GeneratedValue
-		int id;
-		
-		private String field;
-	}
-	
-	@Entity(name = "NamedTestEntity")
-	private static class NamedEntity {
-		@Id
-		@GeneratedValue
-		int id;
-		
-		private String field;
 	}
 	
 	private TestSelectBuilder<TestEntity> testBuilder;
@@ -242,7 +223,10 @@ public class SelectBuilderTest {
 	@Test
 	public void prepareQueryString() {
 		// constructor only...
-		TestSelectBuilder<TestEntity> testBuilder1 = new TestSelectBuilder(TestEntity.class, "t");
+		TestSelectBuilder<TestEntity> testBuilder1 = new TestSelectBuilder(true, TestEntity.class, "t");
+		assertEquals("SELECT DISTINCT t FROM TestEntity t", testBuilder1.getQueryString());
+		
+		testBuilder1 = new TestSelectBuilder(TestEntity.class, "t");
 		assertEquals("SELECT t FROM TestEntity t", testBuilder1.getQueryString());
 		
 		TestSelectBuilder<NamedEntity> testBuilder2 = new TestSelectBuilder(NamedEntity.class, "n");

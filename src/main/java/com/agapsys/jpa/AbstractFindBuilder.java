@@ -36,19 +36,12 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 
 	private static class FindToken {
 		// CLASS SCOPE =========================================================
-		private static final int    KEY_LENGTH = 6;
-		private static final char[] CHARS      = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-		
-		private static String getRandomKey() {
-			return Utils.getRandomString(KEY_LENGTH, CHARS);
-		}
+		private static final String PARAM_NAME = ":f";
 		
 		public static WhereClause generateWhereClause(List<FindToken> tokens) {
 			StringBuilder sb = new StringBuilder();
 			Map<String, Object> values = new LinkedHashMap<>();
 			
-			int maxAllowedKeys = (int) Math.pow(CHARS.length, KEY_LENGTH);
-			int c = 0;
 			
 			for (FindToken token : tokens) {
 				if (token.isAnd != null)
@@ -56,32 +49,47 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 				
 				sb.append("(");
 				
-				if (token.operator.isUnary()) {
-					sb.append(token.operator.getSqlExpression().replace(":field", token.field));
-					c++;
-				} else {
-					int i = 0;
-					for (Object value : token.values) {
-						if (i > 0)
-							sb.append(" AND ");
-
-						String valueKey;
+				switch(token.operator) {
+					case IS_NOT_NULL:
+					case IS_NULL:
+					case NOT:
+						sb.append(token.operator.getSqlExpression(token.field, ""));
+						break;
 						
-						do {
-							valueKey = getRandomKey();
-						} while (values.containsKey(valueKey));
+					default:
+						int valueCounter = 0;
+						int paramCounter = 0;
 
-						sb.append(token.operator.getSqlExpression().replace(":field", token.field).replace(":value", valueKey));
-						values.put(valueKey, value);
+						for (Object value : token.values) {
+							if (valueCounter > 0)
+								sb.append(" AND ");
 
-						i++;
-						c++;
-					}
-					sb.append(")");
+							String[] valueKeys;
+							if (value instanceof Range) {
+								Range range = (Range) value;
+								
+								valueKeys = new String[2];
+								
+								valueKeys[0] = PARAM_NAME + paramCounter;
+								values.put(valueKeys[0], range.getMin());
+								paramCounter++;
+								
+								valueKeys[1] = PARAM_NAME + paramCounter;
+								values.put(valueKeys[1], range.getMax());
+								paramCounter++;
+							} else {
+								valueKeys = new String[1];
+								valueKeys[0] = PARAM_NAME + paramCounter;
+								paramCounter++;
+							}
+							
+							sb.append(token.operator.getSqlExpression(token.field, valueKeys));
+							valueCounter++;
+						}
+						break;
 				}
 				
-				if (c > maxAllowedKeys)
-					throw new IndexOutOfBoundsException("parameter count overflow");
+				sb.append(")");
 			}
 			
 			return new WhereClause(sb.toString(), values);
@@ -92,12 +100,51 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 		public final String       field;
 		public final FindOperator operator;
 		public final Object[]     values;
+				
+		public FindToken(Boolean isAnd, String field, FindOperator operator, Object[] values) {			
+			if (field == null || field.trim().isEmpty())
+				throw new IllegalArgumentException("Null/Empty field");
 		
-		public FindToken(Boolean isAnd, String field, FindOperator operator, Object[] values) {
-			if (values.length != 0 && operator.isUnary())
-				throw new IllegalArgumentException(String.format("Unary operator (%s) does not require a value", operator.name()));
-			else if (values.length == 0 && !operator.isUnary())
-				throw new IllegalArgumentException(String.format("Binary operator (%s) requires a value", operator.name()));
+			if (operator == null)
+				throw new IllegalArgumentException("Null operator");
+			
+			switch(operator) {
+				case IS_NOT_NULL:
+				case IS_NULL:
+				case NOT:
+					if (values.length != 0)
+						throw new IllegalArgumentException(String.format("Unary operator (%s) does not require a value", operator.name()));
+					
+					break;
+					
+				case BETWEEN:
+				case NOT_BETWEEN:
+					if (values.length == 0)
+						throw new IllegalArgumentException(String.format("Operator (%s) requires a range", operator.name()));
+					
+					for (int i = 0; i < values.length; i++) {
+						Object value = values[i];
+						
+						if (value == null)
+							throw new IllegalArgumentException("Null value at index " + i);
+						
+						if (!(value instanceof Range))
+							throw new IllegalArgumentException(String.format("Given value is not a range: %s", value.getClass().getName()));
+					}
+					break;
+				
+				default:
+					if (values.length == 0)
+						throw new IllegalArgumentException(String.format("Operator (%s) requires a value", operator.name()));
+					
+					for (int i = 0; i < values.length; i++) {
+						Object value = values[i];
+						
+						if (value == null)
+							throw new IllegalArgumentException("Null value at index " + i);
+					}
+					break;
+			}
 			
 			this.isAnd = isAnd;
 			this.field = field;
@@ -112,11 +159,11 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	private WhereClause whereClause = null;
 	
 	public AbstractFindBuilder(Class<T> entityClass) {
-		this(false, entityClass);
+		super(entityClass);
 	}
 	
 	public AbstractFindBuilder(boolean distinct, Class<T> entityClass) {
-		super(distinct, entityClass, entityClass.getSimpleName().substring(1, 1).toLowerCase());
+		super(distinct, entityClass);
 	}
 	
 	public AbstractFindBuilder by(String field, Object...values) {

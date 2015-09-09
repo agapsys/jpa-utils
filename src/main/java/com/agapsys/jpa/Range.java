@@ -16,25 +16,29 @@
 
 package com.agapsys.jpa;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+public class Range<T extends Comparable> {
+	private final T min;
+	private final T max;
+	
+	public Range(T min, T max) {
+		if (min == null)
+			throw new IllegalArgumentException("Null min");
+		
+		if (max == null)
+			throw new IllegalArgumentException("Null max");
+		
+		if (min.compareTo(max) > 0)
+			throw new IllegalArgumentException(String.format("min (%s) is greater than max (%s)", min, max));
+		
+		this.min = min;
+		this.max = max;
+	}
 
-public class CountBuilder<T> extends AbstractFindBuilder<T> {
-	public CountBuilder(Class<T> entityClass) {
-		super(false, entityClass);
+	public T getMin() {
+		return min;
 	}
 	
-	public CountBuilder(boolean distinct, Class<T> entityClass) {
-		super(distinct, entityClass);
-	}
-
-	@Override
-	protected String getAlias() {
-		return String.format("COUNT(%s%s)", (isDistinct() ? "DISTINCT " : ""), super.getAlias());
-	}
-	
-	public long count(EntityManager entityManager) {
-		Query query = prepareQuery(entityManager);
-		return (long) query.getSingleResult();
+	public T getMax() {
+		return max;
 	}
 }

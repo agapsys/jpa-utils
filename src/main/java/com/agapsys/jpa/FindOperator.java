@@ -23,13 +23,15 @@ public enum FindOperator {
 	LESS_THAN_EQUALS    (":field <= :value"),
 	GREATER_THAN        (":field > :value"),
 	GREATER_THAN_EQUALS (":field >= :value"),
+	ILIKE               ("LOWER(:field) LIKE LOWER(:value)"),
 	LIKE                (":field LIKE :value"),
 	EQUALS              (":field = :value"),
-	NOT_EQUAL           (":field != :value"),
-	ILIKE               ("LOWER(:field) LIKE :value"),
+	NOT_EQUAL           (":field <> :value"),
 	IS_NOT_NULL         (":field IS NOT NULL"),
 	IS_NULL             (":field IS NULL"),
-	NOT                 ("NOT :field");
+	NOT                 ("NOT :field"),
+	BETWEEN             (":field BETWEEN :min AND :max"),
+	NOT_BETWEEN         (":field NOT BETWEEN :min AND :max");
 
 	private final String sqlExpression;
 
@@ -37,19 +39,14 @@ public enum FindOperator {
 		this.sqlExpression = sqlExpression;
 	}
 
-	String getSqlExpression() {
-		return sqlExpression;
-	}
-	
-	boolean isUnary() {
-		switch(this) {
-			case IS_NOT_NULL:
-			case IS_NULL:
-			case NOT:
-				return true;
+	String getSqlExpression(String field, String...valueKeys) {
+		switch (this) {
+			case BETWEEN:
+			case NOT_BETWEEN:
+				return sqlExpression.replace(":field", field).replace(":min", valueKeys[0]).replace(":max", valueKeys[1]);
 				
 			default:
-				return false;
+				return sqlExpression.replace(":field", field).replace(":value", valueKeys[0]);
 		}
 	}
 }
