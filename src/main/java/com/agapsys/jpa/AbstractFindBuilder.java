@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import javax.persistence.EntityManager;
 
 public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
@@ -37,65 +36,52 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 
 	private static class FindToken {
 		// CLASS SCOPE =========================================================
-		/** 
-		 * Generates a random string (chars: [a-z][A-Z][0-9]).
-		 * @param length length of returned string
-		 * @return a random string with given length.
-		 * @throws IllegalArgumentException if (length &lt; 1)
-		 */
-		private static String getRandomString(int length) throws IllegalArgumentException {
-			char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-			return getRandomString(length, chars);
-		}
-
-		/**
-		 * Generates a random String 
-		 * @param length length of returned string
-		 * @param chars set of chars which will be using during random string generation
-		 * @return a random string with given length.
-		 * @throws IllegalArgumentException if (length &lt; 1 || chars == null || chars.length == 0)
-		 */
-		private static String getRandomString(int length, char[] chars) throws IllegalArgumentException {
-			if (length < 1)
-				throw new IllegalArgumentException("Invalid length: " + length);
-
-			if (chars == null || chars.length == 0)
-				throw new IllegalArgumentException("Null/Empty chars");
-
-			StringBuilder sb = new StringBuilder();
-			Random random = new Random();
-			for (int i = 0; i < length; i++) {
-				char c = chars[random.nextInt(chars.length)];
-				sb.append(c);
-			}
-			return sb.toString();
+		private static final int    KEY_LENGTH = 6;
+		private static final char[] CHARS      = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+		
+		private static String getRandomKey() {
+			return Utils.getRandomString(KEY_LENGTH, CHARS);
 		}
 		
 		public static WhereClause generateWhereClause(List<FindToken> tokens) {
 			StringBuilder sb = new StringBuilder();
 			Map<String, Object> values = new LinkedHashMap<>();
 			
+			int maxAllowedKeys = (int) Math.pow(CHARS.length, KEY_LENGTH);
+			int c = 0;
+			
 			for (FindToken token : tokens) {
 				if (token.isAnd != null)
 					sb.append(token.isAnd ? " AND " : " OR ");
 				
 				sb.append("(");
-				int i = 0;
-				for (Object value : token.values) {
-					if (i > 0)
-						sb.append(" AND ");
-					
-					String valueKey;
-					do {
-						valueKey = getRandomString(6);
-					} while (values.containsKey(valueKey));
-					
-					sb.append(token.operator.getSqlExpression().replace(":field", token.field).replace(":value", valueKey));
-					values.put(valueKey, value);
-					
-					i++;
+				
+				if (token.operator.isUnary()) {
+					sb.append(token.operator.getSqlExpression().replace(":field", token.field));
+					c++;
+				} else {
+					int i = 0;
+					for (Object value : token.values) {
+						if (i > 0)
+							sb.append(" AND ");
+
+						String valueKey;
+						
+						do {
+							valueKey = getRandomKey();
+						} while (values.containsKey(valueKey));
+
+						sb.append(token.operator.getSqlExpression().replace(":field", token.field).replace(":value", valueKey));
+						values.put(valueKey, value);
+
+						i++;
+						c++;
+					}
+					sb.append(")");
 				}
-				sb.append(")");
+				
+				if (c > maxAllowedKeys)
+					throw new IndexOutOfBoundsException("parameter count overflow");
 			}
 			
 			return new WhereClause(sb.toString(), values);
@@ -108,19 +94,10 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 		public final Object[]     values;
 		
 		public FindToken(Boolean isAnd, String field, FindOperator operator, Object[] values) {
-			switch(operator) {
-				case IS_NOT_NULL:
-				case IS_NULL:
-				case NOT:
-					if (values.length != 0)
-						throw new IllegalArgumentException("Unary operator does not require a value");
-					break;
-					
-				default:
-					if (values.length == 0)
-						throw new IllegalArgumentException("Binary operator requires a value: " + operator.name());
-					
-			}
+			if (values.length != 0 && operator.isUnary())
+				throw new IllegalArgumentException(String.format("Unary operator (%s) does not require a value", operator.name()));
+			else if (values.length == 0 && !operator.isUnary())
+				throw new IllegalArgumentException(String.format("Binary operator (%s) requires a value", operator.name()));
 			
 			this.isAnd = isAnd;
 			this.field = field;

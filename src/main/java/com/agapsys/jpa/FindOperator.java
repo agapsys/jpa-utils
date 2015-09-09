@@ -40,5 +40,17 @@ public enum FindOperator {
 	String getSqlExpression() {
 		return sqlExpression;
 	}
+	
+	boolean isUnary() {
+		switch(this) {
+			case IS_NOT_NULL:
+			case IS_NULL:
+			case NOT:
+				return true;
+				
+			default:
+				return false;
+		}
+	}
 }
 	
