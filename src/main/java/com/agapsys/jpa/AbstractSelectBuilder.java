@@ -237,8 +237,7 @@ public abstract class AbstractSelectBuilder<T> {
 		return this;
 	}
 	// -------------------------------------------------------------------------
-	
-	protected Query prepareQuery(EntityManager entityManager)  {
+	protected String getQueryString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(
 			String.format("SELECT %s FROM %s %s", getAlias(), getEntityName(), getAlias()));
@@ -260,7 +259,11 @@ public abstract class AbstractSelectBuilder<T> {
 		if (getOrderByClause() != null)
 			sb.append(String.format(" ORDER BY %s", getOrderByClause()));
 		
-		return entityManager.createQuery(sb.toString());
+		return sb.toString();
+	}
+	
+	protected Query prepareQuery(EntityManager entityManager)  {
+		return entityManager.createQuery(getQueryString());
 	}
 		
 	protected List<T> select(EntityManager entityManager) {
