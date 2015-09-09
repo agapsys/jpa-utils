@@ -17,6 +17,7 @@ package com.agapsys.jpa;
 
 import com.agapsys.jpa.entity.NamedEntity;
 import com.agapsys.jpa.entity.TestEntity;
+import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -39,6 +40,11 @@ public class SelectBuilderTest {
 		@Override
 		public String getQueryString() {
 			return super.getQueryString();
+		}
+
+		@Override
+		public Map<String, Object> getValues() {
+			return super.getValues();
 		}
 	}
 	

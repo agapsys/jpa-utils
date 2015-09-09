@@ -17,9 +17,9 @@
 package com.agapsys.jpa;
 
 import com.agapsys.jpa.entity.TestEntity;
-import org.junit.Assert;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import static org.junit.Assert.*;
-import org.junit.Before;
 import org.junit.Test;
 
 public class FindBuilderTest {
@@ -37,13 +37,11 @@ public class FindBuilderTest {
 		public String getQueryString() {
 			return super.getQueryString();
 		}
-	}
-		
-	private TestFindBuilder<TestEntity> findBuilder;
-	
-	@Before
-	public void before() {
-		findBuilder = new TestFindBuilder(TestEntity.class);
+
+		@Override
+		public Map<String, Object> getValues() {
+			return super.getValues();
+		}
 	}
 	
 	// CONSTRUCTORS ------------------------------------------------------------
@@ -55,14 +53,16 @@ public class FindBuilderTest {
 	
 	// SIMPLE BY ---------------------------------------------------------------
 	@Test
-	public void validSimpleByTest() {
+	public void SIMPLE_BY_valid() {
+		TestFindBuilder findBuilder;
+		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field", "123");
 		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
-		findBuilder.by("field", "123").by("field2", "456");
-		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0) AND (field2 = :f1)", findBuilder.getQueryString());
+		findBuilder.by("field", "123").by("field2", "456", "789");
+		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0) AND (field2 = :f1 AND field2 = :f2)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field", "123", "456", "789").by("field2", "456");
@@ -70,13 +70,17 @@ public class FindBuilderTest {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void nullFieldSimpleByTest() {
+	public void SIMPLE_BY_nullField() {
+		TestFindBuilder findBuilder;
+
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by(null, "123");
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void emptyFieldSimpleByTest() {
+	public void SIMPLE_BY_emptyField() {
+		TestFindBuilder findBuilder;
+
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("", "123");
 	}
@@ -84,7 +88,9 @@ public class FindBuilderTest {
 	
 	// BY WITH AN OPERATOR------------------------------------------------------
 	@Test
-	public void InvalidValuesAccordingToByOperator() {
+	public void BY_InvalidValuesAccordingToOperator() {
+		TestFindBuilder findBuilder;
+
 		boolean errorCaught = false;
 		
 		// LESS THAN -----------------------------------------------------------
@@ -266,7 +272,9 @@ public class FindBuilderTest {
 	}
 	
 	@Test
-	public void validByWithOperator() {
+	public void BY_validValuesAccordingToOperator() {
+		TestFindBuilder findBuilder;
+
 		// LESS THAN -----------------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.LESS_THAN, 2);
@@ -373,188 +381,89 @@ public class FindBuilderTest {
 	}
 	// -------------------------------------------------------------------------
 	
-//	@Test(expected = IllegalArgumentException.class)
-//	public void nullJoinType() {
-//		findBuilder.join(null, "field", "f");
-//	}
-//	
-//	@Test(expected = IllegalArgumentException.class)
-//	public void nullJoinField() {
-//		findBuilder.join(JoinType.INNER_JOIN, null, "f");
-//	}
-//	
-//	@Test(expected = IllegalArgumentException.class)
-//	public void emptyJoinField() {
-//		findBuilder.join(JoinType.INNER_JOIN, "", "f");
-//	}
-//	
-//	@Test(expected = IllegalArgumentException.class)
-//	public void nullJoinFieldAlias() {
-//		findBuilder.join(JoinType.INNER_JOIN, "field", null);
-//	}
-//	
-//	@Test(expected = IllegalArgumentException.class)
-//	public void emptyJoinFieldAlias() {
-//		findBuilder.join(JoinType.INNER_JOIN, "field", "");
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void duplicateJoin() {
-//		findBuilder.join(JoinType.INNER_JOIN, "field", "f");
-//		findBuilder.join(JoinType.INNER_JOIN, "field2", "f2");
-//	}
-//	// -------------------------------------------------------------------------
-//	
-//	// JOIN FETCH --------------------------------------------------------------
-//	@Test
-//	public void validJoinFetchTest() {
-//		findBuilder.joinFetch("field");
-//	}
-//	
-//	@Test(expected = IllegalArgumentException.class)
-//	public void nullJoinFetchField() {
-//		findBuilder.joinFetch(null);
-//	}
-//	
-//	@Test(expected = IllegalArgumentException.class)
-//	public void emptyJoinFetchField() {
-//		findBuilder.joinFetch("");
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void duplicateJoinFetch() {
-//		findBuilder.joinFetch("field");
-//		findBuilder.joinFetch("field2");
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void joinAndJoinFetch() {
-//		findBuilder.join(JoinType.INNER_JOIN, "field", "f");
-//		findBuilder.joinFetch("field2");
-//	}
-//	// -------------------------------------------------------------------------
-//	
-//	// WHERE -------------------------------------------------------------------
-//	@Test
-//	public void validWhere() {
-//		findBuilder.where("field IS NOT NULL");
-//	}
-//	
-//	@Test (expected = IllegalArgumentException.class)
-//	public void nullWhere() {
-//		findBuilder.where(null);
-//	}
-//	
-//	@Test (expected = IllegalArgumentException.class)
-//	public void emptyWhere() {
-//		findBuilder.where("");
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void duplicateWhere() {
-//		findBuilder.where("field IS NOT NULL");
-//		findBuilder.where("field2 IS NOT NULL");
-//	}
-//	// -------------------------------------------------------------------------
-//	
-//	// GROUP BY ----------------------------------------------------------------
-//	@Test
-//	public void validGroupBy() {
-//		findBuilder.groupBy("field ASC");
-//	}
-//	
-//	@Test (expected = IllegalArgumentException.class)
-//	public void nullGroupBy() {
-//		findBuilder.groupBy(null);
-//	}
-//	
-//	@Test (expected = IllegalArgumentException.class)
-//	public void emptyGroupBy() {
-//		findBuilder.groupBy("");
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void duplicateGroupBy() {
-//		findBuilder.groupBy("field ASC");
-//		findBuilder.groupBy("field2 ASC");
-//	}
-//	// -------------------------------------------------------------------------
-//	
-//	// OFFSET ------------------------------------------------------------------
-//	@Test
-//	public void validOffset() {
-//		findBuilder.offset(1);
-//		before();
-//		findBuilder.offset(0);
-//	}
-//	
-//	@Test (expected = IllegalArgumentException.class)
-//	public void invalidOffset() {
-//		findBuilder.offset(-1);
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void duplicateOffset() {
-//		findBuilder.offset(1);
-//		findBuilder.offset(3);
-//	}
-//	// -------------------------------------------------------------------------
-//	
-//	// MAX RESULTS -------------------------------------------------------------
-//	@Test
-//	public void validMaxResults() {
-//		findBuilder.maxResults(1);
-//	}
-//	
-//	@Test (expected = IllegalArgumentException.class)
-//	public void invalidMaxResults() {
-//		findBuilder.maxResults(0);
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void duplicateMaxResults() {
-//		findBuilder.maxResults(1);
-//		findBuilder.maxResults(3);
-//	}
-//	// -------------------------------------------------------------------------
-//	
-//	@Test
-//	public void prepareQueryString() {
-//		// constructor only...
-//		TestFindBuilder<TestEntity> testBuilder1 = new TestFindBuilder(TestEntity.class);
-//		assertEquals("SELECT t FROM TestEntity t", testBuilder1.getQueryString());
-//		
-//		TestFindBuilder<NamedEntity> testBuilder2 = new TestFindBuilder(NamedEntity.class);
-//		assertEquals("SELECT n FROM NamedTestEntity n", testBuilder2.getQueryString());
-//		
-//		// inner join...
-//		testBuilder1 = new TestFindBuilder(TestEntity.class);
-//		testBuilder1.join(JoinType.INNER_JOIN, "joinField", "jf");
-//		assertEquals("SELECT t FROM TestEntity t JOIN joinField jf", testBuilder1.getQueryString());
-//		
-//		// left outer join...
-//		testBuilder1 = new TestFindBuilder(TestEntity.class);
-//		testBuilder1.join(JoinType.LEFT_OUTER_JOIN, "joinField", "jf");
-//		assertEquals("SELECT t FROM TestEntity t LEFT JOIN joinField jf", testBuilder1.getQueryString());
-//		
-//		// where...
-//		testBuilder1 = new TestFindBuilder(TestEntity.class);
-//		testBuilder1.where("LOWER(field) IS NOT NULL");
-//		assertEquals("SELECT t FROM TestEntity t WHERE LOWER(field) IS NOT NULL", testBuilder1.getQueryString());
-//		
-//		// group by...
-//		testBuilder1 = new TestFindBuilder(TestEntity.class);
-//		testBuilder1.groupBy("fieldZ");
-//		assertEquals("SELECT t FROM TestEntity t GROUP BY fieldZ", testBuilder1.getQueryString());
-//		
-//		// offset...
-//		testBuilder1 = new TestFindBuilder(TestEntity.class);
-//		testBuilder1.offset(2);
-//		assertEquals("SELECT t FROM TestEntity t", testBuilder1.getQueryString());
-//		
-//		// maxResults...
-//		testBuilder1 = new TestFindBuilder(TestEntity.class);
-//		testBuilder1.maxResults(2);
-//		assertEquals("SELECT t FROM TestEntity t", testBuilder1.getQueryString());
-//	}
+	// AND ---------------------------------------------------------------------
+	@Test(expected = IllegalStateException.class)
+	public void AND_first() {
+		TestFindBuilder findBuilder;
+
+		findBuilder = new TestFindBuilder(TestEntity.class);
+		findBuilder.and("field",FindOperator.LESS_THAN, 2);
+	}
+	
+	@Test
+	public void BY_followedBy_AND() {
+		TestFindBuilder findBuilder;
+		Map<String, Object> expectedParamMap;
+		// BY WITH OPERATOR ----------------------------------------------------
+		findBuilder = new TestFindBuilder(TestEntity.class);
+		findBuilder.by("field", FindOperator.LESS_THAN, 2).and("field2", 3, 4, 5);
+		assertEquals("SELECT t FROM TestEntity t WHERE (field < :f0) AND (field2 = :f1 AND field2 = :f2 AND field2 = :f3)", findBuilder.getQueryString());
+		
+		expectedParamMap = new LinkedHashMap();
+		expectedParamMap.put("f0", 2);
+		expectedParamMap.put("f1", 3);
+		expectedParamMap.put("f2", 4);
+		expectedParamMap.put("f3", 5);
+		
+		assertEquals(expectedParamMap, findBuilder.getValues());
+		// ---------------------------------------------------------------------
+		
+		// AND WITH OPERATOR ---------------------------------------------------
+		findBuilder = new TestFindBuilder(TestEntity.class);
+		findBuilder.by("field", 2).and("field2", FindOperator.GREATER_THAN_EQUALS, 3, 4, 5);
+		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0) AND (field2 >= :f1 AND field2 >= :f2 AND field2 >= :f3)", findBuilder.getQueryString());
+		
+		expectedParamMap = new LinkedHashMap();
+		expectedParamMap.put("f0", 2);
+		expectedParamMap.put("f1", 3);
+		expectedParamMap.put("f2", 4);
+		expectedParamMap.put("f3", 5);
+		
+		assertEquals(expectedParamMap, findBuilder.getValues());
+		// ---------------------------------------------------------------------
+	}
+	// -------------------------------------------------------------------------
+	
+	// OR ----------------------------------------------------------------------
+	@Test(expected = IllegalStateException.class)
+	public void OR_first() {
+		TestFindBuilder findBuilder;
+
+		findBuilder = new TestFindBuilder(TestEntity.class);
+		findBuilder.or("field",FindOperator.LESS_THAN, 2);
+	}
+	
+	@Test
+	public void BY_followedBy_OR() {
+		TestFindBuilder findBuilder;
+		Map<String, Object> expectedParamMap;
+		
+		// BY WITH OPERATOR ----------------------------------------------------
+		findBuilder = new TestFindBuilder(TestEntity.class);
+		findBuilder.by("field", FindOperator.LESS_THAN, 2).or("field2", 3, 4, 5);
+		assertEquals("SELECT t FROM TestEntity t WHERE (field < :f0) OR (field2 = :f1 AND field2 = :f2 AND field2 = :f3)", findBuilder.getQueryString());
+		
+		expectedParamMap = new LinkedHashMap();
+		expectedParamMap.put("f0", 2);
+		expectedParamMap.put("f1", 3);
+		expectedParamMap.put("f2", 4);
+		expectedParamMap.put("f3", 5);
+		
+		assertEquals(expectedParamMap, findBuilder.getValues());
+		// ---------------------------------------------------------------------
+		
+		// OR WITH OPERATOR ----------------------------------------------------
+		findBuilder = new TestFindBuilder(TestEntity.class);
+		findBuilder.by("field", 2).or("field2", FindOperator.GREATER_THAN_EQUALS, 3, 4, 5);
+		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0) OR (field2 >= :f1 AND field2 >= :f2 AND field2 >= :f3)", findBuilder.getQueryString());
+		
+		expectedParamMap = new LinkedHashMap();
+		expectedParamMap.put("f0", 2);
+		expectedParamMap.put("f1", 3);
+		expectedParamMap.put("f2", 4);
+		expectedParamMap.put("f3", 5);
+		
+		assertEquals(expectedParamMap, findBuilder.getValues());
+		// ---------------------------------------------------------------------
+	}
 }

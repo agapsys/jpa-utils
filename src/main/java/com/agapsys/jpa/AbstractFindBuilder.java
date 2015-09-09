@@ -36,12 +36,13 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 
 	private static class FindToken {
 		// CLASS SCOPE =========================================================
-		private static final String PARAM_NAME = ":f";
+		private static final String PARAM_NAME = "f";
 		
 		public static WhereClause generateWhereClause(List<FindToken> tokens) {
 			StringBuilder sb = new StringBuilder();
 			Map<String, Object> values = new LinkedHashMap<>();
 			
+			int paramCounter = 0;
 			
 			for (FindToken token : tokens) {
 				if (token.isAnd != null)
@@ -58,28 +59,34 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 						
 					default:
 						int valueCounter = 0;
-						int paramCounter = 0;
 
 						for (Object value : token.values) {
 							if (valueCounter > 0)
 								sb.append(" AND ");
 
 							String[] valueKeys;
+							String paramName;
+
 							if (value instanceof Range) {
 								Range range = (Range) value;
 								
 								valueKeys = new String[2];
 								
-								valueKeys[0] = PARAM_NAME + paramCounter;
-								values.put(valueKeys[0], range.getMin());
+								paramName = PARAM_NAME + paramCounter;
+								valueKeys[0] = ":" + paramName;
+								values.put(paramName, range.getMin());
 								paramCounter++;
 								
-								valueKeys[1] = PARAM_NAME + paramCounter;
-								values.put(valueKeys[1], range.getMax());
+								paramName = PARAM_NAME + paramCounter;
+								valueKeys[1] = ":" + paramName;
+								values.put(paramName, range.getMax());
 								paramCounter++;
 							} else {
 								valueKeys = new String[1];
-								valueKeys[0] = PARAM_NAME + paramCounter;
+								
+								paramName = PARAM_NAME + paramCounter;
+								valueKeys[0] = ":" + paramName;
+								values.put(paramName, value);
 								paramCounter++;
 							}
 							
@@ -166,20 +173,12 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 		super(distinct, entityClass);
 	}
 	
-	public AbstractFindBuilder by(String field, Object...values) {
-		return by(field, FindOperator.EQUALS, values);
-	}
 	
-	public AbstractFindBuilder by(String field, FindOperator operator, Object...values) {
-		return and(field, operator, values);
-	}
-	
-	public AbstractFindBuilder and(String field, Object...values) {
-		return and(field, FindOperator.EQUALS, values);
-	}	
-	
-	public AbstractFindBuilder and(String field, FindOperator operator, Object...values) {
+	private AbstractFindBuilder andOrBy(boolean byClause, String field, FindOperator operator, Object...values) {
 		Boolean isAnd;
+		
+		if (tokens.isEmpty() && !byClause)
+			throw new IllegalStateException("AND cannot be called yet");
 		
 		if (tokens.isEmpty())
 			isAnd = null;
@@ -194,6 +193,25 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 		return this;
 	}
 	
+	
+	public AbstractFindBuilder by(String field, Object...values) {
+		return andOrBy(true, field, FindOperator.EQUALS, values);
+	}
+	
+	public AbstractFindBuilder by(String field, FindOperator operator, Object...values) {
+		return andOrBy(true, field, operator, values);
+	}
+	
+	
+	public AbstractFindBuilder and(String field, Object...values) {
+		return andOrBy(false, field, FindOperator.EQUALS, values);
+	}	
+	
+	public AbstractFindBuilder and(String field, FindOperator operator, Object...values) {
+		return andOrBy(false, field, operator, values);
+	}
+	
+	
 	public AbstractFindBuilder or(String field, Object...values) {
 		return or(field, FindOperator.EQUALS, values);
 	}
@@ -201,7 +219,7 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	public AbstractFindBuilder or(String field, FindOperator operator, Object...values) {
 		Boolean isAnd = false;
 		if (tokens.isEmpty())
-			throw new IllegalStateException("OR clause cannot be the first");
+			throw new IllegalStateException("OR cannot be called yet");
 		
 		if (operator == null)
 			throw new IllegalArgumentException("Null operator");
@@ -210,6 +228,7 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 		tokens.add(token);
 		return this;
 	}
+	
 	
 	@Override
 	public AbstractFindBuilder offset(int offset) {
