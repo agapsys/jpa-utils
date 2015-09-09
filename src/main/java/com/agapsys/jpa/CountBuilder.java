@@ -29,10 +29,10 @@ public class CountBuilder<T> extends AbstractFindBuilder<T> {
 	}
 
 	@Override
-	protected String getAlias() {
-		return String.format("COUNT(%s%s)", (isDistinct() ? "DISTINCT " : ""), super.getAlias());
+	protected String getSelectClause() {
+		return String.format("COUNT(%s%s)", (isDistinct() ? "DISTINCT " : ""), getAlias());
 	}
-	
+		
 	public long count(EntityManager entityManager) {
 		Query query = prepareQuery(entityManager);
 		return (long) query.getSingleResult();

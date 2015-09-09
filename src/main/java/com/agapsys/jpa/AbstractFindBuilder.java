@@ -99,7 +99,12 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 				sb.append(")");
 			}
 			
-			return new WhereClause(sb.toString(), values);
+			String whereClause = sb.toString();
+			
+			if (whereClause.isEmpty())
+				whereClause = null;
+			
+			return new WhereClause(whereClause, values);
 		}
 		// =====================================================================
 		
@@ -164,6 +169,7 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	// INSTANCE SCOPE ==========================================================
 	private final List<FindToken> tokens = new LinkedList<>();
 	private WhereClause whereClause = null;
+	private boolean whereClauseGenerated = false;
 	
 	public AbstractFindBuilder(Class<T> entityClass) {
 		super(entityClass);
@@ -241,8 +247,9 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	}
 
 	private void generateWhereClause() {
-		if (whereClause == null) {
+		if (!whereClauseGenerated) {
 			whereClause = FindToken.generateWhereClause(tokens);
+			whereClauseGenerated = true;
 		}
 	}
 	

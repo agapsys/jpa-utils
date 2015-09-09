@@ -109,6 +109,10 @@ public abstract class AbstractSelectBuilder<T> {
 		return values;
 	}
 	
+	protected String getSelectClause() {
+		return String.format("%s%s", (isDistinct() ? "DISTINCT " : ""), getAlias());
+	}
+	
 	protected JoinType getJoinType() {
 		return joinType;
 	}
@@ -253,7 +257,7 @@ public abstract class AbstractSelectBuilder<T> {
 	protected String getQueryString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(
-			String.format("SELECT %s%s FROM %s %s", (isDistinct() ? "DISTINCT " : ""), getAlias(), getEntityName(), getAlias()));
+			String.format("SELECT %s FROM %s %s", getSelectClause(), getEntityName(), getAlias()));
 
 		if (getJoinType() != null) {
 			sb.append(String.format(" %s %s %s", getJoinType().getSQl(), getJoinField(), getJoinFieldAlias()));

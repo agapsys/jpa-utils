@@ -52,6 +52,17 @@ public class FindBuilderTest {
 	public void testNullClass() {
 		new TestFindBuilder<TestEntity>(null);
 	}
+	
+	@Test
+	public void testSimplest() {
+		TestFindBuilder findBuilder;
+		
+		findBuilder = new TestFindBuilder(true, TestEntity.class);
+		assertEquals("SELECT DISTINCT t FROM TestEntity t", findBuilder.getQueryString());
+		
+		findBuilder = new TestFindBuilder(false, TestEntity.class);
+		assertEquals("SELECT t FROM TestEntity t", findBuilder.getQueryString());
+	}
 	// -------------------------------------------------------------------------
 	
 	// SIMPLE BY ---------------------------------------------------------------
