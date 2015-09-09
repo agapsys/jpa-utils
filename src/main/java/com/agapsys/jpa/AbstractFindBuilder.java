@@ -129,7 +129,7 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	
 	public AbstractFindBuilder and(String field, Object...values) {
 		return and(field, FindOperator.EQUALS, values);
-	}
+	}	
 	
 	public AbstractFindBuilder and(String field, FindOperator operator, Object...values) {
 		Boolean isAnd;
@@ -154,7 +154,7 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	public AbstractFindBuilder or(String field, FindOperator operator, Object...values) {
 		Boolean isAnd = false;
 		if (tokens.isEmpty())
-			throw new IllegalStateException("or cannot be the called yet");
+			throw new IllegalStateException("OR clause cannot be the first");
 		
 		if (operator == null)
 			throw new IllegalArgumentException("Null operator");
@@ -166,14 +166,12 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	
 	@Override
 	public AbstractFindBuilder offset(int offset) {
-		super.offset(offset);
-		return this;
+		return (AbstractFindBuilder) super.offset(offset);
 	}
 
 	@Override
 	public AbstractFindBuilder maxResults(int maxResults) {
-		super.maxResults(maxResults);
-		return this;
+		return (AbstractFindBuilder) super.maxResults(maxResults);
 	}
 
 	private void generateWhereClause() {
