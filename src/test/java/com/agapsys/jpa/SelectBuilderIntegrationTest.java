@@ -42,10 +42,7 @@ public class SelectBuilderIntegrationTest {
 		
 		for (int i = 0; i < ROWS; i++) {
 			TestEntity testEntity = new TestEntity();
-			testEntity.setField1(String.format("%d-field1", i+1));
-			testEntity.setField2(String.format("%d-field2", i+1));
-			testEntity.setField3(String.format("%d-field3", i+1));
-			testEntity.setField4(String.format("%d-field4", i+1));
+			testEntity.setField(String.format("test_%d", i+1));
 			em.persist(testEntity);
 		}
 		

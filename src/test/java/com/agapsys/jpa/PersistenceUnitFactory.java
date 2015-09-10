@@ -34,7 +34,7 @@ public class PersistenceUnitFactory  {
 	
 	private static PersistenceUnit singleton = null;
 	public static PersistenceUnit getInstance() {
-		if (singleton == null) {
+		if (singleton == null || !singleton.isOpen()) {
 			
 			File homeFolder = new File(System.getProperty("user.home"));
 			File propFile = new File(homeFolder, PROPERTIES_FILE);

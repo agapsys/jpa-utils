@@ -200,29 +200,29 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	}
 	
 	
-	public AbstractFindBuilder by(String field, Object...values) {
+	protected AbstractFindBuilder by(String field, Object...values) {
 		return andOrBy(true, field, FindOperator.EQUALS, values);
 	}
 	
-	public AbstractFindBuilder by(String field, FindOperator operator, Object...values) {
+	protected AbstractFindBuilder by(String field, FindOperator operator, Object...values) {
 		return andOrBy(true, field, operator, values);
 	}
 	
 	
-	public AbstractFindBuilder and(String field, Object...values) {
+	protected AbstractFindBuilder and(String field, Object...values) {
 		return andOrBy(false, field, FindOperator.EQUALS, values);
 	}	
 	
-	public AbstractFindBuilder and(String field, FindOperator operator, Object...values) {
+	protected AbstractFindBuilder and(String field, FindOperator operator, Object...values) {
 		return andOrBy(false, field, operator, values);
 	}
 	
 	
-	public AbstractFindBuilder or(String field, Object...values) {
+	protected AbstractFindBuilder or(String field, Object...values) {
 		return or(field, FindOperator.EQUALS, values);
 	}
 	
-	public AbstractFindBuilder or(String field, FindOperator operator, Object...values) {
+	protected AbstractFindBuilder or(String field, FindOperator operator, Object...values) {
 		Boolean isAnd = false;
 		if (tokens.isEmpty())
 			throw new IllegalStateException("OR cannot be called yet");
@@ -237,15 +237,21 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	
 	
 	@Override
-	public AbstractFindBuilder offset(int offset) {
+	protected AbstractFindBuilder offset(int offset) {
 		return (AbstractFindBuilder) super.offset(offset);
 	}
 
 	@Override
-	public AbstractFindBuilder maxResults(int maxResults) {
+	protected AbstractFindBuilder maxResults(int maxResults) {
 		return (AbstractFindBuilder) super.maxResults(maxResults);
 	}
 
+	@Override
+	protected AbstractFindBuilder orderBy(String ordering) {
+		return (AbstractFindBuilder) super.orderBy(ordering);
+	}
+
+	
 	private void generateWhereClause() {
 		if (!whereClauseGenerated) {
 			whereClause = FindToken.generateWhereClause(tokens);

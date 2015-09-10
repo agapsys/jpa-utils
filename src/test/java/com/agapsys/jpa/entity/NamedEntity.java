@@ -18,44 +18,36 @@ package com.agapsys.jpa.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity(name = "NamedTestEntity")
 public class NamedEntity {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	int id;
-
-	private String field1;
-	private String field2;
 	
-	@ManyToOne
+	@OneToOne
 	private TestEntity testEntity;
 
 	public int getId() {
 		return id;
 	}
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	
-	public String getField1() {
-		return field1;
-	}
-	public void setField1(String field1) {
-		this.field1 = field1;
-	}
-
-
-	public String getField2() {
-		return field2;
-	}
-	public void setField2(String field2) {
-		this.field2 = field2;
-	}
-
 	public TestEntity getTestEntity() {
 		return testEntity;
 	}
 	public void setTestEntity(TestEntity testEntity) {
 		this.testEntity = testEntity;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("{id=%d, testEntity=%s}", id, testEntity);
 	}
 }

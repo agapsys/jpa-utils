@@ -69,4 +69,8 @@ public class PersistenceUnit {
 	public void close() {
 		emf.close();
 	}
+	
+	public boolean isOpen() {
+		return emf.isOpen();
+	}
 }
