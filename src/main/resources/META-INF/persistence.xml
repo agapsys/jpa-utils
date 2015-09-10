@@ -18,16 +18,5 @@ limitations under the License.
 -->
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 	<persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
-		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<class>com.agapsys.jpa.entity.TestEntity</class>
-		<properties>
-			<property name="eclipselink.logging.level" value="OFF"/>
-			<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
-			<property name="eclipselink.persistence-context.flush-mode" value="commit" />
-			<property name="eclipselink.connection-pool.default.initial" value="1" /> 
-			<property name="eclipselink.connection-pool.node2.min" value="5"/> 
-			<property name="eclipselink.connection-pool.node2.max" value="10"/> 
-			<property name="eclipselink.connection-pool.node2.url" value="jdbc:oracle:thin:@node2:1521:orcl"/>
-		</properties>
 	</persistence-unit>
 </persistence>

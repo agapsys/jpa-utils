@@ -16,18 +16,50 @@
 
 package com.agapsys.jpa;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  * Represents a persistence unit in application
  * @author Leandro Oliveira (leandro@agapsys.com)
  */
 public class PersistenceUnit {
+	// CLASS SCOPE =============================================================
+	public static final String DEFAULT_PU = "default";
+	// =========================================================================
+	
+	// INSTANCE SCOPE ==========================================================
 	private final EntityManagerFactory emf;
 	
 	public PersistenceUnit(EntityManagerFactory emf) {
 		this.emf = emf;
+	}
+	
+	public PersistenceUnit(String persistenceUnitName, Properties props) {
+		emf = Persistence.createEntityManagerFactory(persistenceUnitName, props);
+	}
+	
+	public PersistenceUnit(String persistenceUnitName, File propFile) {
+		Properties props = new Properties();
+		try (FileInputStream fis = new FileInputStream(propFile)) {
+			props.load(fis);
+			this.emf = Persistence.createEntityManagerFactory(persistenceUnitName, props);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+	
+	public PersistenceUnit(Properties props) {
+		this(DEFAULT_PU, props);
+	}
+	
+	public PersistenceUnit(File propFile) {
+		this(DEFAULT_PU, propFile);
 	}
 	
 	public EntityManager getEntityManager() {

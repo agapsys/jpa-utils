@@ -27,7 +27,7 @@ public class SelectBuilderIntegrationTest {
 	private static PersistenceUnit persistenceUnit;
 	@BeforeClass
 	public static void beforeClass() {
-		persistenceUnit = new TestPersistenceUnit();
+		persistenceUnit = PersistenceUnitFactory.getInstance();
 	}
 	
 	@AfterClass
