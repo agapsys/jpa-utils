@@ -27,8 +27,35 @@ public class NamedEntity {
 	@GeneratedValue
 	int id;
 
-	private String field;
+	private String field1;
+	private String field2;
 	
 	@ManyToOne
-	private NamedEntity fkField;
+	private TestEntity testEntity;
+
+	public int getId() {
+		return id;
+	}
+	
+	public String getField1() {
+		return field1;
+	}
+	public void setField1(String field1) {
+		this.field1 = field1;
+	}
+
+
+	public String getField2() {
+		return field2;
+	}
+	public void setField2(String field2) {
+		this.field2 = field2;
+	}
+
+	public TestEntity getTestEntity() {
+		return testEntity;
+	}
+	public void setTestEntity(TestEntity testEntity) {
+		this.testEntity = testEntity;
+	}
 }
