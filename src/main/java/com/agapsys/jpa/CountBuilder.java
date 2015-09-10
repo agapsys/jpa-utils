@@ -16,25 +16,71 @@
 
 package com.agapsys.jpa;
 
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 public class CountBuilder<T> extends AbstractFindBuilder<T> {
+	
 	public CountBuilder(Class<T> entityClass) {
 		super(false, entityClass);
 	}
 	
-	public CountBuilder(boolean distinct, Class<T> entityClass) {
-		super(distinct, entityClass);
+	@Override
+	public CountBuilder orderBy(String ordering) {
+		return (CountBuilder) super.orderBy(ordering);
 	}
 
 	@Override
+	public CountBuilder offset(int offset) {
+		return (CountBuilder) super.offset(offset);
+	}
+
+	@Override
+	public CountBuilder or(String field, FindOperator operator, Object... values) {
+		return (CountBuilder) super.or(field, operator, values);
+	}
+
+	@Override
+	public CountBuilder or(String field, Object... values) {
+		return (CountBuilder) super.or(field, values);
+	}
+
+	@Override
+	public CountBuilder and(String field, FindOperator operator, Object... values) {
+		return (CountBuilder) super.and(field, operator, values);
+	}
+
+	@Override
+	public CountBuilder and(String field, Object... values) {
+		return (CountBuilder) super.and(field, values);
+	}
+
+	@Override
+	public CountBuilder by(String field, FindOperator operator, Object... values) {
+		return (CountBuilder) super.by(field, operator, values);
+	}
+
+	@Override
+	public CountBuilder by(String field, Object... values) {
+		return (CountBuilder) super.by(field, values);
+	}
+	
+	@Override
 	protected String getSelectClause() {
-		return String.format("COUNT(%s%s)", (isDistinct() ? "DISTINCT " : ""), getAlias());
+		return "COUNT(1)";
 	}
 		
 	public long count(EntityManager entityManager) {
 		Query query = prepareQuery(entityManager);
+		
+		for (Map.Entry<String, Object> entry : getValues().entrySet()) {
+			query.setParameter(entry.getKey(), entry.getValue());
+		}
+		
+		if (getOffset() != null)
+			query.setFirstResult(getOffset());
+		
 		return (long) query.getSingleResult();
 	}
 }

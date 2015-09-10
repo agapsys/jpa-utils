@@ -35,7 +35,7 @@ public class FindBuilderIntegrationTest {
 	
 	@BeforeClass
 	public static void beforeClass() {
-		System.out.println("========= beforeClass =========");
+		Utils.printCurrenTest();
 		
 		persistenceUnit = PersistenceUnitFactory.getInstance();
 		EntityManager em = persistenceUnit.getEntityManager();
@@ -80,7 +80,7 @@ public class FindBuilderIntegrationTest {
 	// INSTANCE SCOPE ==========================================================
 	@Test
 	public void simpleFind() {
-		System.out.println("========= simpleFind =========");
+		Utils.printCurrenTest();
 		
 		FindBuilder findBuilder = new FindBuilder(TestEntity.class);
 		List<TestEntity> list = findBuilder.find(em);
@@ -92,7 +92,7 @@ public class FindBuilderIntegrationTest {
 	
 	@Test
 	public void completeTest() {
-		System.out.println("========= completeTest =========");
+		Utils.printCurrenTest();
 
 		final int testEntityId = 40;
 		Assert.assertTrue(testEntityId + 1 < ROWS);

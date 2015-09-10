@@ -16,42 +16,16 @@
 
 package com.agapsys.jpa;
 
-import com.agapsys.jpa.entity.TestEntity;
-import java.util.Map;
-import org.junit.Assert;
-import org.junit.Test;
-
-/*
- * NOTE: Since CountBuilder extends FindBuilder, it's not required to re-test
- * builder methods
- */
-
-public class CountBuilderTest {
+public class Utils {
 	// CLASS SCOPE =============================================================
-	private static class TestCountBuilder<T> extends CountBuilder<T> {
-		public TestCountBuilder(Class<T> entiClass) {
-			super(entiClass);
-		}
-
-		@Override
-		public String getQueryString() {
-			return super.getQueryString();
-		}
-
-		@Override
-		public Map<String, Object> getValues() {
-			return super.getValues();
-		}
+	public static void printCurrenTest() {
+		StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
+		String[] classNameTokens = ste.getClassName().split("\\.");
+		System.out.println(String.format("========= %s::%s =========", classNameTokens[classNameTokens.length - 1], ste.getMethodName()));
 	}
 	// =========================================================================
 
 	// INSTANCE SCOPE ==========================================================
-	@Test
-	public void testQueryBuilder() {
-		TestCountBuilder countBuilder;
-		
-		countBuilder = new TestCountBuilder(TestEntity.class);
-		Assert.assertEquals("SELECT COUNT(1) FROM TestEntity t", countBuilder.getQueryString());
-	}
+	private Utils() {}
 	// =========================================================================
 }

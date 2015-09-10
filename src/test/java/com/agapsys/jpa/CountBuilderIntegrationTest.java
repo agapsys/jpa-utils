@@ -18,7 +18,6 @@ package com.agapsys.jpa;
 
 import com.agapsys.jpa.entity.NamedEntity;
 import com.agapsys.jpa.entity.TestEntity;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import org.junit.After;
@@ -35,7 +34,7 @@ public class CountBuilderIntegrationTest {
 	
 	@BeforeClass
 	public static void beforeClass() {
-		System.out.println("========= beforeClass =========");
+		Utils.printCurrenTest();
 		
 		persistenceUnit = PersistenceUnitFactory.getInstance();
 		EntityManager em = persistenceUnit.getEntityManager();
@@ -79,41 +78,21 @@ public class CountBuilderIntegrationTest {
 	
 	// INSTANCE SCOPE ==========================================================
 	@Test
-	public void simpleFind() {
-		System.out.println("========= simpleFind =========");
+	public void simpleCount() {
+		Utils.printCurrenTest();
 		
-		FindBuilder findBuilder = new FindBuilder(TestEntity.class);
-		List<TestEntity> list = findBuilder.find(em);
+		long count = new CountBuilder(TestEntity.class).count(em);
 		
-		Assert.assertEquals(ROWS, list.size());
-		for (TestEntity t : list)
-			System.out.println(t);
+		Assert.assertEquals(ROWS, count);
 	}
 	
 	@Test
 	public void completeTest() {
-		System.out.println("========= completeTest =========");
-
-		final int testEntityId = 40;
-		Assert.assertTrue(testEntityId + 1 < ROWS);
+		Utils.printCurrenTest();
 		
-		TestEntity testEntity = em.find(TestEntity.class, testEntityId);
-		Assert.assertTrue(testEntity != null);
-				
-		List<NamedEntity> list = new FindBuilder(NamedEntity.class).by("testEntity", testEntity).orderBy("id ASC").find(em);
-		Assert.assertEquals(1, list.size());
+		long count = new CountBuilder(TestEntity.class).by("id", FindOperator.BETWEEN, new Range(60, 80)).or("id", FindOperator.BETWEEN, new Range(20, 40)).count(em);
 		
-		testEntity = em.find(TestEntity.class, testEntityId + 1);
-		Assert.assertTrue(testEntity != null);
-		list = new FindBuilder(NamedEntity.class).by("testEntity", testEntity).orderBy("id ASC").find(em);
-		Assert.assertEquals(1, list.size());
-		
-		list = new FindBuilder(NamedEntity.class).by("id", FindOperator.BETWEEN, new Range(60, 80)).or("id", FindOperator.BETWEEN, new Range(20, 40)).find(em);
-		for (NamedEntity n : list)
-			System.out.println(n);
-		
-		Assert.assertEquals(42, list.size());
-		
+		Assert.assertEquals(42, count);
 	}
 	// =========================================================================
 }

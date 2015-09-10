@@ -71,7 +71,7 @@ public class SelectBuilderIntegrationTest {
 	// INSTANCE SCOPE ==========================================================
 	@Test
 	public void simpleSelect() {
-		System.out.println("========= simpleSelect =========");
+		Utils.printCurrenTest();
 		
 		SelectBuilder selectBuilder = new SelectBuilder(TestEntity.class, "t");
 		List<TestEntity> list = selectBuilder.select(em);
@@ -82,7 +82,7 @@ public class SelectBuilderIntegrationTest {
 	
 	@Test
 	public void offsetTest() {
-		System.out.println("========= offsetTest =========");
+		Utils.printCurrenTest();
 
 		final int offset = 85;
 		Assert.assertTrue(offset < ROWS);
@@ -101,7 +101,7 @@ public class SelectBuilderIntegrationTest {
 	
 	@Test
 	public void maxResultsTest() {
-		System.out.println("========= maxResultsTest =========");
+		Utils.printCurrenTest();
 
 		final int offset = 85;
 		Assert.assertTrue(offset < ROWS);
