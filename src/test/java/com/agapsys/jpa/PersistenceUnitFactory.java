@@ -32,6 +32,10 @@ public class PersistenceUnitFactory  {
 	public static final String DEFAULT_JDBC_USER         = "sa";
 	public static final String DEFAULT_JDBC_PASSWORD     = "sa";
 	
+	public static final String DEFAULT_HIBERNATE_DIALECT    = "org.hibernate.dialect.H2Dialect";
+	public static final String DEFAULT_HIBERNATE_FLUSH_MODE = "COMMIT";
+	public static final String DEFAULT_HIBERNATE_DDL        = "create"; // For test-only!!!
+	
 	private static PersistenceUnit singleton = null;
 	public static PersistenceUnit getInstance() {
 		if (singleton == null || !singleton.isOpen()) {
@@ -44,6 +48,10 @@ public class PersistenceUnitFactory  {
 			props.setProperty("javax.persistence.jdbc.url",      DEFAULT_JDBC_URL);
 			props.setProperty("javax.persistence.jdbc.user",     DEFAULT_JDBC_USER);
 			props.setProperty("javax.persistence.jdbc.password", DEFAULT_JDBC_PASSWORD);
+			
+			props.setProperty("org.hibernate.dialect",   DEFAULT_HIBERNATE_DIALECT);
+			props.setProperty("org.hibernate.flushMode", DEFAULT_HIBERNATE_FLUSH_MODE);
+			props.setProperty("hibernate.hbm2ddl.auto",  DEFAULT_HIBERNATE_DDL);
 			
 			if (propFile.exists()) {
 				try (FileInputStream fis = new FileInputStream(propFile)) {
