@@ -62,4 +62,9 @@ public class TestEntity {
 	public void setField4(String field4) {
 		this.field4 = field4;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("{id=%d, field1=%s, field2=%s, field3=%s, field4=%s", id, field1, field2, field3, field4);
+	}
 }
