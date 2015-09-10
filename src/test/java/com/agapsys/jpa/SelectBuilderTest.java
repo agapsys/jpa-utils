@@ -22,10 +22,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 
-/**
- *
- * @author Leandro Oliveira (leandro@agapsys.com)
- */
 public class SelectBuilderTest {
 	private static class TestSelectBuilder<T> extends SelectBuilder<T> {
 

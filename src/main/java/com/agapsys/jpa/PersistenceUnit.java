@@ -24,10 +24,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-/**
- * Represents a persistence unit in application
- * @author Leandro Oliveira (leandro@agapsys.com)
- */
 public class PersistenceUnit {
 	// CLASS SCOPE =============================================================
 	public static final String DEFAULT_PU = "default";

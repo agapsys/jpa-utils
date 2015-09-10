@@ -16,12 +16,104 @@
 
 package com.agapsys.jpa;
 
+import com.agapsys.jpa.entity.NamedEntity;
+import com.agapsys.jpa.entity.TestEntity;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 public class CountBuilderIntegrationTest {
 	// CLASS SCOPE =============================================================
-
+	private static PersistenceUnit persistenceUnit;
+	private static final int ROWS = 100;
+	
+	@BeforeClass
+	public static void beforeClass() {
+		System.out.println("========= beforeClass =========");
+		
+		persistenceUnit = PersistenceUnitFactory.getInstance();
+		EntityManager em = persistenceUnit.getEntityManager();
+		
+		EntityTransaction transaction =  em.getTransaction();
+		transaction.begin();
+		
+		for (int i = 0; i < ROWS; i++) {
+			TestEntity testEntity = new TestEntity();
+			testEntity.setField(String.format("test_%d", i+1));
+			em.persist(testEntity);
+			
+			NamedEntity namedEntity = new NamedEntity();
+			namedEntity.setTestEntity(testEntity);
+			em.persist(namedEntity);
+				
+			System.out.println(namedEntity);
+		}
+		
+		transaction.commit();
+		em.close();
+	}
+	
+	@AfterClass
+	public static void afterClass() {
+		persistenceUnit.close();
+	}
 	// =========================================================================
-
+	private EntityManager em;
+	
+	@Before
+	public void before() {
+		em = persistenceUnit.getEntityManager();
+	}
+	
+	@After
+	public void after() {
+		em.close();
+	}
+	
+	
 	// INSTANCE SCOPE ==========================================================
+	@Test
+	public void simpleFind() {
+		System.out.println("========= simpleFind =========");
+		
+		FindBuilder findBuilder = new FindBuilder(TestEntity.class);
+		List<TestEntity> list = findBuilder.find(em);
+		
+		Assert.assertEquals(ROWS, list.size());
+		for (TestEntity t : list)
+			System.out.println(t);
+	}
+	
+	@Test
+	public void completeTest() {
+		System.out.println("========= completeTest =========");
 
+		final int testEntityId = 40;
+		Assert.assertTrue(testEntityId + 1 < ROWS);
+		
+		TestEntity testEntity = em.find(TestEntity.class, testEntityId);
+		Assert.assertTrue(testEntity != null);
+				
+		List<NamedEntity> list = new FindBuilder(NamedEntity.class).by("testEntity", testEntity).orderBy("id ASC").find(em);
+		Assert.assertEquals(1, list.size());
+		
+		testEntity = em.find(TestEntity.class, testEntityId + 1);
+		Assert.assertTrue(testEntity != null);
+		list = new FindBuilder(NamedEntity.class).by("testEntity", testEntity).orderBy("id ASC").find(em);
+		Assert.assertEquals(1, list.size());
+		
+		list = new FindBuilder(NamedEntity.class).by("id", FindOperator.BETWEEN, new Range(60, 80)).or("id", FindOperator.BETWEEN, new Range(20, 40)).find(em);
+		for (NamedEntity n : list)
+			System.out.println(n);
+		
+		Assert.assertEquals(42, list.size());
+		
+	}
 	// =========================================================================
 }

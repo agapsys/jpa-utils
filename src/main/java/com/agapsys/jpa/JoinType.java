@@ -15,9 +15,6 @@
  */
 package com.agapsys.jpa;
 
-/**
- * @author Leandro Oliveira (leandro@agapsys.com)
- */
 public enum JoinType {
 	INNER_JOIN      ("JOIN"),
 	LEFT_OUTER_JOIN ("LEFT JOIN");

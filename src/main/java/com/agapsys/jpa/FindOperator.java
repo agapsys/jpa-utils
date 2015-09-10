@@ -15,9 +15,6 @@
  */
 package com.agapsys.jpa;
 
-/**
- * @author Leandro Oliveira (leandro@agapsys.com)
- */
 public enum FindOperator {
 	LESS_THAN           (":field < :value"),
 	LESS_THAN_EQUALS    (":field <= :value"),
