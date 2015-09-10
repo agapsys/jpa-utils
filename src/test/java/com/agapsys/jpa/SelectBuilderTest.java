@@ -226,6 +226,29 @@ public class SelectBuilderTest {
 	}
 	// -------------------------------------------------------------------------
 	
+	
+	// ORDERING ----------------------------------------------------------------
+	@Test
+	public void validOrdering() {
+		testBuilder.orderBy("id ASC");
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void emptyOrdering() {
+		testBuilder.orderBy("");
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void nullOrdering() {
+		testBuilder.orderBy(null);
+	}
+	
+	@Test (expected = IllegalStateException.class)
+	public void duplicateOrdering() {
+		testBuilder.orderBy("id ASC");
+		testBuilder.orderBy("field DESC");
+	}
+	
 	@Test
 	public void prepareQueryString() {
 		// constructor only...
@@ -267,5 +290,10 @@ public class SelectBuilderTest {
 		testBuilder1 = new TestSelectBuilder(TestEntity.class, "t");
 		testBuilder1.maxResults(2);
 		assertEquals("SELECT t FROM TestEntity t", testBuilder1.getQueryString());
+		
+		// order by...
+		testBuilder1 = new TestSelectBuilder(TestEntity.class, "t");
+		testBuilder1.orderBy("id ASC, field DESC");
+		assertEquals("SELECT t FROM TestEntity t ORDER BY id ASC, field DESC", testBuilder1.getQueryString());
 	}
 }

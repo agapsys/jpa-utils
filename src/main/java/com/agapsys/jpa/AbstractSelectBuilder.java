@@ -293,8 +293,11 @@ public abstract class AbstractSelectBuilder<T> {
 			query.setParameter(entry.getKey(), entry.getValue());
 		}
 		
-		query.setFirstResult(getOffset());
-		query.setMaxResults(getMaxResults());
+		if (getOffset() != null)
+			query.setFirstResult(getOffset());
+		
+		if (getMaxResults() != null)
+			query.setMaxResults(getMaxResults());
 		
 		return query.getResultList();
 	}
