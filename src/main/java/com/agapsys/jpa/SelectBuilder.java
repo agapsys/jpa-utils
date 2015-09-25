@@ -30,43 +30,43 @@ public class SelectBuilder<T> extends AbstractSelectBuilder<T> {
 	}
 
 	@Override
-	public AbstractSelectBuilder join(JoinType joinType, String joinField, String joinFieldAlias) {
-		return super.join(joinType, joinField, joinFieldAlias);
+	public SelectBuilder join(JoinType joinType, String joinField, String joinFieldAlias) {
+		return (SelectBuilder) super.join(joinType, joinField, joinFieldAlias);
 	}
 	
 	@Override
-	public AbstractSelectBuilder joinFetch(String joinField) {
-		return super.joinFetch(joinField); 
+	public SelectBuilder joinFetch(String joinField) {
+		return (SelectBuilder) super.joinFetch(joinField); 
 	}
 	
 	@Override
-	public AbstractSelectBuilder where(String whereClause) {
-		return super.where(whereClause);
+	public SelectBuilder where(String whereClause) {
+		return (SelectBuilder) super.where(whereClause);
 	}
 
 	@Override
-	public AbstractSelectBuilder groupBy(String groupBy) {
-		return super.groupBy(groupBy);
+	public SelectBuilder groupBy(String groupBy) {
+		return (SelectBuilder) super.groupBy(groupBy);
 	}
 	
 	@Override
-	public AbstractSelectBuilder offset(int offset) {
-		return super.offset(offset);
+	public SelectBuilder offset(int offset) {
+		return (SelectBuilder) super.offset(offset);
 	}
 
 	@Override
-	public AbstractSelectBuilder orderBy(String ordering) {
-		return super.orderBy(ordering);
+	public SelectBuilder orderBy(String ordering) {
+		return (SelectBuilder) super.orderBy(ordering);
 	}
 
 	@Override
-	public AbstractSelectBuilder maxResults(int maxResults) {
-		return super.maxResults(maxResults);
+	public SelectBuilder maxResults(int maxResults) {
+		return (SelectBuilder) super.maxResults(maxResults);
 	}
 	
 	@Override
-	public AbstractSelectBuilder value(String key, Object value) {
-		return super.value(key, value);
+	public SelectBuilder value(String key, Object value) {
+		return (SelectBuilder) super.value(key, value);
 	}
 	
 	@Override

@@ -30,51 +30,51 @@ public class FindBuilder<T> extends AbstractFindBuilder<T> {
 	}
 
 	@Override
-	public AbstractFindBuilder orderBy(String ordering) {
-		return super.orderBy(ordering);
+	public FindBuilder orderBy(String ordering) {
+		return (FindBuilder) super.orderBy(ordering);
 	}
 
 	@Override
-	public AbstractFindBuilder maxResults(int maxResults) {
-		return super.maxResults(maxResults);
+	public FindBuilder maxResults(int maxResults) {
+		return (FindBuilder) super.maxResults(maxResults);
 	}
 
 	@Override
-	public AbstractFindBuilder offset(int offset) {
-		return super.offset(offset);
-	}
-
-	
-	@Override
-	public AbstractFindBuilder or(String field, FindOperator operator, Object... values) {
-		return super.or(field, operator, values);
-	}
-
-	@Override
-	public AbstractFindBuilder or(String field, Object... values) {
-		return super.or(field, values);
+	public FindBuilder offset(int offset) {
+		return (FindBuilder) super.offset(offset);
 	}
 
 	
 	@Override
-	public AbstractFindBuilder and(String field, FindOperator operator, Object... values) {
-		return super.and(field, operator, values);
+	public FindBuilder or(String field, FindOperator operator, Object... values) {
+		return (FindBuilder) super.or(field, operator, values);
 	}
 
 	@Override
-	public AbstractFindBuilder and(String field, Object... values) {
-		return super.and(field, values);
+	public FindBuilder or(String field, Object... values) {
+		return (FindBuilder) super.or(field, values);
 	}
 
 	
 	@Override
-	public AbstractFindBuilder by(String field, FindOperator operator, Object... values) {
-		return super.by(field, operator, values);
+	public FindBuilder and(String field, FindOperator operator, Object... values) {
+		return (FindBuilder) super.and(field, operator, values);
 	}
 
 	@Override
-	public AbstractFindBuilder by(String field, Object... values) {
-		return super.by(field, values);
+	public FindBuilder and(String field, Object... values) {
+		return (FindBuilder) super.and(field, values);
+	}
+
+	
+	@Override
+	public FindBuilder by(String field, FindOperator operator, Object... values) {
+		return (FindBuilder) super.by(field, operator, values);
+	}
+
+	@Override
+	public FindBuilder by(String field, Object... values) {
+		return (FindBuilder) super.by(field, values);
 	}	
 	
 	@Override

@@ -21,7 +21,7 @@ limitations under the License.
 	
 	<groupId>com.agapsys.libs</groupId>
 	<artifactId>jpa-utils</artifactId>
-	<version>0.1.0-RC1</version>
+	<version>0.1.1-RC1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	
 	<properties>
