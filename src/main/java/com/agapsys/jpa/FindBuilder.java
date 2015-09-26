@@ -81,4 +81,9 @@ public class FindBuilder<T> extends AbstractFindBuilder<T> {
 	public List<T> find(EntityManager entityManager) {
 		return super.find(entityManager);
 	}
+	
+	@Override
+	public T findFirst(EntityManager entityManager) {
+		return super.findFirst(entityManager);
+	}
 }

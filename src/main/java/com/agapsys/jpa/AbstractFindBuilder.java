@@ -274,5 +274,14 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	protected List<T> find(EntityManager entityManager) {
 		return super.select(entityManager);
 	}
+	
+	protected T findFirst(EntityManager entityManager) {
+		List<T> results = find(entityManager);
+		
+		if (results.isEmpty())
+			return null;
+		else
+			return results.get(0);
+	}
 	// =========================================================================
 }

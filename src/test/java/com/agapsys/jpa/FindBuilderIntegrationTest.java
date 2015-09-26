@@ -115,5 +115,24 @@ public class FindBuilderIntegrationTest {
 		Assert.assertEquals(42, list.size());
 		
 	}
+	
+	@Test
+	public void testFindFirst() {
+		Utils.printCurrenTest();
+		
+		TestEntity testEntity = new TestEntity();
+		testEntity.setField("field");
+		EntityTransaction transaction = em.getTransaction();
+		transaction.begin();
+		em.persist(testEntity);
+		transaction.commit();
+		
+		TestEntity t = (TestEntity) new FindBuilder(TestEntity.class).by("field", "field").findFirst(em);
+		Assert.assertEquals(testEntity.toString(), t.toString());
+
+		t = (TestEntity) new FindBuilder(TestEntity.class).by("field", "lalalala").findFirst(em);
+		Assert.assertNull(t);
+		
+	}
 	// =========================================================================
 }
