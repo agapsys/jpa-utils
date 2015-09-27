@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.agapsys.jpa;
+package com.agapsys;
 
 public class Utils {
 	// CLASS SCOPE =============================================================

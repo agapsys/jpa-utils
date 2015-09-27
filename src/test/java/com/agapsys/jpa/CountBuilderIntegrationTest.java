@@ -16,6 +16,7 @@
 
 package com.agapsys.jpa;
 
+import com.agapsys.Utils;
 import com.agapsys.jpa.entity.NamedEntity;
 import com.agapsys.jpa.entity.TestEntity;
 import javax.persistence.EntityManager;
