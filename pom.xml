@@ -89,28 +89,4 @@ limitations under the License.
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-		
-	<build>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<filtering>true</filtering>
-			</testResource>
-		</testResources>
-		<plugins>
-			<plugin>
-				<groupId>com.agapsys.plugins</groupId>
-				<artifactId>jpa-scanner-plugin</artifactId>
-				<version>0.1.0-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<id>test-code</id>
-						<goals>
-							<goal>list-jpa-classes</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 </project>
