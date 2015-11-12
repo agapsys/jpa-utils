@@ -30,13 +30,11 @@ import org.junit.Test;
 
 public class SelectBuilderIntegrationTest {
 	// CLASS SCOPE =============================================================
-	private static PersistenceUnit persistenceUnit;
 	private static final int ROWS = 100;
 	
 	@BeforeClass
 	public static void beforeClass() {
-		persistenceUnit = PersistenceUnitFactory.getInstance();
-		EntityManager em = persistenceUnit.getEntityManager();
+		EntityManager em = PersistenceUnit.getEntityManager();
 		
 		EntityTransaction transaction =  em.getTransaction();
 		transaction.begin();
@@ -53,14 +51,14 @@ public class SelectBuilderIntegrationTest {
 	
 	@AfterClass
 	public static void afterClass() {
-		persistenceUnit.close();
+		PersistenceUnit.close();
 	}
 	// =========================================================================
 	private EntityManager em;
 	
 	@Before
 	public void before() {
-		em = persistenceUnit.getEntityManager();
+		em = PersistenceUnit.getEntityManager();
 	}
 	
 	@After

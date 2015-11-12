@@ -31,15 +31,13 @@ import org.junit.Test;
 
 public class FindBuilderIntegrationTest {
 	// CLASS SCOPE =============================================================
-	private static PersistenceUnit persistenceUnit;
 	private static final int ROWS = 100;
 	
 	@BeforeClass
 	public static void beforeClass() {
 		Utils.printCurrenTest();
 		
-		persistenceUnit = PersistenceUnitFactory.getInstance();
-		EntityManager em = persistenceUnit.getEntityManager();
+		EntityManager em = PersistenceUnit.getEntityManager();
 		
 		EntityTransaction transaction =  em.getTransaction();
 		transaction.begin();
@@ -62,14 +60,14 @@ public class FindBuilderIntegrationTest {
 	
 	@AfterClass
 	public static void afterClass() {
-		persistenceUnit.close();
+		PersistenceUnit.close();
 	}
 	// =========================================================================
 	private EntityManager em;
 	
 	@Before
 	public void before() {
-		em = persistenceUnit.getEntityManager();
+		em = PersistenceUnit.getEntityManager();
 	}
 	
 	@After
