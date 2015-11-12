@@ -237,12 +237,12 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	
 	
 	@Override
-	protected AbstractFindBuilder offset(int offset) {
+	protected AbstractFindBuilder offset(Integer offset) {
 		return (AbstractFindBuilder) super.offset(offset);
 	}
 
 	@Override
-	protected AbstractFindBuilder maxResults(int maxResults) {
+	protected AbstractFindBuilder maxResults(Integer maxResults) {
 		return (AbstractFindBuilder) super.maxResults(maxResults);
 	}
 
@@ -276,7 +276,17 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 	}
 	
 	protected T findFirst(EntityManager entityManager) {
+		Integer previousMaxResults = getMaxResults();
+		
+		setLocked(false); // <-- allows attribute change
+		maxResults(1);		
+		
 		List<T> results = find(entityManager);
+
+		maxResults(previousMaxResults);
+		setLocked(true); // <-- restores locking state
+		
+		setLocked(true);
 		
 		if (results.isEmpty())
 			return null;

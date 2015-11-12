@@ -50,7 +50,7 @@ public class SelectBuilder<T> extends AbstractSelectBuilder<T> {
 	}
 	
 	@Override
-	public SelectBuilder offset(int offset) {
+	public SelectBuilder offset(Integer offset) {
 		return (SelectBuilder) super.offset(offset);
 	}
 
@@ -60,7 +60,7 @@ public class SelectBuilder<T> extends AbstractSelectBuilder<T> {
 	}
 
 	@Override
-	public SelectBuilder maxResults(int maxResults) {
+	public SelectBuilder maxResults(Integer maxResults) {
 		return (SelectBuilder) super.maxResults(maxResults);
 	}
 	

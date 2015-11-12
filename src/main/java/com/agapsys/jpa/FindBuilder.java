@@ -35,12 +35,12 @@ public class FindBuilder<T> extends AbstractFindBuilder<T> {
 	}
 
 	@Override
-	public FindBuilder maxResults(int maxResults) {
+	public FindBuilder maxResults(Integer maxResults) {
 		return (FindBuilder) super.maxResults(maxResults);
 	}
 
 	@Override
-	public FindBuilder offset(int offset) {
+	public FindBuilder offset(Integer offset) {
 		return (FindBuilder) super.offset(offset);
 	}
 

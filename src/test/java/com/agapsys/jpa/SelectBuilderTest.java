@@ -18,9 +18,9 @@ package com.agapsys.jpa;
 import com.agapsys.jpa.entity.NamedEntity;
 import com.agapsys.jpa.entity.TestEntity;
 import java.util.Map;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
+import org.junit.Test;
 
 public class SelectBuilderTest {
 	private static class TestSelectBuilder<T> extends SelectBuilder<T> {
@@ -41,6 +41,16 @@ public class SelectBuilderTest {
 		@Override
 		public Map<String, Object> getValues() {
 			return super.getValues();
+		}
+
+		@Override
+		public boolean isLocked() {
+			return super.isLocked();
+		}
+
+		@Override
+		protected void setLocked(boolean locked) {
+			super.setLocked(locked);
 		}
 	}
 	
@@ -291,5 +301,20 @@ public class SelectBuilderTest {
 		testBuilder1 = new TestSelectBuilder(TestEntity.class, "t");
 		testBuilder1.orderBy("id ASC, field DESC");
 		assertEquals("SELECT t FROM TestEntity t ORDER BY id ASC, field DESC", testBuilder1.getQueryString());
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void testLocking() {
+		TestSelectBuilder tb = new TestSelectBuilder(TestEntity.class, "t");
+		tb.maxResults(1);
+		tb.maxResults(2); // <-- throws IllegalStateException
+	}
+	
+	@Test
+	public void testUnlocking() {
+		TestSelectBuilder tb = new TestSelectBuilder(TestEntity.class, "t");
+		tb.maxResults(1);
+		tb.setLocked(false);
+		tb.maxResults(2);
 	}
 }

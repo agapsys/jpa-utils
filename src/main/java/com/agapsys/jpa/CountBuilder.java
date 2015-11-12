@@ -32,7 +32,7 @@ public class CountBuilder<T> extends AbstractFindBuilder<T> {
 	}
 
 	@Override
-	public CountBuilder offset(int offset) {
+	public CountBuilder offset(Integer offset) {
 		return (CountBuilder) super.offset(offset);
 	}
 

@@ -40,6 +40,8 @@ public abstract class AbstractSelectBuilder<T> {
 	private Integer  offset         = null;
 	private Integer  maxResults     = null;
 	
+	private boolean locked = true;
+	
 	private AbstractSelectBuilder(boolean distinct, Class<T> entityClass, String alias, boolean ignoreAlias) {
 		this.distinct = distinct;
 		
@@ -147,22 +149,33 @@ public abstract class AbstractSelectBuilder<T> {
 	// -------------------------------------------------------------------------	
 	
 	// Builder methods ---------------------------------------------------------
+	protected void setLocked(boolean locked) {
+		this.locked = locked;
+	}
+	
+	protected boolean isLocked() {
+		return locked;
+	}
+	
 	protected AbstractSelectBuilder join(JoinType joinType, String joinField, String joinFieldAlias) {
-		if (joinType == null)
+		if (this.joinField != null && isLocked())
+			throw new IllegalStateException("Join field is already set");
+		
+		if (joinType == null && isLocked())
 			throw new IllegalArgumentException("Null join type");
 		
-		if (joinField == null || joinField.trim().isEmpty())
+		if ((joinField == null || joinField.trim().isEmpty()) && isLocked())
 			throw new IllegalArgumentException("Null/Empty join field");
 		
-		if (joinFieldAlias == null || joinFieldAlias.trim().isEmpty()) {
+		if ((joinFieldAlias == null || joinFieldAlias.trim().isEmpty()) && isLocked()) {
 			throw new IllegalArgumentException("Null/Empty join field alias");
 		}
 		
-		joinField = joinField.trim();
-		joinFieldAlias = joinFieldAlias.trim();
+		if (joinField != null)
+			joinField = joinField.trim();
 		
-		if (this.joinField != null)
-			throw new IllegalStateException("Join field is already set");
+		if (joinFieldAlias != null)
+			joinFieldAlias = joinFieldAlias.trim();
 		
 		this.joinField = joinField;
 		this.joinFieldAlias = joinFieldAlias;
@@ -171,38 +184,43 @@ public abstract class AbstractSelectBuilder<T> {
 		return this;
 	}
 	
-	protected AbstractSelectBuilder joinFetch(String joinField){
-		if (joinField == null || joinField.trim().isEmpty())
+	protected AbstractSelectBuilder joinFetch(String joinField) {
+		if (this.joinField != null && isLocked())
+			throw new IllegalStateException("Join field is already set");
+		
+		if ((joinField == null || joinField.trim().isEmpty()) && isLocked())
 			throw new IllegalArgumentException("Null/Empty join field");
 		
-		joinField = joinField.trim();
-		
-		if (this.joinField != null)
-			throw new IllegalStateException("Join field is already set");
+		if (joinField != null)
+			joinField = joinField.trim();
 		
 		this.joinField = joinField;
 		return this;
 	}
 	
 	protected AbstractSelectBuilder where(String whereClause) {
-		if (this.where != null)
+		if (this.where != null && isLocked())
 			throw new IllegalStateException("Where clause is already set");
 
-		if (whereClause == null || whereClause.trim().isEmpty())
+		if ((whereClause == null || whereClause.trim().isEmpty()) && isLocked())
 			throw new IllegalArgumentException("Null/Empty where clause");
 		
-		this.where = whereClause.trim();
+		if (whereClause != null)
+			whereClause = whereClause.trim();
+		
+		this.where = whereClause;
 		return this;
 	}
 	
 	protected AbstractSelectBuilder groupBy(String groupBy) {
-		if (groupBy == null || groupBy.trim().isEmpty())
+		if (this.groupBy != null && isLocked())
+			throw new IllegalStateException("Group by clause is already set");
+		
+		if ((groupBy == null || groupBy.trim().isEmpty()) && isLocked())
 			throw new IllegalArgumentException("Null/Empty group by clause");
 		
-		groupBy = groupBy.trim();
-		
-		if (this.groupBy != null)
-			throw new IllegalStateException("Group by clause is already set");
+		if (groupBy != null)
+			groupBy = groupBy.trim();
 		
 		this.groupBy = groupBy;
 		return this;
@@ -220,37 +238,38 @@ public abstract class AbstractSelectBuilder<T> {
 	}
 		
 	protected AbstractSelectBuilder orderBy(String ordering) {
-		if (this.orderBy != null)
+		if (this.orderBy != null && isLocked())
 			throw new IllegalStateException("ordering is already set");
 
-		if (ordering == null || ordering.trim().isEmpty())
+		if ((ordering == null || ordering.trim().isEmpty()) && isLocked())
 			throw new IllegalArgumentException("Null/Empty ordering");
 
-		this.orderBy = ordering.trim();
+		if (ordering != null)
+			ordering = ordering.trim();
+		
+		this.orderBy = ordering;
 		return this;
 	}
 		
-	protected AbstractSelectBuilder offset(int offset) {
-		if (offset < 0)
+	protected AbstractSelectBuilder offset(Integer offset) {
+		if (this.offset != null && isLocked())
+			throw new IllegalStateException("Offset is already set");
+		
+		if (offset != null && offset < 0)
 			throw new IllegalArgumentException("Invalid offset: " + offset);
 
-		if (this.offset != null)
-			throw new IllegalStateException("Offset is already set");
-
 		this.offset = offset;
-
 		return this;
 	}
-			
-	protected AbstractSelectBuilder maxResults(int maxResults) {
-		if (maxResults < 1)
+		
+	protected AbstractSelectBuilder maxResults(Integer maxResults) {
+		if (this.maxResults != null && isLocked())
+			throw new IllegalStateException("'maxResults' is already set");
+		
+		if (maxResults != null && maxResults < 1)
 			throw new IllegalArgumentException("Invalid 'maxResults' value: " + maxResults);
 
-		if (this.maxResults != null)
-			throw new IllegalStateException("'maxResults' is already set");
-
 		this.maxResults = maxResults;
-
 		return this;
 	}
 	// -------------------------------------------------------------------------
