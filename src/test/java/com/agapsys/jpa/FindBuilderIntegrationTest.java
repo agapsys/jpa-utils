@@ -16,30 +16,29 @@
 
 package com.agapsys.jpa;
 
-import com.agapsys.Utils;
 import com.agapsys.jpa.entity.NamedEntity;
 import com.agapsys.jpa.entity.TestEntity;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class FindBuilderIntegrationTest {
 	// CLASS SCOPE =============================================================
 	private static final int ROWS = 100;
+	// =========================================================================
 	
-	@BeforeClass
-	public static void beforeClass() {
-		Utils.printCurrenTest();
+	// INSTANCE SCOPE ==========================================================
+	private EntityManager em;
+	
+	@Before
+	public void before() {
+		em = PersistenceUnit.getEntityManager();
 		
-		EntityManager em = PersistenceUnit.getEntityManager();
-		
-		EntityTransaction transaction =  em.getTransaction();
+		EntityTransaction transaction = em.getTransaction();
 		transaction.begin();
 		
 		for (int i = 0; i < ROWS; i++) {
@@ -50,37 +49,19 @@ public class FindBuilderIntegrationTest {
 			NamedEntity namedEntity = new NamedEntity();
 			namedEntity.setTestEntity(testEntity);
 			em.persist(namedEntity);
-				
-			System.out.println(namedEntity);
 		}
 		
 		transaction.commit();
-		em.close();
-	}
-	
-	@AfterClass
-	public static void afterClass() {
-		PersistenceUnit.close();
-	}
-	// =========================================================================
-	private EntityManager em;
-	
-	@Before
-	public void before() {
-		em = PersistenceUnit.getEntityManager();
 	}
 	
 	@After
 	public void after() {
 		em.close();
+		PersistenceUnit.close();
 	}
 	
-	
-	// INSTANCE SCOPE ==========================================================
 	@Test
 	public void simpleFind() {
-		Utils.printCurrenTest();
-		
 		FindBuilder findBuilder = new FindBuilder(TestEntity.class);
 		List<TestEntity> list = findBuilder.find(em);
 		
@@ -91,8 +72,6 @@ public class FindBuilderIntegrationTest {
 	
 	@Test
 	public void completeTest() {
-		Utils.printCurrenTest();
-
 		final int testEntityId = 40;
 		Assert.assertTrue(testEntityId + 1 < ROWS);
 		
@@ -112,13 +91,10 @@ public class FindBuilderIntegrationTest {
 			System.out.println(n);
 		
 		Assert.assertEquals(42, list.size());
-		
 	}
 	
 	@Test
 	public void testFindFirst() {
-		Utils.printCurrenTest();
-		
 		TestEntity testEntity = new TestEntity();
 		testEntity.setField("field");
 		EntityTransaction transaction = em.getTransaction();
@@ -131,7 +107,6 @@ public class FindBuilderIntegrationTest {
 
 		t = (TestEntity) new FindBuilder(TestEntity.class).by("field", "lalalala").findFirst(em);
 		Assert.assertNull(t);
-		
 	}
 	// =========================================================================
 }

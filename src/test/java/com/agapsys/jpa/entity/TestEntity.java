@@ -16,23 +16,25 @@
 
 package com.agapsys.jpa.entity;
 
+import com.agapsys.jpa.AbstractEntity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class TestEntity {
+public class TestEntity extends AbstractEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int id;
+	Integer id;
 
 	private String field;
 
-	public int getId() {
+	@Override
+	public Integer getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	

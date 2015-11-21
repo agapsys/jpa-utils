@@ -16,26 +16,26 @@
 
 package com.agapsys.jpa;
 
-import com.agapsys.Utils;
 import com.agapsys.jpa.entity.TestEntity;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SelectBuilderIntegrationTest {
 	// CLASS SCOPE =============================================================
 	private static final int ROWS = 100;
+	// =========================================================================
 	
-	@BeforeClass
-	public static void beforeClass() {
-		EntityManager em = PersistenceUnit.getEntityManager();
-		
+	// INSTANCE SCOPE ==========================================================
+	private EntityManager em;
+	
+	@Before
+	public void before() {
+		em = PersistenceUnit.getEntityManager();
 		EntityTransaction transaction =  em.getTransaction();
 		transaction.begin();
 		
@@ -46,32 +46,16 @@ public class SelectBuilderIntegrationTest {
 		}
 		
 		transaction.commit();
-		em.close();
-	}
-	
-	@AfterClass
-	public static void afterClass() {
-		PersistenceUnit.close();
-	}
-	// =========================================================================
-	private EntityManager em;
-	
-	@Before
-	public void before() {
-		em = PersistenceUnit.getEntityManager();
 	}
 	
 	@After
 	public void after() {
 		em.close();
+		PersistenceUnit.close();
 	}
 	
-	
-	// INSTANCE SCOPE ==========================================================
 	@Test
 	public void simpleSelect() {
-		Utils.printCurrenTest();
-		
 		SelectBuilder selectBuilder = new SelectBuilder(TestEntity.class, "t");
 		List<TestEntity> list = selectBuilder.select(em);
 		Assert.assertEquals(ROWS, list.size());
@@ -81,8 +65,6 @@ public class SelectBuilderIntegrationTest {
 	
 	@Test
 	public void offsetTest() {
-		Utils.printCurrenTest();
-
 		final int offset = 85;
 		Assert.assertTrue(offset < ROWS);
 		
@@ -92,7 +74,7 @@ public class SelectBuilderIntegrationTest {
 		
 		List<TestEntity> list = selectBuilder.select(em);
 		Assert.assertEquals(ROWS - offset, list.size());
-		Assert.assertEquals(offset + 1, list.get(0).getId());
+		Assert.assertEquals(offset + 1, (int)list.get(0).getId());
 		
 		for (TestEntity t : list)
 			System.out.println(t);
@@ -100,8 +82,6 @@ public class SelectBuilderIntegrationTest {
 	
 	@Test
 	public void maxResultsTest() {
-		Utils.printCurrenTest();
-
 		final int offset = 85;
 		Assert.assertTrue(offset < ROWS);
 
@@ -115,7 +95,7 @@ public class SelectBuilderIntegrationTest {
 		
 		List<TestEntity> list = selectBuilder.select(em);
 		Assert.assertEquals(results, list.size());
-		Assert.assertEquals(offset + 1, list.get(0).getId());
+		Assert.assertEquals(offset + 1, (int)list.get(0).getId());
 		
 		for (TestEntity t : list)
 			System.out.println(t);
