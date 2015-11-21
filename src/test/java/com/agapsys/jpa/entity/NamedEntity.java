@@ -27,16 +27,16 @@ import javax.persistence.OneToOne;
 public class NamedEntity extends AbstractEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
+	Long id;
 	
 	@OneToOne
 	private TestEntity testEntity;
 
 	@Override
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

@@ -74,7 +74,7 @@ public class SelectBuilderIntegrationTest {
 		
 		List<TestEntity> list = selectBuilder.select(em);
 		Assert.assertEquals(ROWS - offset, list.size());
-		Assert.assertEquals(offset + 1, (int)list.get(0).getId());
+		Assert.assertEquals(offset + 1, (long)list.get(0).getId());
 		
 		for (TestEntity t : list)
 			System.out.println(t);
@@ -95,7 +95,7 @@ public class SelectBuilderIntegrationTest {
 		
 		List<TestEntity> list = selectBuilder.select(em);
 		Assert.assertEquals(results, list.size());
-		Assert.assertEquals(offset + 1, (int)list.get(0).getId());
+		Assert.assertEquals(offset + 1, (long)list.get(0).getId());
 		
 		for (TestEntity t : list)
 			System.out.println(t);
