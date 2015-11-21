@@ -16,6 +16,8 @@
 
 package com.agapsys.jpa;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -26,6 +28,7 @@ public class PersistenceUnit {
 	
 	public static EntityManager getEntityManager() {
 		if (emf == null) {
+			Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 			emf = Persistence.createEntityManagerFactory("test-pu");
 		}
 		
