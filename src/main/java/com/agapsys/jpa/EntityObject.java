@@ -10,7 +10,7 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 
 public interface EntityObject extends Serializable {
-	public Long getId();
+	public Object getId();
 	
 	public EntityObject save(EntityManager em);
 }
