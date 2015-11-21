@@ -79,7 +79,7 @@ public class FindBuilder<T> extends AbstractFindBuilder<T> {
 	
 	@Override
 	public List<T> find(EntityManager entityManager) {
-		return super.find(entityManager);
+		return (List<T>) super.find(entityManager);
 	}
 	
 	@Override

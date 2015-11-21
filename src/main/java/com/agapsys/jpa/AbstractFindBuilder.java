@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
 
-public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
+public abstract class AbstractFindBuilder<T> extends AbstractQueryBuilder<T> {
 	// CLASS SCOPE =============================================================
 	private static class WhereClause {
 		public final String clause;
@@ -113,7 +113,10 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 		public final FindOperator operator;
 		public final Object[]     values;
 				
-		public FindToken(Boolean isAnd, String field, FindOperator operator, Object[] values) {			
+		public FindToken(String alias, Boolean isAnd, String field, FindOperator operator, Object[] values) {			
+			if (alias == null || alias.trim().isEmpty())
+				throw new IllegalArgumentException("Null/Empty alias");
+			
 			if (field == null || field.trim().isEmpty())
 				throw new IllegalArgumentException("Null/Empty field");
 		
@@ -159,7 +162,7 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 			}
 			
 			this.isAnd = isAnd;
-			this.field = field;
+			this.field = String.format("%s.%s", alias, field);
 			this.operator = operator;
 			this.values = values;
 		}		
@@ -194,7 +197,7 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 		if (operator == null)
 			throw new IllegalArgumentException("Null operator");
 		
-		FindToken token = new FindToken(isAnd, field, operator, values);
+		FindToken token = new FindToken(getAlias(), isAnd, field, operator, values);
 		tokens.add(token);
 		return this;
 	}
@@ -230,7 +233,7 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 		if (operator == null)
 			throw new IllegalArgumentException("Null operator");
 		
-		FindToken token = new FindToken(isAnd, field, operator, values);
+		FindToken token = new FindToken(getAlias(), isAnd, field, operator, values);
 		tokens.add(token);
 		return this;
 	}
@@ -271,7 +274,7 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 		return whereClause.values;
 	}
 
-	protected List<T> find(EntityManager entityManager) {
+	protected Object find(EntityManager entityManager) {
 		return super.select(entityManager);
 	}
 	
@@ -281,7 +284,7 @@ public abstract class AbstractFindBuilder<T> extends AbstractSelectBuilder<T> {
 		setLocked(false); // <-- allows attribute change
 		maxResults(1);		
 		
-		List<T> results = find(entityManager);
+		List<T> results = (List<T>) find(entityManager);
 
 		maxResults(previousMaxResults);
 		setLocked(true); // <-- restores locking state

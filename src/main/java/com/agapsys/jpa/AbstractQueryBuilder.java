@@ -17,13 +17,12 @@
 package com.agapsys.jpa;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-public abstract class AbstractSelectBuilder<T> {
+public abstract class AbstractQueryBuilder<T> {
 	private final Class<T> entityClass;
 	private final boolean  distinct;
 	private final String   alias;
@@ -42,7 +41,7 @@ public abstract class AbstractSelectBuilder<T> {
 	
 	private boolean locked = true;
 	
-	private AbstractSelectBuilder(boolean distinct, Class<T> entityClass, String alias, boolean ignoreAlias) {
+	private AbstractQueryBuilder(boolean distinct, Class<T> entityClass, String alias, boolean ignoreAlias) {
 		this.distinct = distinct;
 		
 		if (entityClass == null)
@@ -74,19 +73,19 @@ public abstract class AbstractSelectBuilder<T> {
 			entityName = en;
 	}
 	
-	public AbstractSelectBuilder(Class<T> entityClass) {
+	public AbstractQueryBuilder(Class<T> entityClass) {
 		this(false, entityClass, null, true);
 	}
 	
-	public AbstractSelectBuilder(boolean distinct, Class<T> entityClass) {
+	public AbstractQueryBuilder(boolean distinct, Class<T> entityClass) {
 		this(distinct, entityClass, null, true);
 	}
 	
-	public AbstractSelectBuilder(Class<T> entityClass, String alias) {
+	public AbstractQueryBuilder(Class<T> entityClass, String alias) {
 		this(false, entityClass, alias, false);
 	}
 	
-	public AbstractSelectBuilder(boolean distinct, Class<T> entityClass, String alias) {
+	public AbstractQueryBuilder(boolean distinct, Class<T> entityClass, String alias) {
 		this(distinct, entityClass, alias, false);
 	}
 	
@@ -157,7 +156,7 @@ public abstract class AbstractSelectBuilder<T> {
 		return locked;
 	}
 	
-	protected AbstractSelectBuilder join(JoinType joinType, String joinField, String joinFieldAlias) {
+	protected AbstractQueryBuilder join(JoinType joinType, String joinField, String joinFieldAlias) {
 		if (this.joinField != null && isLocked())
 			throw new IllegalStateException("Join field is already set");
 		
@@ -184,7 +183,7 @@ public abstract class AbstractSelectBuilder<T> {
 		return this;
 	}
 	
-	protected AbstractSelectBuilder joinFetch(String joinField) {
+	protected AbstractQueryBuilder joinFetch(String joinField) {
 		if (this.joinField != null && isLocked())
 			throw new IllegalStateException("Join field is already set");
 		
@@ -198,7 +197,7 @@ public abstract class AbstractSelectBuilder<T> {
 		return this;
 	}
 	
-	protected AbstractSelectBuilder where(String whereClause) {
+	protected AbstractQueryBuilder where(String whereClause) {
 		if (this.where != null && isLocked())
 			throw new IllegalStateException("Where clause is already set");
 
@@ -212,7 +211,7 @@ public abstract class AbstractSelectBuilder<T> {
 		return this;
 	}
 	
-	protected AbstractSelectBuilder groupBy(String groupBy) {
+	protected AbstractQueryBuilder groupBy(String groupBy) {
 		if (this.groupBy != null && isLocked())
 			throw new IllegalStateException("Group by clause is already set");
 		
@@ -226,7 +225,7 @@ public abstract class AbstractSelectBuilder<T> {
 		return this;
 	}
 	
-	protected AbstractSelectBuilder value(String key, Object value) {
+	protected AbstractQueryBuilder value(String key, Object value) {
 		if (values.containsKey(key))
 			throw new IllegalArgumentException("Key already set: " + key);
 
@@ -237,7 +236,7 @@ public abstract class AbstractSelectBuilder<T> {
 		return this;
 	}
 		
-	protected AbstractSelectBuilder orderBy(String ordering) {
+	protected AbstractQueryBuilder orderBy(String ordering) {
 		if (this.orderBy != null && isLocked())
 			throw new IllegalStateException("ordering is already set");
 
@@ -251,7 +250,7 @@ public abstract class AbstractSelectBuilder<T> {
 		return this;
 	}
 		
-	protected AbstractSelectBuilder offset(Integer offset) {
+	protected AbstractQueryBuilder offset(Integer offset) {
 		if (this.offset != null && isLocked())
 			throw new IllegalStateException("Offset is already set");
 		
@@ -262,7 +261,7 @@ public abstract class AbstractSelectBuilder<T> {
 		return this;
 	}
 		
-	protected AbstractSelectBuilder maxResults(Integer maxResults) {
+	protected AbstractQueryBuilder maxResults(Integer maxResults) {
 		if (this.maxResults != null && isLocked())
 			throw new IllegalStateException("'maxResults' is already set");
 		
@@ -272,6 +271,7 @@ public abstract class AbstractSelectBuilder<T> {
 		this.maxResults = maxResults;
 		return this;
 	}
+	
 	// -------------------------------------------------------------------------
 	protected String getQueryString() {
 		StringBuilder sb = new StringBuilder();
@@ -299,10 +299,15 @@ public abstract class AbstractSelectBuilder<T> {
 	}
 	
 	protected Query prepareQuery(EntityManager entityManager)  {
-		return entityManager.createQuery(getQueryString());
+		String queryString = getQueryString();
+		return entityManager.createQuery(queryString);
+	}
+	
+	protected Object executeQuery(Query q) {
+		return q.getResultList();
 	}
 		
-	protected List<T> select(EntityManager entityManager) {
+	protected Object select(EntityManager entityManager) {
 		if (entityManager == null)
 			throw new IllegalArgumentException("Null entity manager");
 		
@@ -318,6 +323,6 @@ public abstract class AbstractSelectBuilder<T> {
 		if (getMaxResults() != null)
 			query.setMaxResults(getMaxResults());
 		
-		return query.getResultList();
+		return executeQuery(query);
 	}
 }

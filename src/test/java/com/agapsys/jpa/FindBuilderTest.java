@@ -19,7 +19,8 @@ package com.agapsys.jpa;
 import com.agapsys.jpa.entity.TestEntity;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class FindBuilderTest {
@@ -72,15 +73,15 @@ public class FindBuilderTest {
 		
 		findBuilder = new TestFindBuilder(true, TestEntity.class);
 		findBuilder.by("field", "123");
-		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (field = :f0)", findBuilder.getQueryString());
+		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (t.field = :f0)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field", "123").by("field2", "456", "789");
-		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0) AND (field2 = :f1 AND field2 = :f2)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field = :f0) AND (t.field2 = :f1 AND t.field2 = :f2)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(true, TestEntity.class);
 		findBuilder.by("field", "123", "456", "789").by("field2", "456");
-		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (field = :f0 AND field = :f1 AND field = :f2) AND (field2 = :f3)", findBuilder.getQueryString());
+		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (t.field = :f0 AND t.field = :f1 AND t.field = :f2) AND (t.field2 = :f3)", findBuilder.getQueryString());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -292,105 +293,105 @@ public class FindBuilderTest {
 		// LESS THAN -----------------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.LESS_THAN, 2);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field < :f0)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field < :f0)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.LESS_THAN, 2, 3);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field < :f0 AND field < :f1)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field < :f0 AND t.field < :f1)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 		
 		// LESS THAN EQUALS ----------------------------------------------------		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.LESS_THAN_EQUALS, 2);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field <= :f0)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field <= :f0)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.LESS_THAN_EQUALS, 2, 3);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field <= :f0 AND field <= :f1)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field <= :f0 AND t.field <= :f1)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 		
 		// GREATER THAN --------------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.GREATER_THAN, 2);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field > :f0)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field > :f0)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.GREATER_THAN, 2, 3);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field > :f0 AND field > :f1)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field > :f0 AND t.field > :f1)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 		
 		// GREATER THAN EQUALS -------------------------------------------------
 		findBuilder = new TestFindBuilder(true, TestEntity.class);
 		findBuilder.by("field",FindOperator.GREATER_THAN_EQUALS, 2);
-		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (field >= :f0)", findBuilder.getQueryString());
+		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (t.field >= :f0)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(false, TestEntity.class);
 		findBuilder.by("field",FindOperator.GREATER_THAN_EQUALS, 2, 3);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field >= :f0 AND field >= :f1)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field >= :f0 AND t.field >= :f1)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 		
 		// EQUALS --------------------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.EQUALS, 2);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field = :f0)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.EQUALS, 2, 3);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0 AND field = :f1)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field = :f0 AND t.field = :f1)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 		
 		// ILIKE ---------------------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.ILIKE, "%ABc%");
-		assertEquals("SELECT t FROM TestEntity t WHERE (LOWER(field) LIKE LOWER(:f0))", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (LOWER(t.field) LIKE LOWER(:f0))", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.ILIKE, "%ABc%", "%DeF%");
-		assertEquals("SELECT t FROM TestEntity t WHERE (LOWER(field) LIKE LOWER(:f0) AND LOWER(field) LIKE LOWER(:f1))", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (LOWER(t.field) LIKE LOWER(:f0) AND LOWER(t.field) LIKE LOWER(:f1))", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 		
 		// LIKE ---------------------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.LIKE, "%ABc%");
-		assertEquals("SELECT t FROM TestEntity t WHERE (field LIKE :f0)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field LIKE :f0)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.LIKE, "%ABc%", "%DeF%");
-		assertEquals("SELECT t FROM TestEntity t WHERE (field LIKE :f0 AND field LIKE :f1)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field LIKE :f0 AND t.field LIKE :f1)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 		
 		// NOT_EQUAL -----------------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.NOT_EQUAL, 2);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field <> :f0)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field <> :f0)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.NOT_EQUAL, 2, 3);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field <> :f0 AND field <> :f1)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field <> :f0 AND t.field <> :f1)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 		
 		// IS_NOT_NULL ---------------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.IS_NOT_NULL);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field IS NOT NULL)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field IS NOT NULL)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 		
 		// IS_NULL -------------------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field",FindOperator.IS_NULL);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field IS NULL)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field IS NULL)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 		
 		// NOT -----------------------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("fieldA",FindOperator.NOT);
-		assertEquals("SELECT t FROM TestEntity t WHERE (NOT fieldA)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (NOT t.fieldA)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 		
 		// BETWEEN -------------------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
-		findBuilder.by("fieldA",FindOperator.BETWEEN, new Range<Integer>(2, 3));
-		assertEquals("SELECT t FROM TestEntity t WHERE (fieldA BETWEEN :f0 AND :f1)", findBuilder.getQueryString());
+		findBuilder.by("fieldA",FindOperator.BETWEEN, new Range<>(2, 3));
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.fieldA BETWEEN :f0 AND :f1)", findBuilder.getQueryString());
 		// ---------------------------------------------------------------------
 	}
 	// -------------------------------------------------------------------------
@@ -411,7 +412,7 @@ public class FindBuilderTest {
 		// BY WITH OPERATOR ----------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field", FindOperator.LESS_THAN, 2).and("field2", 3, 4, 5);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field < :f0) AND (field2 = :f1 AND field2 = :f2 AND field2 = :f3)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field < :f0) AND (t.field2 = :f1 AND t.field2 = :f2 AND t.field2 = :f3)", findBuilder.getQueryString());
 		
 		expectedParamMap = new LinkedHashMap();
 		expectedParamMap.put("f0", 2);
@@ -425,7 +426,7 @@ public class FindBuilderTest {
 		// AND WITH OPERATOR ---------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field", 2).and("field2", FindOperator.GREATER_THAN_EQUALS, 3, 4, 5);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0) AND (field2 >= :f1 AND field2 >= :f2 AND field2 >= :f3)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field = :f0) AND (t.field2 >= :f1 AND t.field2 >= :f2 AND t.field2 >= :f3)", findBuilder.getQueryString());
 		
 		expectedParamMap = new LinkedHashMap();
 		expectedParamMap.put("f0", 2);
@@ -455,7 +456,7 @@ public class FindBuilderTest {
 		// BY WITH OPERATOR ----------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field", FindOperator.LESS_THAN, 2).or("field2", 3, 4, 5);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field < :f0) OR (field2 = :f1 AND field2 = :f2 AND field2 = :f3)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field < :f0) OR (t.field2 = :f1 AND t.field2 = :f2 AND t.field2 = :f3)", findBuilder.getQueryString());
 		
 		expectedParamMap = new LinkedHashMap();
 		expectedParamMap.put("f0", 2);
@@ -469,7 +470,7 @@ public class FindBuilderTest {
 		// OR WITH OPERATOR ----------------------------------------------------
 		findBuilder = new TestFindBuilder(TestEntity.class);
 		findBuilder.by("field", 2).or("field2", FindOperator.GREATER_THAN_EQUALS, 3, 4, 5);
-		assertEquals("SELECT t FROM TestEntity t WHERE (field = :f0) OR (field2 >= :f1 AND field2 >= :f2 AND field2 >= :f3)", findBuilder.getQueryString());
+		assertEquals("SELECT t FROM TestEntity t WHERE (t.field = :f0) OR (t.field2 >= :f1 AND t.field2 >= :f2 AND t.field2 >= :f3)", findBuilder.getQueryString());
 		
 		expectedParamMap = new LinkedHashMap();
 		expectedParamMap.put("f0", 2);
