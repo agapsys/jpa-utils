@@ -63,7 +63,7 @@ public class DeleteBuilderIntegrationTest {
 	
 	@Test
 	public void completeTest() {
-		long deleteCount = new DeleteBuilder(TestEntity.class).where("id", FindOperator.BETWEEN, new Range(60, 80)).or("id", FindOperator.BETWEEN, new Range(20, 40)).delete(em);
+		long deleteCount = new DeleteBuilder(TestEntity.class).where("id", FindOperator.BETWEEN, new Range(60l, 80l)).or("id", FindOperator.BETWEEN, new Range(20l, 40l)).delete(em);
 		em.getTransaction().commit();
 		Assert.assertEquals(42, deleteCount);
 	}

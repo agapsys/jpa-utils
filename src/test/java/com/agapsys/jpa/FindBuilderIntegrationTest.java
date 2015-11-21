@@ -72,7 +72,7 @@ public class FindBuilderIntegrationTest {
 	
 	@Test
 	public void completeTest() {
-		final int testEntityId = 40;
+		final long testEntityId = 40l;
 		Assert.assertTrue(testEntityId + 1 < ROWS);
 		
 		TestEntity testEntity = em.find(TestEntity.class, testEntityId);
@@ -86,7 +86,7 @@ public class FindBuilderIntegrationTest {
 		list = new FindBuilder(NamedEntity.class).by("testEntity", testEntity).orderBy("id ASC").find(em);
 		Assert.assertEquals(1, list.size());
 		
-		list = new FindBuilder(NamedEntity.class).by("id", FindOperator.BETWEEN, new Range(60, 80)).or("id", FindOperator.BETWEEN, new Range(20, 40)).find(em);
+		list = new FindBuilder(NamedEntity.class).by("id", FindOperator.BETWEEN, new Range(60l, 80l)).or("id", FindOperator.BETWEEN, new Range(20l, 40l)).find(em);
 		for (NamedEntity n : list)
 			System.out.println(n);
 		

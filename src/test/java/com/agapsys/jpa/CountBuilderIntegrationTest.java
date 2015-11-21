@@ -68,7 +68,7 @@ public class CountBuilderIntegrationTest {
 	
 	@Test
 	public void completeTest() {
-		long count = new CountBuilder(TestEntity.class).by("id", FindOperator.BETWEEN, new Range(60, 80)).or("id", FindOperator.BETWEEN, new Range(20, 40)).count(em);
+		long count = new CountBuilder(TestEntity.class).by("id", FindOperator.BETWEEN, new Range(60l, 80l)).or("id", FindOperator.BETWEEN, new Range(20l, 40l)).count(em);
 		
 		Assert.assertEquals(42, count);
 	}
