@@ -9,8 +9,6 @@ package com.agapsys.jpa;
 import javax.persistence.EntityManager;
 
 public abstract class AbstractEntity implements EntityObject {
-	
-	@Override
 	public EntityObject save(EntityManager em) {
 		em.persist(this);
 		return this;

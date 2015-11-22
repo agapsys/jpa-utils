@@ -7,10 +7,7 @@
 package com.agapsys.jpa;
 
 import java.io.Serializable;
-import javax.persistence.EntityManager;
 
 public interface EntityObject extends Serializable {
 	public Object getId();
-	
-	public EntityObject save(EntityManager em);
 }
