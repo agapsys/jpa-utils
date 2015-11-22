@@ -73,7 +73,7 @@ public class DeleteBuilder<T> extends AbstractFindBuilder<T> {
 		return super.getQueryString().replaceFirst(findText, "DELETE");
 	}
 	
-	protected int delete(EntityManager entityManager) {
+	public int delete(EntityManager entityManager) {
 		EntityTransaction transaction = entityManager.getTransaction();
 		
 		if (!transaction.isActive())
