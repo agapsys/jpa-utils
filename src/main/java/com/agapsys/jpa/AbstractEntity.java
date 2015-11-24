@@ -23,4 +23,8 @@ public abstract class AbstractEntity implements EntityObject {
 		em.persist(this);
 		return this;
 	}
+	
+	public void delete(EntityManager em) {
+		em.remove(this);
+	}
 }
