@@ -12,7 +12,7 @@ import org.junit.Test;
 
 public class DeleteBuilderTest {
 	// CLASS SCOPE =============================================================
-	private static class CustomDeleteBuilder<T> extends DeleteBuilder<T> {
+	private static class CustomDeleteBuilder<T extends EntityObject> extends DeleteBuilder<T> {
 
 		public CustomDeleteBuilder(Class<T> entityClass) {
 			super(entityClass);

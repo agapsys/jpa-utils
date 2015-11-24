@@ -19,7 +19,7 @@ package com.agapsys.jpa;
 import java.util.List;
 import javax.persistence.EntityManager;
 
-public class FindBuilder<T> extends AbstractFindBuilder<T> {
+public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> {
 	
 	public FindBuilder(Class<T> entityClass) {
 		super(false, entityClass);

@@ -21,7 +21,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
-public class DeleteBuilder<T> extends AbstractFindBuilder<T> {
+public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T> {
 
 	public DeleteBuilder(Class<T> entityClass) {
 		super(entityClass);

@@ -19,7 +19,7 @@ package com.agapsys.jpa;
 import java.util.List;
 import javax.persistence.EntityManager;
 
-public class SelectBuilder<T> extends AbstractQueryBuilder<T> {
+public class SelectBuilder<T extends EntityObject> extends AbstractQueryBuilder<T> {
 
 	public SelectBuilder(boolean distinct, Class<T> entityClass, String alias) {
 		super(distinct, entityClass, alias);

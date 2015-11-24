@@ -28,7 +28,7 @@ import org.junit.Test;
 
 public class CountBuilderTest {
 	// CLASS SCOPE =============================================================
-	private static class TestCountBuilder<T> extends CountBuilder<T> {
+	private static class TestCountBuilder<T extends EntityObject> extends CountBuilder<T> {
 		public TestCountBuilder(Class<T> entiClass) {
 			super(entiClass);
 		}

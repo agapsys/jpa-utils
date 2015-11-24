@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SelectBuilderTest {
-	private static class TestSelectBuilder<T> extends SelectBuilder<T> {
+	private static class TestSelectBuilder<T extends EntityObject> extends SelectBuilder<T> {
 
 		public TestSelectBuilder(boolean distinct, Class<T> entityClass, String alias) {
 			super(distinct, entityClass, alias);

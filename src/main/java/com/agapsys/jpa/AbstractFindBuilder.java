@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
 
-public abstract class AbstractFindBuilder<T> extends AbstractQueryBuilder<T> {
+public abstract class AbstractFindBuilder<T extends EntityObject> extends AbstractQueryBuilder<T> {
 	// CLASS SCOPE =============================================================
 	private static class WhereClause {
 		public final String clause;

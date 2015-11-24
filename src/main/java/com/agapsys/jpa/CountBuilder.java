@@ -20,7 +20,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-public class CountBuilder<T> extends AbstractFindBuilder<T> {
+public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T> {
 	
 	public CountBuilder(Class<T> entityClass) {
 		super(false, entityClass);

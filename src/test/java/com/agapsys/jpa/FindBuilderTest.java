@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class FindBuilderTest {
 	// CLASS SCOPE =============================================================
-	private static class TestFindBuilder<T> extends FindBuilder<T> {
+	private static class TestFindBuilder<T extends EntityObject> extends FindBuilder<T> {
 
 		public TestFindBuilder(boolean distinct, Class<T> entityClass) {
 			super(distinct, entityClass);

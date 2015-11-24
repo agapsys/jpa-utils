@@ -22,7 +22,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-public abstract class AbstractQueryBuilder<T> {
+public abstract class AbstractQueryBuilder<T extends EntityObject> {
 	private final Class<T> entityClass;
 	private final boolean  distinct;
 	private final String   alias;
