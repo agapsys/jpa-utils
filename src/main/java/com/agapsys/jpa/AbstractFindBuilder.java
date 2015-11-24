@@ -278,7 +278,7 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 		return super.select(entityManager);
 	}
 	
-	protected T findFirst(EntityManager entityManager) {
+	protected Object findFirst(EntityManager entityManager) {
 		Integer previousMaxResults = getMaxResults();
 		
 		setLocked(false); // <-- allows attribute change
