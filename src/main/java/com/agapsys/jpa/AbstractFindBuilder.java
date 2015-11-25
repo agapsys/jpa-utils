@@ -38,7 +38,7 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 	}
 	
 	
-	private String _(String field) {
+	private String getFieldName(String field) {
 		if (field == null || field.trim().isEmpty())
 			throw new IllegalArgumentException("Null/Empty field");
 		
@@ -49,7 +49,7 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 		if (whereBuilder == null && !byClause)
 			throw new IllegalStateException("AND cannot be called yet");
 				
-		field = _(field);
+		field = getFieldName(field);
 		
 		if (whereBuilder == null) {
 			whereBuilder = new WhereClauseBuilder(DEFAULT_PARAM_PREFIX, field, operator, values);
@@ -88,7 +88,7 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 		if (whereBuilder == null)
 			throw new IllegalStateException("OR cannot be called yet");
 		
-		field = _(field);
+		field = getFieldName(field);
 		
 		whereBuilder.or(field, operator, values);
 		return this;
