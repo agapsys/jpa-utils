@@ -174,10 +174,6 @@ public final class WhereClauseBuilder {
 	private boolean whereClauseGenerated = false;
 	private final String paramPrefix;
 	
-	private void throwIfGenerated() throws IllegalStateException {
-		if (whereClauseGenerated)
-			throw new IllegalStateException("WHERE clause was already generated");
-	}
 	
 	public WhereClauseBuilder(String paramPrefix, String field, Object...values) {
 		if (paramPrefix == null || paramPrefix.trim().isEmpty())
@@ -211,7 +207,7 @@ public final class WhereClauseBuilder {
 	}	
 	
 	public WhereClauseBuilder and(String field, FindOperator operator, Object...values) {
-		throwIfGenerated();
+		whereClauseGenerated = false;
 		
 		Boolean isAnd;
 		
@@ -234,7 +230,7 @@ public final class WhereClauseBuilder {
 	}
 	
 	public WhereClauseBuilder or(String field, FindOperator operator, Object...values) {
-		throwIfGenerated();
+		whereClauseGenerated = false;
 		
 		Boolean isAnd = false;
 		
