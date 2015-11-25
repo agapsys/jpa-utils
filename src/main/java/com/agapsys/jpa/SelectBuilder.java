@@ -33,6 +33,10 @@ public class SelectBuilder<T extends EntityObject> extends AbstractQueryBuilder<
 	public SelectBuilder(String selectClause, Class<T> entityClass, String alias) {
 		super(selectClause, entityClass, alias);
 	}
+
+	public SelectBuilder(String selectClause, Class<T> entityClass) {
+		super(selectClause, entityClass);
+	}
 	
 	
 	@Override

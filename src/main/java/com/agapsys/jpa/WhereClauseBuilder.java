@@ -164,6 +164,8 @@ public final class WhereClauseBuilder {
 			this.values = values;
 		}		
 	}
+	
+	private static final String DEFAULT_PARAM_PREFIX = "param";
 	// =========================================================================
 
 	// INSTANCE SCOPE ==========================================================
@@ -186,6 +188,10 @@ public final class WhereClauseBuilder {
 		and(field, FindOperator.EQUALS, values);
 	}
 	
+	public WhereClauseBuilder(String field, Object...values) {
+		this(DEFAULT_PARAM_PREFIX, field, values);
+	}
+	
 	public WhereClauseBuilder(String paramPrefix, String field, FindOperator operator, Object...values) {
 		if (paramPrefix == null || paramPrefix.trim().isEmpty())
 			throw new IllegalArgumentException("Null/Empty param prefix");
@@ -193,6 +199,10 @@ public final class WhereClauseBuilder {
 		this.paramPrefix = paramPrefix;
 		
 		and(field, operator, values);
+	}
+	
+	public WhereClauseBuilder(String field, FindOperator operator, Object...values) {
+		this(DEFAULT_PARAM_PREFIX, field, operator, values);
 	}
 	
 	

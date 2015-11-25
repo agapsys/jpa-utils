@@ -103,6 +103,10 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 		this(false, entityClass, alias, false, selectClause, false);
 	}
 	
+	public AbstractQueryBuilder(String selectClause, Class<T> entityClass) {
+		this(false, entityClass, null, true, selectClause, false);
+	}
+	
 	// Getters -----------------------------------------------------------------
 	protected Class<T> getEntityClass() {
 		return entityClass;
