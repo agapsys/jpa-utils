@@ -17,6 +17,7 @@
 package com.agapsys.jpa;
 
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 
 public class SelectBuilder<T extends EntityObject> extends AbstractQueryBuilder<T> {
@@ -29,6 +30,11 @@ public class SelectBuilder<T extends EntityObject> extends AbstractQueryBuilder<
 		super(entiClass, alias);
 	}
 
+	public SelectBuilder(String selectClause, Class<T> entityClass, String alias) {
+		super(selectClause, entityClass, alias);
+	}
+	
+	
 	@Override
 	public SelectBuilder join(JoinType joinType, String joinField, String joinFieldAlias) {
 		return (SelectBuilder) super.join(joinType, joinField, joinFieldAlias);
@@ -67,6 +73,11 @@ public class SelectBuilder<T extends EntityObject> extends AbstractQueryBuilder<
 	@Override
 	public SelectBuilder value(String key, Object value) {
 		return (SelectBuilder) super.value(key, value);
+	}
+
+	@Override
+	public AbstractQueryBuilder values(Map<String, Object> values) {
+		return super.values(values);
 	}
 	
 	@Override

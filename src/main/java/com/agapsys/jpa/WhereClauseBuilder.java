@@ -248,7 +248,6 @@ public final class WhereClauseBuilder {
 		_build();
 		return whereClause.clause;
 	}
-
 	
 	public Map<String, Object> getValues() {
 		_build();

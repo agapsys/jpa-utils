@@ -33,6 +33,12 @@ public class SelectBuilderTest {
 			super(entiClass, alias);
 		}
 
+		public TestSelectBuilder(String selectClause, Class<T> entityClass, String alias) {
+			super(selectClause, entityClass, alias);
+		}
+		
+		
+
 		@Override
 		public String getQueryString() {
 			return super.getQueryString();
@@ -316,5 +322,16 @@ public class SelectBuilderTest {
 		tb.maxResults(1);
 		tb.setLocked(false);
 		tb.maxResults(2);
+	}
+	
+	// SELECT clause + WhereClauseBuilder
+	@Test
+	public void testIntegrationWithWhereClauseBuilder() {
+		testBuilder = new TestSelectBuilder("SUM(e.value)", TestEntity.class, "e");
+		WhereClauseBuilder wcb = new WhereClauseBuilder("z", "e.filter", FindOperator.BETWEEN, new Range(3, 10)).or("e.filter", 7);
+		testBuilder.where(wcb.build());
+		testBuilder.values(wcb.getValues());
+		
+		assertEquals("SELECT SUM(e.value) FROM TestEntity e WHERE (e.filter BETWEEN :z0 AND :z1) OR (e.filter = :z2)", testBuilder.getQueryString());
 	}
 }

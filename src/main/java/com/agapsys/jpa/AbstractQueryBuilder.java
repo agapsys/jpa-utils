@@ -27,9 +27,10 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 	private final boolean  distinct;
 	private final String   alias;
 	private final String   entityName;
+	private final String   selectClause;
 
 	private final Map<String, Object> values = new LinkedHashMap<>();
-		
+	
 	private JoinType joinType       = null;
 	private String   joinField      = null;
 	private String   joinFieldAlias = null;
@@ -41,7 +42,7 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 	
 	private boolean locked = true;
 	
-	private AbstractQueryBuilder(boolean distinct, Class<T> entityClass, String alias, boolean ignoreAlias) {
+	private AbstractQueryBuilder(boolean distinct, Class<T> entityClass, String alias, boolean ignoreAlias, String selectClause, boolean ignoreSelectClause) {
 		this.distinct = distinct;
 		
 		if (entityClass == null)
@@ -59,6 +60,15 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 			alias = entityClass.getSimpleName().substring(0, 1).toLowerCase();
 		}
 		
+		if (!ignoreSelectClause) {
+			if (selectClause == null || selectClause.trim().isEmpty())
+				throw new IllegalArgumentException("Null/Empty select clause");
+			
+			this.selectClause = selectClause;
+		} else {
+			this.selectClause = null;
+		}
+		
 		this.alias = alias;
 		
 		Entity entityAnnotation = entityClass.getAnnotation(Entity.class);
@@ -74,19 +84,23 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 	}
 	
 	public AbstractQueryBuilder(Class<T> entityClass) {
-		this(false, entityClass, null, true);
+		this(false, entityClass, null, true, null, true);
 	}
 	
 	public AbstractQueryBuilder(boolean distinct, Class<T> entityClass) {
-		this(distinct, entityClass, null, true);
+		this(distinct, entityClass, null, true, null, true);
 	}
 	
 	public AbstractQueryBuilder(Class<T> entityClass, String alias) {
-		this(false, entityClass, alias, false);
+		this(false, entityClass, alias, false, null, true);
 	}
 	
 	public AbstractQueryBuilder(boolean distinct, Class<T> entityClass, String alias) {
-		this(distinct, entityClass, alias, false);
+		this(distinct, entityClass, alias, false, null, true);
+	}
+	
+	public AbstractQueryBuilder(String selectClause, Class<T> entityClass, String alias) {
+		this(false, entityClass, alias, false, selectClause, false);
 	}
 	
 	// Getters -----------------------------------------------------------------
@@ -105,13 +119,16 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 	protected String getEntityName() {
 		return entityName;
 	}
-
+	
 	protected Map<String, Object> getValues() {
 		return values;
 	}
 	
 	protected String getSelectClause() {
-		return String.format("%s%s", (isDistinct() ? "DISTINCT " : ""), getAlias());
+		if (selectClause == null)
+			return String.format("%s%s", (isDistinct() ? "DISTINCT " : ""), getAlias());
+		
+		return selectClause;
 	}
 	
 	protected JoinType getJoinType() {
@@ -233,6 +250,14 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 			throw new IllegalArgumentException("Null/Empty key");
 		
 		values.put(key, value);
+		return this;
+	}
+	
+	protected AbstractQueryBuilder values(Map<String, Object> values) {
+		for (Map.Entry<String, Object> entry : values.entrySet()) {
+			value(entry.getKey(), entry.getValue());
+		}
+		
 		return this;
 	}
 		
