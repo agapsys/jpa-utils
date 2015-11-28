@@ -45,58 +45,70 @@ public final class WhereClauseBuilder {
 			int paramCounter = 0;
 			
 			for (FindToken token : tokens) {
-				if (token.isAnd != null)
-					sb.append(token.isAnd ? " AND " : " OR ");
+				if (token.isGroupToken()) {
+					
+					if (token.groupBegin) {
+						sb.append(token.isAnd ? " AND " : " OR ");						
+						sb.append("(");
+					} else {
+						sb.append(")");
+					}
+					
+				} else {
 				
-				sb.append("(");
-				
-				switch(token.operator) {
-					case IS_NOT_NULL:
-					case IS_NULL:
-					case NOT:
-						sb.append(token.operator.getSqlExpression(token.field, ""));
-						break;
-						
-					default:
-						int valueCounter = 0;
+					if (token.isAnd != null)
+						sb.append(token.isAnd ? " AND " : " OR ");
 
-						for (Object value : token.values) {
-							if (valueCounter > 0)
-								sb.append(" AND ");
+					sb.append("(");
 
-							String[] valueKeys;
-							String paramName;
+					switch(token.operator) {
+						case IS_NOT_NULL:
+						case IS_NULL:
+						case NOT:
+							sb.append(token.operator.getSqlExpression(token.field, ""));
+							break;
 
-							if (value instanceof Range) {
-								Range range = (Range) value;
-								
-								valueKeys = new String[2];
-								
-								paramName = paramPrefix + paramCounter;
-								valueKeys[0] = ":" + paramName;
-								values.put(paramName, range.getMin());
-								paramCounter++;
-								
-								paramName = paramPrefix + paramCounter;
-								valueKeys[1] = ":" + paramName;
-								values.put(paramName, range.getMax());
-								paramCounter++;
-							} else {
-								valueKeys = new String[1];
-								
-								paramName = paramPrefix + paramCounter;
-								valueKeys[0] = ":" + paramName;
-								values.put(paramName, value);
-								paramCounter++;
+						default:
+							int valueCounter = 0;
+
+							for (Object value : token.values) {
+								if (valueCounter > 0)
+									sb.append(" AND ");
+
+								String[] valueKeys;
+								String paramName;
+
+								if (value instanceof Range) {
+									Range range = (Range) value;
+
+									valueKeys = new String[2];
+
+									paramName = paramPrefix + paramCounter;
+									valueKeys[0] = ":" + paramName;
+									values.put(paramName, range.getMin());
+									paramCounter++;
+
+									paramName = paramPrefix + paramCounter;
+									valueKeys[1] = ":" + paramName;
+									values.put(paramName, range.getMax());
+									paramCounter++;
+								} else {
+									valueKeys = new String[1];
+
+									paramName = paramPrefix + paramCounter;
+									valueKeys[0] = ":" + paramName;
+									values.put(paramName, value);
+									paramCounter++;
+								}
+
+								sb.append(token.operator.getSqlExpression(token.field, valueKeys));
+								valueCounter++;
 							}
-							
-							sb.append(token.operator.getSqlExpression(token.field, valueKeys));
-							valueCounter++;
-						}
-						break;
+							break;
+					}
+
+					sb.append(")");
 				}
-				
-				sb.append(")");
 			}
 			
 			String whereClause = sb.toString();
@@ -108,12 +120,15 @@ public final class WhereClauseBuilder {
 		}
 		// =====================================================================
 		
+		public final Boolean      groupBegin;
 		public final Boolean      isAnd;
 		public final String       field;
 		public final FindOperator operator;
 		public final Object[]     values;
 				
-		public FindToken(Boolean isAnd, String field, FindOperator operator, Object[] values) {			
+		public FindToken(Boolean isAnd, String field, FindOperator operator, Object[] values) {
+			this.groupBegin = null;
+			
 			if (field == null || field.trim().isEmpty())
 				throw new IllegalArgumentException("Null/Empty field");
 		
@@ -162,7 +177,19 @@ public final class WhereClauseBuilder {
 			this.field = field;
 			this.operator = operator;
 			this.values = values;
-		}		
+		}
+		
+		public FindToken(boolean groupBegin, Boolean isAnd) {
+			this.groupBegin = groupBegin;
+			this.isAnd      = isAnd;
+			this.field      = null;
+			this.operator   = null;
+			this.values     = null;
+		}
+		
+		public boolean isGroupToken() {
+			return groupBegin != null;
+		}
 	}
 	
 	private static final String DEFAULT_PARAM_PREFIX = "param";
@@ -221,6 +248,35 @@ public final class WhereClauseBuilder {
 		
 		FindToken token = new FindToken(isAnd, field, operator, values);
 		tokens.add(token);
+		return this;
+	}
+	
+	
+	public WhereClauseBuilder beginAndGroup(String field, Object...values) {
+		return beginAndGroup(field, FindOperator.EQUALS, values);
+	}
+	
+	public WhereClauseBuilder beginAndGroup(String field, FindOperator operator, Object...values) {
+		whereClauseGenerated = false;
+		tokens.add(new FindToken(true, true));
+		tokens.add(new FindToken(null, field, operator, values));
+		return this;
+	}
+	
+	public WhereClauseBuilder beginOrGroup(String field, Object...values) {
+		return beginOrGroup(field, FindOperator.EQUALS, values);
+	}
+	
+	public WhereClauseBuilder beginOrGroup(String field, FindOperator operator, Object...values) {
+		whereClauseGenerated = false;
+		tokens.add(new FindToken(true, false));
+		tokens.add(new FindToken(null, field, operator, values));
+		return this;
+	}
+	
+	public WhereClauseBuilder closeGroup() {
+		whereClauseGenerated = false;
+		tokens.add(new FindToken(false, null));
 		return this;
 	}
 	
