@@ -65,6 +65,33 @@ public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T>
 	public CountBuilder by(String field, Object... values) {
 		return (CountBuilder) super.by(field, values);
 	}
+
+	
+	@Override
+	public CountBuilder beginAndGroup(String field, FindOperator operator, Object... values) {
+		return (CountBuilder) super.beginAndGroup(field, operator, values);
+	}
+
+	@Override
+	public CountBuilder beginAndGroup(String field, Object... values) {
+		return (CountBuilder) super.beginAndGroup(field, values);
+	}
+	
+	@Override
+	public CountBuilder beginOrGroup(String field, FindOperator operator, Object... values) {
+		return (CountBuilder) super.beginOrGroup(field, operator, values);
+	}
+
+	@Override
+	public CountBuilder beginOrGroup(String field, Object... values) {
+		return (CountBuilder) super.beginOrGroup(field, values);
+	}
+	
+	@Override
+	public CountBuilder closeGroup() {
+		return (CountBuilder) super.closeGroup();
+	}
+	
 	
 	@Override
 	protected String getSelectClause() {

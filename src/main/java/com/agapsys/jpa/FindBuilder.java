@@ -77,6 +77,33 @@ public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> 
 		return (FindBuilder) super.by(field, values);
 	}	
 	
+	
+	@Override
+	public FindBuilder beginAndGroup(String field, FindOperator operator, Object... values) {
+		return (FindBuilder) super.beginAndGroup(field, operator, values);
+	}
+
+	@Override
+	public FindBuilder beginAndGroup(String field, Object... values) {
+		return (FindBuilder) super.beginAndGroup(field, values);
+	}
+	
+	@Override
+	public FindBuilder beginOrGroup(String field, FindOperator operator, Object... values) {
+		return (FindBuilder) super.beginOrGroup(field, operator, values);
+	}
+
+	@Override
+	public FindBuilder beginOrGroup(String field, Object... values) {
+		return (FindBuilder) super.beginOrGroup(field, values);
+	}
+	
+	@Override
+	public FindBuilder closeGroup() {
+		return (FindBuilder) super.closeGroup();
+	}
+	
+	
 	@Override
 	public List<T> find(EntityManager entityManager) {
 		return (List<T>) super.find(entityManager);

@@ -95,6 +95,43 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 	}
 	
 	
+	protected AbstractFindBuilder beginAndGroup(String field, Object...values) {
+		return beginAndGroup(field, FindOperator.EQUALS, values);
+	}
+	
+	protected AbstractFindBuilder beginAndGroup(String field, FindOperator operator, Object...values) {
+		if (whereBuilder == null)
+			throw new IllegalStateException("A group cannot be created yet");
+		
+		field = getFieldName(field);
+		whereBuilder.beginAndGroup(field, operator, values);
+		
+		return this;
+	}
+	
+	protected AbstractFindBuilder beginOrGroup(String field, Object...values) {
+		return beginOrGroup(field, FindOperator.EQUALS, values);
+	}
+	
+	protected AbstractFindBuilder beginOrGroup(String field, FindOperator operator, Object...values) {
+		if (whereBuilder == null)
+			throw new IllegalStateException("A group cannot be created yet");
+		
+		field = getFieldName(field);
+		whereBuilder.beginOrGroup(field, operator, values);
+		
+		return this;
+	}
+	
+	protected AbstractFindBuilder closeGroup() {
+		if (whereBuilder == null)
+			throw new IllegalStateException("A group cannot be closed yet");
+		
+		whereBuilder.closeGroup();
+		return this;
+	}
+	
+	
 	@Override
 	protected AbstractFindBuilder offset(Integer offset) {
 		return (AbstractFindBuilder) super.offset(offset);

@@ -61,7 +61,34 @@ public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T
 	public DeleteBuilder where(String field, Object... values) {
 		return (DeleteBuilder) super.by(field, values);
 	}
+	
+	
+	@Override
+	public DeleteBuilder beginAndGroup(String field, FindOperator operator, Object... values) {
+		return (DeleteBuilder) super.beginAndGroup(field, operator, values);
+	}
 
+	@Override
+	public DeleteBuilder beginAndGroup(String field, Object... values) {
+		return (DeleteBuilder) super.beginAndGroup(field, values);
+	}
+	
+	@Override
+	public DeleteBuilder beginOrGroup(String field, FindOperator operator, Object... values) {
+		return (DeleteBuilder) super.beginOrGroup(field, operator, values);
+	}
+
+	@Override
+	public DeleteBuilder beginOrGroup(String field, Object... values) {
+		return (DeleteBuilder) super.beginOrGroup(field, values);
+	}
+	
+	@Override
+	public DeleteBuilder closeGroup() {
+		return (DeleteBuilder) super.closeGroup();
+	}
+	
+	
 	@Override
 	protected Object executeQuery(Query q) {
 		return q.executeUpdate();
