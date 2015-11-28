@@ -37,5 +37,22 @@ public class WhereClauseBuilderTest {
 		Assert.assertEquals(2, (int)wcb.getValues().get("x3"));
 		Assert.assertEquals(10, (int)wcb.getValues().get("x4"));
 	}
+	
+	@Test
+	public void testGroup() {
+		wcb = new WhereClauseBuilder("x", "field1", 1)
+			.beginAndGroup("field2", FindOperator.BETWEEN, new Range(2, 10))
+				.or("field2", FindOperator.NOT_BETWEEN, new Range(5, 6))
+			.closeGroup()
+			.and("field3", 8);
+		
+		Assert.assertEquals("(field1 = :x0) AND ((field2 BETWEEN :x1 AND :x2) OR (field2 NOT BETWEEN :x3 AND :x4)) AND (field3 = :x5)", wcb.build());
+		Assert.assertEquals(1, (int)wcb.getValues().get("x0"));
+		Assert.assertEquals(2, (int)wcb.getValues().get("x1"));
+		Assert.assertEquals(10, (int)wcb.getValues().get("x2"));
+		Assert.assertEquals(5, (int)wcb.getValues().get("x3"));
+		Assert.assertEquals(6, (int)wcb.getValues().get("x4"));
+		Assert.assertEquals(8, (int)wcb.getValues().get("x5"));
+	}
 	// =========================================================================
 }
