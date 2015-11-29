@@ -117,6 +117,36 @@ public class WhereClauseBuilderTest {
 		// ---------------------------------------------------------------------
 	}
 	
-	//Testar initial condition 
+	@Test
+	public void testLiteralsInitialCondition() {
+		wcb = new WhereClauseBuilder("x")
+			.initialCondition("NOT EXISTS (SELECT 1 FROM SomeEntity se WHERE se.value > :lit1)", new WhereClauseBuilder.QueryParameter("lit1", 28))
+			.and("field3", 8);
+		
+		Assert.assertEquals("(NOT EXISTS (SELECT 1 FROM SomeEntity se WHERE se.value > :lit1)) AND (field3 = :x0)", wcb.build());
+		Assert.assertEquals(8, (int)wcb.getValues().get("x0"));
+		Assert.assertEquals(28, (int)wcb.getValues().get("lit1"));
+	}
+	
+	@Test
+	public void testLiterals() {
+		// OR...
+		wcb = new WhereClauseBuilder("x")
+			.initialCondition("field1", 5)
+			.or("NOT EXISTS (SELECT 1 FROM SomeEntity se WHERE se.value > :lit1)", new WhereClauseBuilder.QueryParameter("lit1", 28));
+
+		Assert.assertEquals("(field1 = :x0) OR (NOT EXISTS (SELECT 1 FROM SomeEntity se WHERE se.value > :lit1))", wcb.build());
+		Assert.assertEquals(5, (int)wcb.getValues().get("x0"));
+		Assert.assertEquals(28, (int)wcb.getValues().get("lit1"));
+		
+		// AND...
+		wcb = new WhereClauseBuilder("x")
+			.initialCondition("field1", 5)
+			.and("NOT EXISTS (SELECT 1 FROM SomeEntity se WHERE se.value > :lit1)", new WhereClauseBuilder.QueryParameter("lit1", 28));
+
+		Assert.assertEquals("(field1 = :x0) AND (NOT EXISTS (SELECT 1 FROM SomeEntity se WHERE se.value > :lit1))", wcb.build());
+		Assert.assertEquals(5, (int)wcb.getValues().get("x0"));
+		Assert.assertEquals(28, (int)wcb.getValues().get("lit1"));
+	}
 	// =========================================================================
 }

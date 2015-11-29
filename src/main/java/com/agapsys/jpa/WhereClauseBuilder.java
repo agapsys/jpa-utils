@@ -393,7 +393,7 @@ public final class WhereClauseBuilder {
 		checkQueryParameters(parameters);
 		checkAndOrAllowed();
 		
-		tokens.add(new FindToken(null, literal, parameters));
+		tokens.add(new FindToken(true, literal, parameters));
 		return this;
 	}
 	
@@ -420,7 +420,7 @@ public final class WhereClauseBuilder {
 		checkQueryParameters(parameters);
 		checkAndOrAllowed();
 		
-		tokens.add(new FindToken(null, literal, parameters));
+		tokens.add(new FindToken(false, literal, parameters));
 		return this;
 	}
 	
