@@ -16,6 +16,7 @@
 
 package com.agapsys.jpa;
 
+import com.agapsys.jpa.WhereClauseBuilder.QueryParameter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,11 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 		return this;
 	}
 	
+	protected AbstractFindBuilder by(String literal, QueryParameter...parameters) {
+		whereBuilder.initialCondition(literal, parameters);
+		return this;
+	}
+	
 	
 	protected AbstractFindBuilder and(String field, Object...values) {
 		return and(field, FindOperator.EQUALS, values);
@@ -66,6 +72,11 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 		return this;
 	}
 	
+	protected AbstractFindBuilder and(String literal, QueryParameter...parameters) {
+		whereBuilder.and(literal, parameters);
+		return this;
+	}
+	
 	
 	protected AbstractFindBuilder or(String field, Object...values) {
 		return or(field, FindOperator.EQUALS, values);
@@ -73,6 +84,11 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 	
 	protected AbstractFindBuilder or(String field, FindOperator operator, Object...values) {
 		whereBuilder.or(getFieldName(field), operator, values);
+		return this;
+	}
+	
+	protected AbstractFindBuilder or(String literal, QueryParameter...parameters) {
+		whereBuilder.or(literal, parameters);
 		return this;
 	}
 	

@@ -16,6 +16,7 @@
 
 package com.agapsys.jpa;
 
+import com.agapsys.jpa.WhereClauseBuilder.QueryParameter;
 import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -29,6 +30,22 @@ public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T>
 
 	
 	@Override
+	public CountBuilder by(String field, FindOperator operator, Object... values) {
+		return (CountBuilder) super.by(field, operator, values);
+	}
+
+	@Override
+	public CountBuilder by(String field, Object... values) {
+		return (CountBuilder) super.by(field, values);
+	}
+	
+	@Override
+	public CountBuilder by(String literal, QueryParameter...parameters) {
+		return (CountBuilder) super.by(literal, parameters);
+	}
+	
+	
+	@Override
 	public CountBuilder or(String field, FindOperator operator, Object... values) {
 		return (CountBuilder) super.or(field, operator, values);
 	}
@@ -38,6 +55,11 @@ public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T>
 		return (CountBuilder) super.or(field, values);
 	}
 
+	@Override
+	public CountBuilder or(String literal, QueryParameter...parameters) {
+		return (CountBuilder) super.or(literal, parameters);
+	}
+	
 	
 	@Override
 	public CountBuilder and(String field, FindOperator operator, Object... values) {
@@ -49,17 +71,11 @@ public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T>
 		return (CountBuilder) super.and(field, values);
 	}
 
+	@Override
+	public CountBuilder and(String literal, QueryParameter...parameters) {
+		return (CountBuilder) super.and(literal, parameters);
+	}
 	
-	@Override
-	public CountBuilder by(String field, FindOperator operator, Object... values) {
-		return (CountBuilder) super.by(field, operator, values);
-	}
-
-	@Override
-	public CountBuilder by(String field, Object... values) {
-		return (CountBuilder) super.by(field, values);
-	}
-
 	
 	@Override
 	public CountBuilder beginAndGroup() {

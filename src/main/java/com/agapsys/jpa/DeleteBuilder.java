@@ -16,6 +16,7 @@
 
 package com.agapsys.jpa;
 
+import com.agapsys.jpa.WhereClauseBuilder.QueryParameter;
 import java.util.regex.Pattern;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -34,6 +35,19 @@ public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T
 	}
 	
 	
+	public DeleteBuilder where(String field, FindOperator operator, Object... values) {
+		return (DeleteBuilder) super.by(field, operator, values);
+	}
+
+	public DeleteBuilder where(String field, Object... values) {
+		return (DeleteBuilder) super.by(field, values);
+	}
+	
+	public DeleteBuilder where(String literal, QueryParameter...parameters) {
+		return (DeleteBuilder) super.by(literal, parameters);
+	}
+	
+	
 	@Override
 	public DeleteBuilder or(String field, FindOperator operator, Object... values) {
 		return (DeleteBuilder) super.or(field, operator, values);
@@ -44,6 +58,11 @@ public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T
 		return (DeleteBuilder) super.or(field, values);
 	}
 
+	@Override
+	public DeleteBuilder or(String literal, QueryParameter...parameters) {
+		return (DeleteBuilder) super.or(literal, parameters);
+	}
+	
 	
 	@Override
 	public DeleteBuilder and(String field, FindOperator operator, Object... values) {
@@ -55,13 +74,9 @@ public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T
 		return (DeleteBuilder) super.and(field, values);
 	}
 
-	
-	public DeleteBuilder where(String field, FindOperator operator, Object... values) {
-		return (DeleteBuilder) super.by(field, operator, values);
-	}
-
-	public DeleteBuilder where(String field, Object... values) {
-		return (DeleteBuilder) super.by(field, values);
+	@Override
+	public DeleteBuilder and(String literal, QueryParameter...parameters) {
+		return (DeleteBuilder) super.and(literal, parameters);
 	}
 	
 	

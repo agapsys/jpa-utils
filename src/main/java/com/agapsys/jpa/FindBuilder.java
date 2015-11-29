@@ -16,6 +16,7 @@
 
 package com.agapsys.jpa;
 
+import com.agapsys.jpa.WhereClauseBuilder.QueryParameter;
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -48,6 +49,22 @@ public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> 
 
 	
 	@Override
+	public FindBuilder by(String field, FindOperator operator, Object... values) {
+		return (FindBuilder) super.by(field, operator, values);
+	}
+
+	@Override
+	public FindBuilder by(String field, Object... values) {
+		return (FindBuilder) super.by(field, values);
+	}	
+	
+	@Override
+	public FindBuilder by(String literal, QueryParameter...parameters) {
+		return (FindBuilder) super.by(literal, parameters);
+	}
+	
+	
+	@Override
 	public FindBuilder or(String field, FindOperator operator, Object... values) {
 		return (FindBuilder) super.or(field, operator, values);
 	}
@@ -57,6 +74,11 @@ public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> 
 		return (FindBuilder) super.or(field, values);
 	}
 
+	@Override
+	public FindBuilder or(String literal, QueryParameter...parameters) {
+		return (FindBuilder) super.or(literal, parameters);
+	}
+	
 	
 	@Override
 	public FindBuilder and(String field, FindOperator operator, Object... values) {
@@ -68,16 +90,10 @@ public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> 
 		return (FindBuilder) super.and(field, values);
 	}
 
-	
 	@Override
-	public FindBuilder by(String field, FindOperator operator, Object... values) {
-		return (FindBuilder) super.by(field, operator, values);
+	public FindBuilder and(String literal, QueryParameter...parameters) {
+		return (FindBuilder) super.and(literal, parameters);
 	}
-
-	@Override
-	public FindBuilder by(String field, Object... values) {
-		return (FindBuilder) super.by(field, values);
-	}	
 	
 	
 	@Override
