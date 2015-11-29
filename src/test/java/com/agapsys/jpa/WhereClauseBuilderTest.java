@@ -29,7 +29,7 @@ public class WhereClauseBuilderTest {
 	
 	@Test
 	public void testClauseGeneration() {
-		wcb = new WhereClauseBuilder("x", "field1", 1, 2, 3).and("field2", FindOperator.BETWEEN, new Range(2, 10));
+		wcb = new WhereClauseBuilder("x").initialCondition("field1", 1, 2, 3).and("field2", FindOperator.BETWEEN, new Range(2, 10));
 		Assert.assertEquals("(field1 = :x0 AND field1 = :x1 AND field1 = :x2) AND (field2 BETWEEN :x3 AND :x4)", wcb.build());
 		Assert.assertEquals(1, (int)wcb.getValues().get("x0"));
 		Assert.assertEquals(2, (int)wcb.getValues().get("x1"));
@@ -40,8 +40,10 @@ public class WhereClauseBuilderTest {
 	
 	@Test
 	public void testGroup() {
-		wcb = new WhereClauseBuilder("x", "field1", 1)
-			.beginAndGroup("field2", FindOperator.BETWEEN, new Range(2, 10))
+		wcb = new WhereClauseBuilder("x")
+			.initialCondition("field1", 1)
+			.beginAndGroup()
+				.initialCondition("field2", FindOperator.BETWEEN, new Range(2, 10))
 				.or("field2", FindOperator.NOT_BETWEEN, new Range(5, 6))
 			.closeGroup()
 			.and("field3", 8);
@@ -54,5 +56,67 @@ public class WhereClauseBuilderTest {
 		Assert.assertEquals(6, (int)wcb.getValues().get("x4"));
 		Assert.assertEquals(8, (int)wcb.getValues().get("x5"));
 	}
+	
+	@Test
+	public void testInitialCondition() {
+		Exception error;
+		
+		// ---------------------------------------------------------------------
+		error = null;
+		wcb = new WhereClauseBuilder();
+		try {
+			wcb.and("field1", 1);
+		} catch (Exception ex) {
+			error = ex;
+		}
+		
+		Assert.assertNotNull(error);
+		Assert.assertEquals("AND cannot be set at current state", error.getMessage());
+		// ---------------------------------------------------------------------
+		
+		// ---------------------------------------------------------------------
+		error = null;
+		wcb = new WhereClauseBuilder();
+		try {
+			wcb.or("field1", 1);
+		} catch (Exception ex) {
+			error = ex;
+		}
+		
+		Assert.assertNotNull(error);
+		Assert.assertEquals("OR cannot be set at current state", error.getMessage());
+		// ---------------------------------------------------------------------
+		
+		// ---------------------------------------------------------------------
+		error = null;
+		wcb = new WhereClauseBuilder();
+		wcb.initialCondition("field1", 1);
+		
+		try {
+			wcb.initialCondition("field1", 2);
+		} catch (Exception ex) {
+			error = ex;
+		}
+		
+		Assert.assertNotNull(error);
+		Assert.assertEquals("Initial condition cannot be set at current state", error.getMessage());
+		// ---------------------------------------------------------------------
+		
+		// ---------------------------------------------------------------------
+		error = null;
+		wcb = new WhereClauseBuilder();
+		wcb.initialCondition("field1", 1);
+		
+		try {
+			wcb.or("field1", 2);
+		} catch (Exception ex) {
+			error = ex;
+		}
+		
+		Assert.assertNull(error);
+		// ---------------------------------------------------------------------
+	}
+	
+	//Testar initial condition 
 	// =========================================================================
 }

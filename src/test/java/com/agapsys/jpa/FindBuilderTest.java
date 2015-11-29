@@ -76,12 +76,12 @@ public class FindBuilderTest {
 		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (t.field = :f0)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(TestEntity.class);
-		findBuilder.by("field", "123").by("field2", "456", "789");
+		findBuilder.by("field", "123").and("field2", "456", "789");
 		assertEquals("SELECT t FROM TestEntity t WHERE (t.field = :f0) AND (t.field2 = :f1 AND t.field2 = :f2)", findBuilder.getQueryString());
 		
 		findBuilder = new TestFindBuilder(true, TestEntity.class);
-		findBuilder.by("field", "123", "456", "789").by("field2", "456");
-		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (t.field = :f0 AND t.field = :f1 AND t.field = :f2) AND (t.field2 = :f3)", findBuilder.getQueryString());
+		findBuilder.by("field", "123", "456", "789").or("field2", "456");
+		assertEquals("SELECT DISTINCT t FROM TestEntity t WHERE (t.field = :f0 AND t.field = :f1 AND t.field = :f2) OR (t.field2 = :f3)", findBuilder.getQueryString());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)

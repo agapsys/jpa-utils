@@ -328,7 +328,7 @@ public class SelectBuilderTest {
 	@Test
 	public void testIntegrationWithWhereClauseBuilder() {
 		testBuilder = new TestSelectBuilder("SUM(e.value)", TestEntity.class, "e");
-		WhereClauseBuilder wcb = new WhereClauseBuilder("z", "e.filter", FindOperator.BETWEEN, new Range(3, 10)).or("e.filter", 7);
+		WhereClauseBuilder wcb = new WhereClauseBuilder("z").initialCondition("e.filter", FindOperator.BETWEEN, new Range(3, 10)).or("e.filter", 7);
 		testBuilder.where(wcb.build());
 		testBuilder.values(wcb.getValues());
 		

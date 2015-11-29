@@ -27,10 +27,12 @@ public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T
 		super(entityClass);
 	}
 	
+	
 	@Override
 	public Class<T> getEntityClass() {
 		return super.getEntityClass();
 	}
+	
 	
 	@Override
 	public DeleteBuilder or(String field, FindOperator operator, Object... values) {
@@ -64,23 +66,13 @@ public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T
 	
 	
 	@Override
-	public DeleteBuilder beginAndGroup(String field, FindOperator operator, Object... values) {
-		return (DeleteBuilder) super.beginAndGroup(field, operator, values);
-	}
-
-	@Override
-	public DeleteBuilder beginAndGroup(String field, Object... values) {
-		return (DeleteBuilder) super.beginAndGroup(field, values);
+	public DeleteBuilder beginAndGroup() {
+		return (DeleteBuilder) super.beginAndGroup();
 	}
 	
 	@Override
-	public DeleteBuilder beginOrGroup(String field, FindOperator operator, Object... values) {
-		return (DeleteBuilder) super.beginOrGroup(field, operator, values);
-	}
-
-	@Override
-	public DeleteBuilder beginOrGroup(String field, Object... values) {
-		return (DeleteBuilder) super.beginOrGroup(field, values);
+	public DeleteBuilder beginOrGroup() {
+		return (DeleteBuilder) super.beginOrGroup();
 	}
 	
 	@Override

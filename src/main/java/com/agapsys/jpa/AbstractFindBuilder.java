@@ -27,7 +27,8 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 	// =========================================================================
 	
 	// INSTANCE SCOPE ==========================================================
-	private WhereClauseBuilder whereBuilder = null;
+	private final WhereClauseBuilder whereBuilder = new WhereClauseBuilder(DEFAULT_PARAM_PREFIX);
+	
 	
 	public AbstractFindBuilder(Class<T> entityClass) {
 		super(entityClass);
@@ -45,37 +46,24 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 		return String.format("%s.%s", getAlias(), field);
 	}
 	
-	private AbstractFindBuilder andOrBy(boolean byClause, String field, FindOperator operator, Object...values) {		
-		if (whereBuilder == null && !byClause)
-			throw new IllegalStateException("AND cannot be called yet");
-				
-		field = getFieldName(field);
-		
-		if (whereBuilder == null) {
-			whereBuilder = new WhereClauseBuilder(DEFAULT_PARAM_PREFIX, field, operator, values);
-		} else {
-			whereBuilder.and(field, operator, values);
-		}
-		
+	
+	protected AbstractFindBuilder by(String field, Object...values) {
+		return by(field, FindOperator.EQUALS, values);
+	}
+	
+	protected AbstractFindBuilder by(String field, FindOperator operator, Object...values) {
+		whereBuilder.initialCondition(getFieldName(field), operator, values);
 		return this;
 	}
 	
 	
-	protected AbstractFindBuilder by(String field, Object...values) {
-		return andOrBy(true, field, FindOperator.EQUALS, values);
-	}
-	
-	protected AbstractFindBuilder by(String field, FindOperator operator, Object...values) {
-		return andOrBy(true, field, operator, values);
-	}
-	
-	
 	protected AbstractFindBuilder and(String field, Object...values) {
-		return andOrBy(false, field, FindOperator.EQUALS, values);
+		return and(field, FindOperator.EQUALS, values);
 	}	
 	
 	protected AbstractFindBuilder and(String field, FindOperator operator, Object...values) {
-		return andOrBy(false, field, operator, values);
+		whereBuilder.and(getFieldName(field), operator, values);
+		return this;
 	}
 	
 	
@@ -84,49 +72,22 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 	}
 	
 	protected AbstractFindBuilder or(String field, FindOperator operator, Object...values) {
-		
-		if (whereBuilder == null)
-			throw new IllegalStateException("OR cannot be called yet");
-		
-		field = getFieldName(field);
-		
-		whereBuilder.or(field, operator, values);
+		whereBuilder.or(getFieldName(field), operator, values);
 		return this;
 	}
 	
-	
-	protected AbstractFindBuilder beginAndGroup(String field, Object...values) {
-		return beginAndGroup(field, FindOperator.EQUALS, values);
-	}
-	
-	protected AbstractFindBuilder beginAndGroup(String field, FindOperator operator, Object...values) {
-		if (whereBuilder == null)
-			throw new IllegalStateException("A group cannot be created yet");
 		
-		field = getFieldName(field);
-		whereBuilder.beginAndGroup(field, operator, values);
-		
+	protected AbstractFindBuilder beginAndGroup() {
+		whereBuilder.beginAndGroup();
 		return this;
 	}
 	
-	protected AbstractFindBuilder beginOrGroup(String field, Object...values) {
-		return beginOrGroup(field, FindOperator.EQUALS, values);
-	}
-	
-	protected AbstractFindBuilder beginOrGroup(String field, FindOperator operator, Object...values) {
-		if (whereBuilder == null)
-			throw new IllegalStateException("A group cannot be created yet");
-		
-		field = getFieldName(field);
-		whereBuilder.beginOrGroup(field, operator, values);
-		
+	protected AbstractFindBuilder beginOrGroup() {
+		whereBuilder.beginOrGroup();
 		return this;
 	}
 	
 	protected AbstractFindBuilder closeGroup() {
-		if (whereBuilder == null)
-			throw new IllegalStateException("A group cannot be closed yet");
-		
 		whereBuilder.closeGroup();
 		return this;
 	}
@@ -162,6 +123,7 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 		
 		return whereBuilder.getValues();
 	}
+	
 
 	protected Object find(EntityManager entityManager) {
 		return super.select(entityManager);

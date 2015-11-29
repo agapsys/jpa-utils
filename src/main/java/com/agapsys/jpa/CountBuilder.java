@@ -22,20 +22,12 @@ import javax.persistence.Query;
 
 public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T> {
 	
+	
 	public CountBuilder(Class<T> entityClass) {
 		super(false, entityClass);
 	}
+
 	
-	@Override
-	public CountBuilder orderBy(String ordering) {
-		return (CountBuilder) super.orderBy(ordering);
-	}
-
-	@Override
-	public CountBuilder offset(Integer offset) {
-		return (CountBuilder) super.offset(offset);
-	}
-
 	@Override
 	public CountBuilder or(String field, FindOperator operator, Object... values) {
 		return (CountBuilder) super.or(field, operator, values);
@@ -46,6 +38,7 @@ public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T>
 		return (CountBuilder) super.or(field, values);
 	}
 
+	
 	@Override
 	public CountBuilder and(String field, FindOperator operator, Object... values) {
 		return (CountBuilder) super.and(field, operator, values);
@@ -56,6 +49,7 @@ public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T>
 		return (CountBuilder) super.and(field, values);
 	}
 
+	
 	@Override
 	public CountBuilder by(String field, FindOperator operator, Object... values) {
 		return (CountBuilder) super.by(field, operator, values);
@@ -68,23 +62,13 @@ public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T>
 
 	
 	@Override
-	public CountBuilder beginAndGroup(String field, FindOperator operator, Object... values) {
-		return (CountBuilder) super.beginAndGroup(field, operator, values);
-	}
-
-	@Override
-	public CountBuilder beginAndGroup(String field, Object... values) {
-		return (CountBuilder) super.beginAndGroup(field, values);
+	public CountBuilder beginAndGroup() {
+		return (CountBuilder) super.beginAndGroup();
 	}
 	
 	@Override
-	public CountBuilder beginOrGroup(String field, FindOperator operator, Object... values) {
-		return (CountBuilder) super.beginOrGroup(field, operator, values);
-	}
-
-	@Override
-	public CountBuilder beginOrGroup(String field, Object... values) {
-		return (CountBuilder) super.beginOrGroup(field, values);
+	public CountBuilder beginOrGroup() {
+		return (CountBuilder) super.beginOrGroup();
 	}
 	
 	@Override

@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 
 public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> {
 	
+	
 	public FindBuilder(Class<T> entityClass) {
 		super(false, entityClass);
 	}
@@ -28,6 +29,7 @@ public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> 
 	public FindBuilder(boolean distinct, Class<T> entityClass) {
 		super(distinct, entityClass);
 	}
+	
 
 	@Override
 	public FindBuilder orderBy(String ordering) {
@@ -79,23 +81,13 @@ public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> 
 	
 	
 	@Override
-	public FindBuilder beginAndGroup(String field, FindOperator operator, Object... values) {
-		return (FindBuilder) super.beginAndGroup(field, operator, values);
-	}
-
-	@Override
-	public FindBuilder beginAndGroup(String field, Object... values) {
-		return (FindBuilder) super.beginAndGroup(field, values);
+	public FindBuilder beginAndGroup() {
+		return (FindBuilder) super.beginAndGroup();
 	}
 	
 	@Override
-	public FindBuilder beginOrGroup(String field, FindOperator operator, Object... values) {
-		return (FindBuilder) super.beginOrGroup(field, operator, values);
-	}
-
-	@Override
-	public FindBuilder beginOrGroup(String field, Object... values) {
-		return (FindBuilder) super.beginOrGroup(field, values);
+	public FindBuilder beginOrGroup() {
+		return (FindBuilder) super.beginOrGroup();
 	}
 	
 	@Override
