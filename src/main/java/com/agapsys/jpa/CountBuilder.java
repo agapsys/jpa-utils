@@ -25,9 +25,21 @@ public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T>
 	
 	
 	public CountBuilder(Class<T> entityClass) {
-		super(false, entityClass);
+		super(entityClass);
 	}
 
+	public CountBuilder(Class<T> entityClass, String alias) {
+		super(entityClass, alias);
+	}
+	
+	public CountBuilder(boolean distinct, Class<T> entityClass) {
+		super(distinct, entityClass);
+	}
+	
+	public CountBuilder(boolean distinct, Class<T> entityClass, String alias) {
+		super(distinct, entityClass, alias);
+	}
+	
 	
 	@Override
 	public CountBuilder by(String field, FindOperator operator, Object... values) {

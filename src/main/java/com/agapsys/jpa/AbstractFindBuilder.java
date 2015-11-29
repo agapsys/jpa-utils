@@ -35,8 +35,16 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 		super(entityClass);
 	}
 	
+	public AbstractFindBuilder(Class<T> entityClass, String alias) {
+		super(entityClass, alias);
+	}
+	
 	public AbstractFindBuilder(boolean distinct, Class<T> entityClass) {
 		super(distinct, entityClass);
+	}
+	
+	public AbstractFindBuilder(boolean distinct, Class<T> entityClass, String alias) {
+		super(distinct, entityClass, alias);
 	}
 	
 	

@@ -24,11 +24,19 @@ public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> 
 	
 	
 	public FindBuilder(Class<T> entityClass) {
-		super(false, entityClass);
+		super(entityClass);
+	}
+	
+	public FindBuilder(Class<T> entityClass, String alias) {
+		super(entityClass, alias);
 	}
 	
 	public FindBuilder(boolean distinct, Class<T> entityClass) {
 		super(distinct, entityClass);
+	}
+	
+	public FindBuilder(boolean distinct, Class<T> entityClass, String alias) {
+		super(distinct, entityClass, alias);
 	}
 	
 

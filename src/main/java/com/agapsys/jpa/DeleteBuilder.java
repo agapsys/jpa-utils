@@ -28,6 +28,10 @@ public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T
 		super(entityClass);
 	}
 	
+	public DeleteBuilder(Class<T> entityclass, String alias) {
+		super(entityclass, alias);
+	}
+	
 	
 	@Override
 	public Class<T> getEntityClass() {
