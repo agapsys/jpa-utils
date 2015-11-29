@@ -23,6 +23,8 @@ import java.util.Map;
 
 public final class WhereClauseBuilder {
 	// CLASS SCOPE =============================================================
+	private static final String DEFAULT_PARAM_PREFIX = "p";
+
 	private static class WhereClause {
 		public final String clause;
 		public final Map<String, Object> values;
@@ -45,17 +47,33 @@ public final class WhereClauseBuilder {
 			int paramCounter = 0;
 			
 			for (FindToken token : tokens) {
-				if (token.isGroupToken()) {
+				if (token.isLiteral()) {
+					// Literal token -------------------------------------------
+					if (!token.isInitialCondition())
+						sb.append(token.isAnd() ? " AND " : " OR ");
 					
+					sb.append("(");
+					sb.append(token.literal);
+					sb.append(")");
+					
+					for (QueryParameter qp : token.queryParameters) {
+						if (values.put(qp.paramName, qp.paramValue) != null)
+							throw new IllegalStateException("Duplicate parameter: " + qp.paramName);
+					}
+					// ---------------------------------------------------------
+					
+				} else if (token.isGroupToken()) {
+					// Group token ---------------------------------------------
 					if (token.isGroupOpen()) {
 						sb.append(token.isAnd() ? " AND " : " OR ");						
 						sb.append("(");
 					} else {
 						sb.append(")");
 					}
+					// ---------------------------------------------------------
 					
 				} else {
-				
+					// Simple token --------------------------------------------
 					if (!token.isInitialCondition())
 						sb.append(token.isAnd() ? " AND " : " OR ");
 
@@ -108,6 +126,7 @@ public final class WhereClauseBuilder {
 					}
 
 					sb.append(")");
+					// ---------------------------------------------------------
 				}
 			}
 			
@@ -120,14 +139,21 @@ public final class WhereClauseBuilder {
 		}
 		// =====================================================================
 		
-		public final Boolean      isGroupOpen;
-		public final Boolean      isAnd;
-		public final String       field;
-		public final FindOperator operator;
-		public final Object[]     values;
-				
+		public final Boolean          isGroupOpen;
+		public final Boolean          isAnd;
+		public final String           field;
+		public final FindOperator     operator;
+		public final Object[]         values;
+		public final String           literal;
+		public final QueryParameter[] queryParameters;
+		
+		
 		public FindToken(Boolean isAnd, String field, FindOperator operator, Object[] values) {
+			// Unused fields ---------------------------------------------------
 			this.isGroupOpen = null;
+			this.literal = null;
+			this.queryParameters = null;
+			// -----------------------------------------------------------------
 			
 			if (field == null || field.trim().isEmpty())
 				throw new IllegalArgumentException("Null/Empty field");
@@ -180,12 +206,34 @@ public final class WhereClauseBuilder {
 		}
 		
 		public FindToken(boolean groupBegin, Boolean isAnd) {
-			this.isGroupOpen = groupBegin;
-			this.isAnd      = isAnd;
-			this.field      = null;
-			this.operator   = null;
-			this.values     = null;
+			// Unused field ----------------------------------------------------
+			this.field           = null;
+			this.operator        = null;
+			this.values          = null;
+			this.literal         = null;
+			this.queryParameters = null;
+			// -----------------------------------------------------------------
+			
+			this.isGroupOpen     = groupBegin;
+			this.isAnd           = isAnd;
 		}
+		
+		public FindToken(Boolean isAnd, String literal, QueryParameter...queryParameters) {
+			// Unused field ----------------------------------------------------
+			this.isGroupOpen     = null;
+			this.field           = null;
+			this.operator        = null;
+			this.values          = null;
+			// -----------------------------------------------------------------
+			
+			if (literal == null || literal.trim().isEmpty())
+				throw new IllegalArgumentException("Null/Empty literal");
+			
+			this.literal         = literal;
+			this.queryParameters = queryParameters;
+			this.isAnd           = isAnd;
+		}
+		
 		
 		public boolean isGroupToken() {
 			return isGroupOpen != null;
@@ -207,16 +255,47 @@ public final class WhereClauseBuilder {
 			return !isInitialCondition();
 		}
 		
+		
 		public boolean isAnd() {
-			return isSimple() && isAnd;
+			if (isAnd == null)
+				throw new IllegalStateException("isAnd is null");
+			
+			return isAnd;
 		}
 		
 		public boolean isOr() {
-			return isSimple() && !isAnd;
+			if (isAnd == null)
+				throw new IllegalStateException("isAnd is null");
+			
+			return !isAnd;
+		}
+		
+		
+		public boolean isLiteral() {
+			return literal != null;
 		}
 	}
 	
-	private static final String DEFAULT_PARAM_PREFIX = "param";
+	public static class QueryParameter {
+		private final String paramName;
+		private final Object paramValue;
+		
+		public QueryParameter(String paramName, Object paramValue) {
+			if (paramName == null || paramName.trim().isEmpty())
+				throw new IllegalArgumentException("Null/Empty parameter name");
+			
+			this.paramName = paramName;
+			this.paramValue = paramValue;
+		}
+
+		public String getParamName() {
+			return paramName;
+		}
+
+		public Object getParamValue() {
+			return paramValue;
+		}
+	}
 	// =========================================================================
 
 	// INSTANCE SCOPE ==========================================================
@@ -240,11 +319,30 @@ public final class WhereClauseBuilder {
 	}
 	
 	
-	private boolean isAndOrAllowed() {
+	private void checkAndOrAllowed() {
 		FindToken lastToken = tokens.isEmpty() ? null : tokens.get(tokens.size() - 1);
-		return lastToken != null && (!lastToken.isGroupToken() || lastToken.isGroupClose());
+		boolean allowed = lastToken != null && (!lastToken.isGroupToken() || lastToken.isGroupClose());
+		
+		if (!allowed)
+			throw new IllegalStateException("AND/OR cannot be set at current state");
 	}
 
+	private void checkInitialConditionAllowed() {
+		FindToken lastToken = tokens.isEmpty() ? null : tokens.get(tokens.size() - 1);
+		boolean allowed = (lastToken == null || lastToken.isGroupOpen());
+		if (!allowed)
+			throw new IllegalStateException("Initial condition cannot be set at current state");
+	}
+	
+	private void checkQueryParameters(QueryParameter...parameters) {
+		if (parameters.length > 0) {
+			for (QueryParameter qp : parameters) {
+				if (qp.getParamName().startsWith(paramPrefix))
+					throw new IllegalArgumentException("Invalid parameter name: " + qp.getParamName());
+			}
+		}
+	}
+	
 	
 	public WhereClauseBuilder initialCondition(String field, Object...values) {
 		return initialCondition(field, FindOperator.EQUALS, values);
@@ -256,13 +354,19 @@ public final class WhereClauseBuilder {
 		if (operator == null)
 			throw new IllegalArgumentException("Null operator");
 		
-		FindToken lastToken = tokens.isEmpty() ? null : tokens.get(tokens.size() - 1);
-		boolean allowed = (lastToken == null || lastToken.isGroupOpen());
-		
-		if (!allowed)
-			throw new IllegalStateException("Initial condition cannot be set at current state");
+		checkInitialConditionAllowed();
 		
 		tokens.add(new FindToken(null, field, operator, values));
+		return this;
+	}
+	
+	public WhereClauseBuilder initialCondition(String literal, QueryParameter...parameters) {
+		whereClauseGenerated = false;
+		
+		checkQueryParameters(parameters);
+		checkInitialConditionAllowed();
+		
+		tokens.add(new FindToken(null, literal, parameters));
 		return this;
 	}
 	
@@ -271,18 +375,25 @@ public final class WhereClauseBuilder {
 		return and(field, FindOperator.EQUALS, values);
 	}	
 	
-	
 	public WhereClauseBuilder and(String field, FindOperator operator, Object...values) {
 		whereClauseGenerated = false;
 		
 		if (operator == null)
 			throw new IllegalArgumentException("Null operator");
 		
-		if (!isAndOrAllowed())
-			throw new IllegalStateException("AND cannot be set at current state");
-	
+		checkAndOrAllowed();
 		
 		tokens.add(new FindToken(true, field, operator, values));
+		return this;
+	}
+	
+	public WhereClauseBuilder and(String literal, QueryParameter...parameters) {
+		whereClauseGenerated = false;
+		
+		checkQueryParameters(parameters);
+		checkAndOrAllowed();
+		
+		tokens.add(new FindToken(null, literal, parameters));
 		return this;
 	}
 	
@@ -297,14 +408,23 @@ public final class WhereClauseBuilder {
 		if (operator == null)
 			throw new IllegalArgumentException("Null operator");
 		
-		if (!isAndOrAllowed())
-			throw new IllegalStateException("OR cannot be set at current state");
+		checkAndOrAllowed();
 		
 		tokens.add(new FindToken(false, field, operator, values));
 		return this;
 	}
 	
+	public WhereClauseBuilder or(String literal, QueryParameter...parameters) {
+		whereClauseGenerated = false;
 		
+		checkQueryParameters(parameters);
+		checkAndOrAllowed();
+		
+		tokens.add(new FindToken(null, literal, parameters));
+		return this;
+	}
+	
+	
 	public WhereClauseBuilder beginAndGroup() {
 		whereClauseGenerated = false;
 		

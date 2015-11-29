@@ -71,7 +71,7 @@ public class WhereClauseBuilderTest {
 		}
 		
 		Assert.assertNotNull(error);
-		Assert.assertEquals("AND cannot be set at current state", error.getMessage());
+		Assert.assertEquals("AND/OR cannot be set at current state", error.getMessage());
 		// ---------------------------------------------------------------------
 		
 		// ---------------------------------------------------------------------
@@ -84,7 +84,7 @@ public class WhereClauseBuilderTest {
 		}
 		
 		Assert.assertNotNull(error);
-		Assert.assertEquals("OR cannot be set at current state", error.getMessage());
+		Assert.assertEquals("AND/OR cannot be set at current state", error.getMessage());
 		// ---------------------------------------------------------------------
 		
 		// ---------------------------------------------------------------------
