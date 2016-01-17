@@ -27,4 +27,10 @@ public abstract class AbstractEntity implements EntityObject {
 	public void delete(EntityManager em) {
 		em.remove(this);
 	}
+
+	@Override
+	public String toString() {
+		Object id = getId();
+		return String.format("%s:%s", getClass().getName(), id != null ? id.toString() : "null");
+	}
 }

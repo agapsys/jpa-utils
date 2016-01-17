@@ -354,4 +354,9 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 		
 		return executeQuery(query);
 	}
+
+	@Override
+	public String toString() {
+		return getQueryString();
+	}
 }
