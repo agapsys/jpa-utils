@@ -17,9 +17,14 @@
 package com.agapsys.jpa;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 public abstract class AbstractEntity implements EntityObject {
 	public EntityObject save(EntityManager em) {
+		EntityTransaction transaction = em.getTransaction();
+		if (!transaction.isActive())
+			transaction.begin();
+		
 		em.persist(this);
 		return this;
 	}
