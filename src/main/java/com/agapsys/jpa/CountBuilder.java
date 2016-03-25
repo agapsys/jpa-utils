@@ -22,21 +22,38 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T> {
+	// STATIC SCOPE ============================================================
+	public static <T extends EntityObject> CountBuilder<T> forClass(Class<T> entityClass) {
+		return new CountBuilder<T>(entityClass);
+	}
 	
+	public static <T extends EntityObject> CountBuilder<T> forClass(Class<T> entityClass, String alias) {
+		return new CountBuilder<T>(entityClass, alias);
+	}
 	
-	public CountBuilder(Class<T> entityClass) {
+	public static <T extends EntityObject> CountBuilder<T> forClass(boolean distinct, Class<T> entityClass) {
+		return new CountBuilder<T>(distinct, entityClass);
+	}
+	
+	public static <T extends EntityObject> CountBuilder<T> forClass(boolean distinct, Class<T> entityClass, String alias) {
+		return new CountBuilder<T>(distinct, entityClass, alias);
+	}
+	// =========================================================================
+	
+	// INSTANCE SCOPE ==========================================================
+	protected CountBuilder(Class<T> entityClass) {
 		super(entityClass);
 	}
 
-	public CountBuilder(Class<T> entityClass, String alias) {
+	protected CountBuilder(Class<T> entityClass, String alias) {
 		super(entityClass, alias);
 	}
 	
-	public CountBuilder(boolean distinct, Class<T> entityClass) {
+	protected CountBuilder(boolean distinct, Class<T> entityClass) {
 		super(distinct, entityClass);
 	}
 	
-	public CountBuilder(boolean distinct, Class<T> entityClass, String alias) {
+	protected CountBuilder(boolean distinct, Class<T> entityClass, String alias) {
 		super(distinct, entityClass, alias);
 	}
 	
@@ -122,4 +139,5 @@ public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T>
 		
 		return (long) query.getSingleResult();
 	}
+	// =========================================================================
 }

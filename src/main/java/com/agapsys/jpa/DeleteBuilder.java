@@ -23,15 +23,24 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T> {
+	// CLASS SCOPE =============================================================
+	public static <T extends EntityObject> DeleteBuilder<T> forClass(Class<T> entityClass) {
+		return new DeleteBuilder<T>(entityClass);
+	}
+	
+	public static <T extends EntityObject> DeleteBuilder<T> forClass(Class<T> entityClass, String alias) {
+		return new DeleteBuilder<T>(entityClass, alias);
+	}
+	// =========================================================================
 
-	public DeleteBuilder(Class<T> entityClass) {
+	// INSTANCE SCOPE =========================================================
+	protected DeleteBuilder(Class<T> entityClass) {
 		super(entityClass);
 	}
 	
-	public DeleteBuilder(Class<T> entityclass, String alias) {
+	protected DeleteBuilder(Class<T> entityclass, String alias) {
 		super(entityclass, alias);
 	}
-	
 	
 	@Override
 	public Class<T> getEntityClass() {
@@ -119,4 +128,5 @@ public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T
 		
 		return (int) super.select(entityManager);
 	}
+	// =========================================================================
 }

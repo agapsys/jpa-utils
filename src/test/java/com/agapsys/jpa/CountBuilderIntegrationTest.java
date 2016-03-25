@@ -61,14 +61,14 @@ public class CountBuilderIntegrationTest {
 	
 	@Test
 	public void simpleCount() {
-		long count = new CountBuilder(TestEntity.class).count(em);
+		long count = CountBuilder.forClass(TestEntity.class).count(em);
 		
 		Assert.assertEquals(ROWS, count);
 	}
 	
 	@Test
 	public void completeTest() {
-		long count = new CountBuilder(TestEntity.class).by("id", FindOperator.BETWEEN, new Range(60l, 80l)).or("id", FindOperator.BETWEEN, new Range(20l, 40l)).count(em);
+		long count = CountBuilder.forClass(TestEntity.class).by("id", FindOperator.BETWEEN, new Range(60l, 80l)).or("id", FindOperator.BETWEEN, new Range(20l, 40l)).count(em);
 		
 		Assert.assertEquals(42, count);
 	}

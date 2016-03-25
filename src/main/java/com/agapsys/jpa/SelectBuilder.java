@@ -21,20 +21,38 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 public class SelectBuilder<T extends EntityObject> extends AbstractQueryBuilder<T> {
-
-	public SelectBuilder(boolean distinct, Class<T> entityClass, String alias) {
+	// CLASS SCOPE =============================================================
+	public static <T extends EntityObject> SelectBuilder<T> forClass(boolean distinct, Class<T> entityClass, String alias) {
+		return new SelectBuilder<T>(distinct, entityClass, alias);
+	}
+			
+	public static <T extends EntityObject> SelectBuilder<T> forClass(Class<T> entityClass, String alias) {
+		return new SelectBuilder<T>(entityClass, alias);
+	}
+	
+	public static <T extends EntityObject> SelectBuilder<T> forClass(String selectClause, Class<T> entityClass, String alias) {
+		return new SelectBuilder<T>(selectClause, entityClass, alias);
+	}
+	
+	public static <T extends EntityObject> SelectBuilder<T> forClass(String selectClause, Class<T> entityClass) {
+		return new SelectBuilder<T>(selectClause, entityClass);
+	}
+	// =========================================================================
+	
+	// INSTANCE SCOPE ==========================================================
+	protected SelectBuilder(boolean distinct, Class<T> entityClass, String alias) {
 		super(distinct, entityClass, alias);
 	}
 
-	public SelectBuilder(Class<T> entiClass, String alias) {
-		super(entiClass, alias);
+	protected SelectBuilder(Class<T> entityClass, String alias) {
+		super(entityClass, alias);
 	}
 
-	public SelectBuilder(String selectClause, Class<T> entityClass, String alias) {
+	protected SelectBuilder(String selectClause, Class<T> entityClass, String alias) {
 		super(selectClause, entityClass, alias);
 	}
 
-	public SelectBuilder(String selectClause, Class<T> entityClass) {
+	protected SelectBuilder(String selectClause, Class<T> entityClass) {
 		super(selectClause, entityClass);
 	}
 	
@@ -107,4 +125,5 @@ public class SelectBuilder<T extends EntityObject> extends AbstractQueryBuilder<
 		else
 			return (T) results.get(0);
 	}
+	// =========================================================================
 }

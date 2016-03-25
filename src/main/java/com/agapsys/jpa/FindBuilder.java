@@ -21,21 +21,38 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> {
+	// STATIC SCOPE ============================================================
+	public static <T extends EntityObject> FindBuilder<T> forClass(Class<T> entityClass) {
+		return new FindBuilder<T>(entityClass);
+	}
 	
+	public static <T extends EntityObject> FindBuilder<T> forClass(Class<T> entityClass, String alias) {
+		return new FindBuilder<T>(entityClass, alias);
+	}
+			
+	public static <T extends EntityObject> FindBuilder<T> forClass(boolean distinct, Class<T> entityClass) {
+		return new FindBuilder<T>(true, entityClass);
+	}
+			
+	public static <T extends EntityObject> FindBuilder<T> forClass(boolean distinct, Class<T> entityClass, String alias) {
+		return new FindBuilder<T>(true, entityClass, alias);
+	}
+	// =========================================================================
 	
-	public FindBuilder(Class<T> entityClass) {
+	// INSTANCE SCOPE ==========================================================
+	protected FindBuilder(Class<T> entityClass) {
 		super(entityClass);
 	}
 	
-	public FindBuilder(Class<T> entityClass, String alias) {
+	protected FindBuilder(Class<T> entityClass, String alias) {
 		super(entityClass, alias);
 	}
 	
-	public FindBuilder(boolean distinct, Class<T> entityClass) {
+	protected FindBuilder(boolean distinct, Class<T> entityClass) {
 		super(distinct, entityClass);
 	}
 	
-	public FindBuilder(boolean distinct, Class<T> entityClass, String alias) {
+	protected FindBuilder(boolean distinct, Class<T> entityClass, String alias) {
 		super(distinct, entityClass, alias);
 	}
 	
@@ -129,4 +146,5 @@ public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> 
 	public T findFirst(EntityManager entityManager) {
 		return (T) super.findFirst(entityManager);
 	}
+	// =========================================================================
 }
