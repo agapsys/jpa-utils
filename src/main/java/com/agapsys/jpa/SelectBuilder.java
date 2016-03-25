@@ -85,11 +85,11 @@ public class SelectBuilder<T extends EntityObject> extends AbstractQueryBuilder<
 	}
 	
 	@Override
-	public List select(EntityManager entityManager) {
-		return (List) super.select(entityManager);
+	public List<T> select(EntityManager entityManager) {
+		return (List<T>) super.select(entityManager);
 	}
 	
-	public Object selectFirst(EntityManager entityManager) {
+	public T selectFirst(EntityManager entityManager) {
 		Integer previousMaxResults = getMaxResults();
 		
 		setLocked(false); // <-- allows attribute change
@@ -105,6 +105,6 @@ public class SelectBuilder<T extends EntityObject> extends AbstractQueryBuilder<
 		if (results.isEmpty())
 			return null;
 		else
-			return results.get(0);
+			return (T) results.get(0);
 	}
 }

@@ -149,11 +149,11 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 	}
 	
 
-	protected Object find(EntityManager entityManager) {
-		return super.select(entityManager);
+	protected List<T> find(EntityManager entityManager) {
+		return  (List<T>) super.select(entityManager);
 	}
 	
-	protected Object findFirst(EntityManager entityManager) {
+	protected T findFirst(EntityManager entityManager) {
 		Integer previousMaxResults = getMaxResults();
 		
 		setLocked(false); // <-- allows attribute change
