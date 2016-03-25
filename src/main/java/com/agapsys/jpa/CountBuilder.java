@@ -22,103 +22,85 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T> {
-	// STATIC SCOPE ============================================================
-	public static <T extends EntityObject> CountBuilder<T> forClass(Class<T> entityClass) {
-		return new CountBuilder<T>(entityClass);
-	}
-	
-	public static <T extends EntityObject> CountBuilder<T> forClass(Class<T> entityClass, String alias) {
-		return new CountBuilder<T>(entityClass, alias);
-	}
-	
-	public static <T extends EntityObject> CountBuilder<T> forClass(boolean distinct, Class<T> entityClass) {
-		return new CountBuilder<T>(distinct, entityClass);
-	}
-	
-	public static <T extends EntityObject> CountBuilder<T> forClass(boolean distinct, Class<T> entityClass, String alias) {
-		return new CountBuilder<T>(distinct, entityClass, alias);
-	}
-	// =========================================================================
-	
-	// INSTANCE SCOPE ==========================================================
-	protected CountBuilder(Class<T> entityClass) {
+
+	public CountBuilder(Class<T> entityClass) {
 		super(entityClass);
 	}
 
-	protected CountBuilder(Class<T> entityClass, String alias) {
+	public CountBuilder(Class<T> entityClass, String alias) {
 		super(entityClass, alias);
 	}
 	
-	protected CountBuilder(boolean distinct, Class<T> entityClass) {
+	public CountBuilder(boolean distinct, Class<T> entityClass) {
 		super(distinct, entityClass);
 	}
 	
-	protected CountBuilder(boolean distinct, Class<T> entityClass, String alias) {
+	public CountBuilder(boolean distinct, Class<T> entityClass, String alias) {
 		super(distinct, entityClass, alias);
 	}
 	
 	
 	@Override
-	public CountBuilder by(String field, FindOperator operator, Object... values) {
-		return (CountBuilder) super.by(field, operator, values);
+	public CountBuilder<T> by(String field, FindOperator operator, Object... values) {
+		return (CountBuilder<T>) super.by(field, operator, values);
 	}
 
 	@Override
-	public CountBuilder by(String field, Object... values) {
-		return (CountBuilder) super.by(field, values);
+	public CountBuilder<T> by(String field, Object... values) {
+		return (CountBuilder<T>) super.by(field, values);
 	}
 	
 	@Override
-	public CountBuilder by(String literal, QueryParameter...parameters) {
-		return (CountBuilder) super.by(literal, parameters);
+	public CountBuilder<T> by(String literal, QueryParameter...parameters) {
+		return (CountBuilder<T>) super.by(literal, parameters);
 	}
 	
 	
 	@Override
-	public CountBuilder or(String field, FindOperator operator, Object... values) {
-		return (CountBuilder) super.or(field, operator, values);
+	public CountBuilder<T> or(String field, FindOperator operator, Object... values) {
+		return (CountBuilder<T>) super.or(field, operator, values);
 	}
 
 	@Override
-	public CountBuilder or(String field, Object... values) {
-		return (CountBuilder) super.or(field, values);
+	public CountBuilder<T> or(String field, Object... values) {
+		return (CountBuilder<T>) super.or(field, values);
 	}
 
 	@Override
-	public CountBuilder or(String literal, QueryParameter...parameters) {
-		return (CountBuilder) super.or(literal, parameters);
+	public CountBuilder<T> or(String literal, QueryParameter...parameters) {
+		return (CountBuilder<T>) super.or(literal, parameters);
 	}
 	
 	
 	@Override
-	public CountBuilder and(String field, FindOperator operator, Object... values) {
-		return (CountBuilder) super.and(field, operator, values);
-	}
-
-	@Override
-	public CountBuilder and(String field, Object... values) {
-		return (CountBuilder) super.and(field, values);
+	public CountBuilder<T> and(String field, FindOperator operator, Object... values) {
+		return (CountBuilder<T>) super.and(field, operator, values);
 	}
 
 	@Override
-	public CountBuilder and(String literal, QueryParameter...parameters) {
-		return (CountBuilder) super.and(literal, parameters);
+	public CountBuilder<T> and(String field, Object... values) {
+		return (CountBuilder<T>) super.and(field, values);
+	}
+
+	@Override
+	public CountBuilder<T> and(String literal, QueryParameter...parameters) {
+		return (CountBuilder<T>) super.and(literal, parameters);
 	}
 	
 	
 	@Override
-	public CountBuilder beginAndGroup() {
-		return (CountBuilder) super.beginAndGroup();
+	public CountBuilder<T> beginAndGroup() {
+		return (CountBuilder<T>) super.beginAndGroup();
 	}
 	
 	@Override
-	public CountBuilder beginOrGroup() {
-		return (CountBuilder) super.beginOrGroup();
+	public CountBuilder<T> beginOrGroup() {
+		return (CountBuilder<T>) super.beginOrGroup();
 	}
 	
 	@Override
-	public CountBuilder closeGroup() {
-		return (CountBuilder) super.closeGroup();
+	public CountBuilder<T> closeGroup() {
+		return (CountBuilder<T>) super.closeGroup();
 	}
 	
 	
@@ -139,5 +121,4 @@ public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T>
 		
 		return (long) query.getSingleResult();
 	}
-	// =========================================================================
 }

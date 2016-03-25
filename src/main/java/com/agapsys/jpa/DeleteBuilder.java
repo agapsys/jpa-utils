@@ -23,22 +23,12 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T> {
-	// CLASS SCOPE =============================================================
-	public static <T extends EntityObject> DeleteBuilder<T> forClass(Class<T> entityClass) {
-		return new DeleteBuilder<T>(entityClass);
-	}
-	
-	public static <T extends EntityObject> DeleteBuilder<T> forClass(Class<T> entityClass, String alias) {
-		return new DeleteBuilder<T>(entityClass, alias);
-	}
-	// =========================================================================
 
-	// INSTANCE SCOPE =========================================================
-	protected DeleteBuilder(Class<T> entityClass) {
+	public DeleteBuilder(Class<T> entityClass) {
 		super(entityClass);
 	}
 	
-	protected DeleteBuilder(Class<T> entityclass, String alias) {
+	public DeleteBuilder(Class<T> entityclass, String alias) {
 		super(entityclass, alias);
 	}
 	
@@ -48,64 +38,64 @@ public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T
 	}
 	
 	
-	public DeleteBuilder where(String field, FindOperator operator, Object... values) {
-		return (DeleteBuilder) super.by(field, operator, values);
+	public DeleteBuilder<T> where(String field, FindOperator operator, Object... values) {
+		return (DeleteBuilder<T>) super.by(field, operator, values);
 	}
 
-	public DeleteBuilder where(String field, Object... values) {
-		return (DeleteBuilder) super.by(field, values);
+	public DeleteBuilder<T> where(String field, Object... values) {
+		return (DeleteBuilder<T>) super.by(field, values);
 	}
 	
-	public DeleteBuilder where(String literal, QueryParameter...parameters) {
-		return (DeleteBuilder) super.by(literal, parameters);
+	public DeleteBuilder<T> where(String literal, QueryParameter...parameters) {
+		return (DeleteBuilder<T>) super.by(literal, parameters);
 	}
 	
 	
 	@Override
-	public DeleteBuilder or(String field, FindOperator operator, Object... values) {
-		return (DeleteBuilder) super.or(field, operator, values);
-	}
-
-	@Override
-	public DeleteBuilder or(String field, Object... values) {
-		return (DeleteBuilder) super.or(field, values);
+	public DeleteBuilder<T> or(String field, FindOperator operator, Object... values) {
+		return (DeleteBuilder<T>) super.or(field, operator, values);
 	}
 
 	@Override
-	public DeleteBuilder or(String literal, QueryParameter...parameters) {
-		return (DeleteBuilder) super.or(literal, parameters);
-	}
-	
-	
-	@Override
-	public DeleteBuilder and(String field, FindOperator operator, Object... values) {
-		return (DeleteBuilder) super.and(field, operator, values);
+	public DeleteBuilder<T> or(String field, Object... values) {
+		return (DeleteBuilder<T>) super.or(field, values);
 	}
 
 	@Override
-	public DeleteBuilder and(String field, Object... values) {
-		return (DeleteBuilder) super.and(field, values);
+	public DeleteBuilder<T> or(String literal, QueryParameter...parameters) {
+		return (DeleteBuilder<T>) super.or(literal, parameters);
+	}
+	
+	
+	@Override
+	public DeleteBuilder<T> and(String field, FindOperator operator, Object... values) {
+		return (DeleteBuilder<T>) super.and(field, operator, values);
 	}
 
 	@Override
-	public DeleteBuilder and(String literal, QueryParameter...parameters) {
-		return (DeleteBuilder) super.and(literal, parameters);
+	public DeleteBuilder<T> and(String field, Object... values) {
+		return (DeleteBuilder<T>) super.and(field, values);
+	}
+
+	@Override
+	public DeleteBuilder<T> and(String literal, QueryParameter...parameters) {
+		return (DeleteBuilder<T>) super.and(literal, parameters);
 	}
 	
 	
 	@Override
-	public DeleteBuilder beginAndGroup() {
-		return (DeleteBuilder) super.beginAndGroup();
+	public DeleteBuilder<T> beginAndGroup() {
+		return (DeleteBuilder<T>) super.beginAndGroup();
 	}
 	
 	@Override
-	public DeleteBuilder beginOrGroup() {
-		return (DeleteBuilder) super.beginOrGroup();
+	public DeleteBuilder<T> beginOrGroup() {
+		return (DeleteBuilder<T>) super.beginOrGroup();
 	}
 	
 	@Override
-	public DeleteBuilder closeGroup() {
-		return (DeleteBuilder) super.closeGroup();
+	public DeleteBuilder<T> closeGroup() {
+		return (DeleteBuilder<T>) super.closeGroup();
 	}
 	
 	
@@ -128,5 +118,4 @@ public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T
 		
 		return (int) super.select(entityManager);
 	}
-	// =========================================================================
 }

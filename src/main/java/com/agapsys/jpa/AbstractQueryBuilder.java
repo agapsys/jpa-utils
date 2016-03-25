@@ -177,7 +177,7 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 		return locked;
 	}
 	
-	protected AbstractQueryBuilder join(JoinType joinType, String joinField, String joinFieldAlias) {
+	protected AbstractQueryBuilder<T> join(JoinType joinType, String joinField, String joinFieldAlias) {
 		if (this.joinField != null && isLocked())
 			throw new IllegalStateException("Join field is already set");
 		
@@ -204,7 +204,7 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 		return this;
 	}
 	
-	protected AbstractQueryBuilder joinFetch(String joinField) {
+	protected AbstractQueryBuilder<T> joinFetch(String joinField) {
 		if (this.joinField != null && isLocked())
 			throw new IllegalStateException("Join field is already set");
 		
@@ -218,7 +218,7 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 		return this;
 	}
 	
-	protected AbstractQueryBuilder where(String whereClause) {
+	protected AbstractQueryBuilder<T> where(String whereClause) {
 		if (this.where != null && isLocked())
 			throw new IllegalStateException("Where clause is already set");
 
@@ -232,7 +232,7 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 		return this;
 	}
 	
-	protected AbstractQueryBuilder groupBy(String groupBy) {
+	protected AbstractQueryBuilder<T> groupBy(String groupBy) {
 		if (this.groupBy != null && isLocked())
 			throw new IllegalStateException("Group by clause is already set");
 		
@@ -246,7 +246,7 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 		return this;
 	}
 	
-	protected AbstractQueryBuilder value(String key, Object value) {
+	protected AbstractQueryBuilder<T> value(String key, Object value) {
 		if (values.containsKey(key))
 			throw new IllegalArgumentException("Key already set: " + key);
 
@@ -257,7 +257,7 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 		return this;
 	}
 	
-	protected AbstractQueryBuilder values(Map<String, Object> values) {
+	protected AbstractQueryBuilder<T> values(Map<String, Object> values) {
 		for (Map.Entry<String, Object> entry : values.entrySet()) {
 			value(entry.getKey(), entry.getValue());
 		}
@@ -265,7 +265,7 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 		return this;
 	}
 		
-	protected AbstractQueryBuilder orderBy(String ordering) {
+	protected AbstractQueryBuilder<T> orderBy(String ordering) {
 		if (this.orderBy != null && isLocked())
 			throw new IllegalStateException("ordering is already set");
 
@@ -279,7 +279,7 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 		return this;
 	}
 		
-	protected AbstractQueryBuilder offset(Integer offset) {
+	protected AbstractQueryBuilder<T> offset(Integer offset) {
 		if (this.offset != null && isLocked())
 			throw new IllegalStateException("Offset is already set");
 		
@@ -290,7 +290,7 @@ public abstract class AbstractQueryBuilder<T extends EntityObject> {
 		return this;
 	}
 		
-	protected AbstractQueryBuilder maxResults(Integer maxResults) {
+	protected AbstractQueryBuilder<T> maxResults(Integer maxResults) {
 		if (this.maxResults != null && isLocked())
 			throw new IllegalStateException("'maxResults' is already set");
 		

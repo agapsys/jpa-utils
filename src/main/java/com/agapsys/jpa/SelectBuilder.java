@@ -21,85 +21,67 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 public class SelectBuilder<T extends EntityObject> extends AbstractQueryBuilder<T> {
-	// CLASS SCOPE =============================================================
-	public static <T extends EntityObject> SelectBuilder<T> forClass(boolean distinct, Class<T> entityClass, String alias) {
-		return new SelectBuilder<T>(distinct, entityClass, alias);
-	}
-			
-	public static <T extends EntityObject> SelectBuilder<T> forClass(Class<T> entityClass, String alias) {
-		return new SelectBuilder<T>(entityClass, alias);
-	}
 	
-	public static <T extends EntityObject> SelectBuilder<T> forClass(String selectClause, Class<T> entityClass, String alias) {
-		return new SelectBuilder<T>(selectClause, entityClass, alias);
-	}
-	
-	public static <T extends EntityObject> SelectBuilder<T> forClass(String selectClause, Class<T> entityClass) {
-		return new SelectBuilder<T>(selectClause, entityClass);
-	}
-	// =========================================================================
-	
-	// INSTANCE SCOPE ==========================================================
-	protected SelectBuilder(boolean distinct, Class<T> entityClass, String alias) {
+	public SelectBuilder(boolean distinct, Class<T> entityClass, String alias) {
 		super(distinct, entityClass, alias);
 	}
 
-	protected SelectBuilder(Class<T> entityClass, String alias) {
+	public SelectBuilder(Class<T> entityClass, String alias) {
 		super(entityClass, alias);
 	}
 
-	protected SelectBuilder(String selectClause, Class<T> entityClass, String alias) {
+	public SelectBuilder(String selectClause, Class<T> entityClass, String alias) {
 		super(selectClause, entityClass, alias);
 	}
 
-	protected SelectBuilder(String selectClause, Class<T> entityClass) {
+	public SelectBuilder(String selectClause, Class<T> entityClass) {
 		super(selectClause, entityClass);
 	}
 	
 	
 	@Override
-	public SelectBuilder join(JoinType joinType, String joinField, String joinFieldAlias) {
-		return (SelectBuilder) super.join(joinType, joinField, joinFieldAlias);
+	public SelectBuilder<T> join(JoinType joinType, String joinField, String joinFieldAlias) {
+		return (SelectBuilder<T>) super.join(joinType, joinField, joinFieldAlias);
 	}
 	
 	@Override
-	public SelectBuilder joinFetch(String joinField) {
-		return (SelectBuilder) super.joinFetch(joinField); 
+	public SelectBuilder<T> joinFetch(String joinField) {
+		return (SelectBuilder<T>) super.joinFetch(joinField); 
 	}
 	
 	@Override
-	public SelectBuilder where(String whereClause) {
-		return (SelectBuilder) super.where(whereClause);
+	public SelectBuilder<T> where(String whereClause) {
+		return (SelectBuilder<T>) super.where(whereClause);
 	}
 
 	@Override
-	public SelectBuilder groupBy(String groupBy) {
-		return (SelectBuilder) super.groupBy(groupBy);
+	public SelectBuilder<T> groupBy(String groupBy) {
+		return (SelectBuilder<T>) super.groupBy(groupBy);
 	}
 	
 	@Override
-	public SelectBuilder offset(Integer offset) {
-		return (SelectBuilder) super.offset(offset);
+	public SelectBuilder<T> offset(Integer offset) {
+		return (SelectBuilder<T>) super.offset(offset);
 	}
 
 	@Override
-	public SelectBuilder orderBy(String ordering) {
-		return (SelectBuilder) super.orderBy(ordering);
+	public SelectBuilder<T> orderBy(String ordering) {
+		return (SelectBuilder<T>) super.orderBy(ordering);
 	}
 
 	@Override
-	public SelectBuilder maxResults(Integer maxResults) {
-		return (SelectBuilder) super.maxResults(maxResults);
+	public SelectBuilder<T> maxResults(Integer maxResults) {
+		return (SelectBuilder<T>) super.maxResults(maxResults);
 	}
 	
 	@Override
-	public SelectBuilder value(String key, Object value) {
-		return (SelectBuilder) super.value(key, value);
+	public SelectBuilder<T> value(String key, Object value) {
+		return (SelectBuilder<T>) super.value(key, value);
 	}
 
 	@Override
-	public AbstractQueryBuilder values(Map<String, Object> values) {
-		return super.values(values);
+	public SelectBuilder<T> values(Map<String, Object> values) {
+		return (SelectBuilder<T>) super.values(values);
 	}
 	
 	@Override

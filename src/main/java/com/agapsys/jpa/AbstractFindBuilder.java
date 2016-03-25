@@ -29,7 +29,7 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 	
 	// INSTANCE SCOPE ==========================================================
 	private final WhereClauseBuilder whereBuilder = new WhereClauseBuilder(DEFAULT_PARAM_PREFIX);
-	
+
 	
 	public AbstractFindBuilder(Class<T> entityClass) {
 		super(entityClass);
@@ -56,80 +56,80 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
 	}
 	
 	
-	protected AbstractFindBuilder by(String field, Object...values) {
+	protected AbstractFindBuilder<T> by(String field, Object...values) {
 		return by(field, FindOperator.EQUALS, values);
 	}
 	
-	protected AbstractFindBuilder by(String field, FindOperator operator, Object...values) {
+	protected AbstractFindBuilder<T> by(String field, FindOperator operator, Object...values) {
 		whereBuilder.initialCondition(getFieldName(field), operator, values);
 		return this;
 	}
 	
-	protected AbstractFindBuilder by(String literal, QueryParameter...parameters) {
+	protected AbstractFindBuilder<T> by(String literal, QueryParameter...parameters) {
 		whereBuilder.initialCondition(literal, parameters);
 		return this;
 	}
 	
 	
-	protected AbstractFindBuilder and(String field, Object...values) {
+	protected AbstractFindBuilder<T> and(String field, Object...values) {
 		return and(field, FindOperator.EQUALS, values);
 	}	
 	
-	protected AbstractFindBuilder and(String field, FindOperator operator, Object...values) {
+	protected AbstractFindBuilder<T> and(String field, FindOperator operator, Object...values) {
 		whereBuilder.and(getFieldName(field), operator, values);
 		return this;
 	}
 	
-	protected AbstractFindBuilder and(String literal, QueryParameter...parameters) {
+	protected AbstractFindBuilder<T> and(String literal, QueryParameter...parameters) {
 		whereBuilder.and(literal, parameters);
 		return this;
 	}
 	
 	
-	protected AbstractFindBuilder or(String field, Object...values) {
+	protected AbstractFindBuilder<T> or(String field, Object...values) {
 		return or(field, FindOperator.EQUALS, values);
 	}
 	
-	protected AbstractFindBuilder or(String field, FindOperator operator, Object...values) {
+	protected AbstractFindBuilder<T> or(String field, FindOperator operator, Object...values) {
 		whereBuilder.or(getFieldName(field), operator, values);
 		return this;
 	}
 	
-	protected AbstractFindBuilder or(String literal, QueryParameter...parameters) {
+	protected AbstractFindBuilder<T> or(String literal, QueryParameter...parameters) {
 		whereBuilder.or(literal, parameters);
 		return this;
 	}
 	
 		
-	protected AbstractFindBuilder beginAndGroup() {
+	protected AbstractFindBuilder<T> beginAndGroup() {
 		whereBuilder.beginAndGroup();
 		return this;
 	}
 	
-	protected AbstractFindBuilder beginOrGroup() {
+	protected AbstractFindBuilder<T> beginOrGroup() {
 		whereBuilder.beginOrGroup();
 		return this;
 	}
 	
-	protected AbstractFindBuilder closeGroup() {
+	protected AbstractFindBuilder<T> closeGroup() {
 		whereBuilder.closeGroup();
 		return this;
 	}
 	
 	
 	@Override
-	protected AbstractFindBuilder offset(Integer offset) {
-		return (AbstractFindBuilder) super.offset(offset);
+	protected AbstractFindBuilder<T> offset(Integer offset) {
+		return (AbstractFindBuilder<T>) super.offset(offset);
 	}
 
 	@Override
-	protected AbstractFindBuilder maxResults(Integer maxResults) {
-		return (AbstractFindBuilder) super.maxResults(maxResults);
+	protected AbstractFindBuilder<T> maxResults(Integer maxResults) {
+		return (AbstractFindBuilder<T>) super.maxResults(maxResults);
 	}
 
 	@Override
-	protected AbstractFindBuilder orderBy(String ordering) {
-		return (AbstractFindBuilder) super.orderBy(ordering);
+	protected AbstractFindBuilder<T> orderBy(String ordering) {
+		return (AbstractFindBuilder<T>) super.orderBy(ordering);
 	}
 	
 	@Override

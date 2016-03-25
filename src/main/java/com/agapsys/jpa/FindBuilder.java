@@ -21,119 +21,101 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> {
-	// STATIC SCOPE ============================================================
-	public static <T extends EntityObject> FindBuilder<T> forClass(Class<T> entityClass) {
-		return new FindBuilder<T>(entityClass);
-	}
 	
-	public static <T extends EntityObject> FindBuilder<T> forClass(Class<T> entityClass, String alias) {
-		return new FindBuilder<T>(entityClass, alias);
-	}
-			
-	public static <T extends EntityObject> FindBuilder<T> forClass(boolean distinct, Class<T> entityClass) {
-		return new FindBuilder<T>(true, entityClass);
-	}
-			
-	public static <T extends EntityObject> FindBuilder<T> forClass(boolean distinct, Class<T> entityClass, String alias) {
-		return new FindBuilder<T>(true, entityClass, alias);
-	}
-	// =========================================================================
-	
-	// INSTANCE SCOPE ==========================================================
-	protected FindBuilder(Class<T> entityClass) {
+	public FindBuilder(Class<T> entityClass) {
 		super(entityClass);
 	}
 	
-	protected FindBuilder(Class<T> entityClass, String alias) {
+	public FindBuilder(Class<T> entityClass, String alias) {
 		super(entityClass, alias);
 	}
 	
-	protected FindBuilder(boolean distinct, Class<T> entityClass) {
+	public FindBuilder(boolean distinct, Class<T> entityClass) {
 		super(distinct, entityClass);
 	}
 	
-	protected FindBuilder(boolean distinct, Class<T> entityClass, String alias) {
+	public FindBuilder(boolean distinct, Class<T> entityClass, String alias) {
 		super(distinct, entityClass, alias);
 	}
 	
 
 	@Override
-	public FindBuilder orderBy(String ordering) {
-		return (FindBuilder) super.orderBy(ordering);
+	public FindBuilder<T> orderBy(String ordering) {
+		return (FindBuilder<T>) super.orderBy(ordering);
 	}
 
 	@Override
-	public FindBuilder maxResults(Integer maxResults) {
-		return (FindBuilder) super.maxResults(maxResults);
+	public FindBuilder<T> maxResults(Integer maxResults) {
+		return (FindBuilder<T>) super.maxResults(maxResults);
 	}
 
 	@Override
-	public FindBuilder offset(Integer offset) {
-		return (FindBuilder) super.offset(offset);
+	public FindBuilder<T> offset(Integer offset) {
+		return (FindBuilder<T>) super.offset(offset);
 	}
 
 	
 	@Override
-	public FindBuilder by(String field, FindOperator operator, Object... values) {
-		return (FindBuilder) super.by(field, operator, values);
+	public FindBuilder<T> by(String field, FindOperator operator, Object... values) {
+		return (FindBuilder<T>) super.by(field, operator, values);
 	}
 
 	@Override
-	public FindBuilder by(String field, Object... values) {
-		return (FindBuilder) super.by(field, values);
+	public FindBuilder<T> by(String field, Object... values) {
+		return (FindBuilder<T>) super.by(field, values);
 	}	
 	
 	@Override
-	public FindBuilder by(String literal, QueryParameter...parameters) {
-		return (FindBuilder) super.by(literal, parameters);
+	public FindBuilder<T> by(String literal, QueryParameter...parameters) {
+		return (FindBuilder<T>) super.by(literal, parameters);
 	}
 	
 	
 	@Override
-	public FindBuilder or(String field, FindOperator operator, Object... values) {
-		return (FindBuilder) super.or(field, operator, values);
+	public FindBuilder<T> or(String field, FindOperator operator, Object... values) {
+		return (FindBuilder<T>) super.or(field, operator, values);
 	}
 
 	@Override
-	public FindBuilder or(String field, Object... values) {
-		return (FindBuilder) super.or(field, values);
+	public FindBuilder<T> or(String field, Object... values) {
+		return (FindBuilder<T>) super.or(field, values);
 	}
 
 	@Override
-	public FindBuilder or(String literal, QueryParameter...parameters) {
-		return (FindBuilder) super.or(literal, parameters);
+	public FindBuilder<T> or(String literal, QueryParameter...parameters) {
+		return (FindBuilder<T>) super.or(literal, parameters);
 	}
 	
 	
 	@Override
-	public FindBuilder and(String field, FindOperator operator, Object... values) {
-		return (FindBuilder) super.and(field, operator, values);
-	}
-
-	@Override
-	public FindBuilder and(String field, Object... values) {
-		return (FindBuilder) super.and(field, values);
+	public FindBuilder<T> and(String field, FindOperator operator, Object... values) {
+		return (FindBuilder<T>) super.and(field, operator, values);
 	}
 
 	@Override
-	public FindBuilder and(String literal, QueryParameter...parameters) {
-		return (FindBuilder) super.and(literal, parameters);
+	public FindBuilder<T> and(String field, Object... values) {
+		return (FindBuilder<T>) super.and(field, values);
+	}
+
+	@Override
+	public FindBuilder<T> and(String literal, QueryParameter...parameters) {
+		return (FindBuilder<T>) super.and(literal, parameters);
 	}
 	
 	
 	@Override
-	public FindBuilder beginAndGroup() {
-		return (FindBuilder) super.beginAndGroup();
+	public FindBuilder<T> beginAndGroup() {
+		return (FindBuilder<T>) super.beginAndGroup();
 	}
 	
 	@Override
-	public FindBuilder beginOrGroup() {
-		return (FindBuilder) super.beginOrGroup();
+	public FindBuilder<T> beginOrGroup() {
+		return (FindBuilder<T>) super.beginOrGroup();
 	}
 	
 	@Override
-	public FindBuilder closeGroup() {
-		return (FindBuilder) super.closeGroup();
+	public FindBuilder<T> closeGroup() {
+		return (FindBuilder<T>) super.closeGroup();
 	}
 	
 	
@@ -146,5 +128,4 @@ public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> 
 	public T findFirst(EntityManager entityManager) {
 		return (T) super.findFirst(entityManager);
 	}
-	// =========================================================================
 }
