@@ -26,51 +26,51 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class CountBuilderIntegrationTest {
-	// CLASS SCOPE =============================================================
-	private static final int ROWS = 100;
-	// =========================================================================
-	
-	// INSTANCE SCOPE ==========================================================
-	private EntityManager em;
-	
-	@Before
-	public void before() {
-		em = PersistenceUnit.getEntityManager();
+    // CLASS SCOPE =============================================================
+    private static final int ROWS = 100;
+    // =========================================================================
+    
+    // INSTANCE SCOPE ==========================================================
+    private EntityManager em;
+    
+    @Before
+    public void before() {
+        em = PersistenceUnit.getEntityManager();
 
-		EntityTransaction transaction =  em.getTransaction();
-		transaction.begin();
-		
-		for (int i = 0; i < ROWS; i++) {
-			TestEntity testEntity = new TestEntity();
-			testEntity.setField(String.format("test_%d", i+1));
-			em.persist(testEntity);
-			
-			NamedEntity namedEntity = new NamedEntity();
-			namedEntity.setTestEntity(testEntity);
-			em.persist(namedEntity);
-		}
-		
-		transaction.commit();
-	}
-	
-	@After
-	public void after() {
-		em.close();
-		PersistenceUnit.close();
-	}
-	
-	@Test
-	public void simpleCount() {
-		long count = new CountBuilder(TestEntity.class).count(em);
-		
-		Assert.assertEquals(ROWS, count);
-	}
-	
-	@Test
-	public void completeTest() {
-		long count = new CountBuilder(TestEntity.class).by("id", FindOperator.BETWEEN, new Range(60l, 80l)).or("id", FindOperator.BETWEEN, new Range(20l, 40l)).count(em);
-		
-		Assert.assertEquals(42, count);
-	}
-	// =========================================================================
+        EntityTransaction transaction =  em.getTransaction();
+        transaction.begin();
+        
+        for (int i = 0; i < ROWS; i++) {
+            TestEntity testEntity = new TestEntity();
+            testEntity.setField(String.format("test_%d", i+1));
+            em.persist(testEntity);
+            
+            NamedEntity namedEntity = new NamedEntity();
+            namedEntity.setTestEntity(testEntity);
+            em.persist(namedEntity);
+        }
+        
+        transaction.commit();
+    }
+    
+    @After
+    public void after() {
+        em.close();
+        PersistenceUnit.close();
+    }
+    
+    @Test
+    public void simpleCount() {
+        long count = new CountBuilder(TestEntity.class).count(em);
+        
+        Assert.assertEquals(ROWS, count);
+    }
+    
+    @Test
+    public void completeTest() {
+        long count = new CountBuilder(TestEntity.class).by("id", FindOperator.BETWEEN, new Range(60l, 80l)).or("id", FindOperator.BETWEEN, new Range(20l, 40l)).count(em);
+        
+        Assert.assertEquals(42, count);
+    }
+    // =========================================================================
 }

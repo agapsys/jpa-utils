@@ -17,35 +17,35 @@
 package com.agapsys.jpa;
 
 public enum FindOperator {
-	LESS_THAN           (":field < :value"),
-	LESS_THAN_EQUALS    (":field <= :value"),
-	GREATER_THAN        (":field > :value"),
-	GREATER_THAN_EQUALS (":field >= :value"),
-	ILIKE               ("LOWER(:field) LIKE LOWER(:value)"),
-	LIKE                (":field LIKE :value"),
-	EQUALS              (":field = :value"),
-	NOT_EQUAL           (":field <> :value"),
-	IS_NOT_NULL         (":field IS NOT NULL"),
-	IS_NULL             (":field IS NULL"),
-	NOT                 ("NOT :field"),
-	BETWEEN             (":field BETWEEN :min AND :max"),
-	NOT_BETWEEN         (":field NOT BETWEEN :min AND :max");
+    LESS_THAN           (":field < :value"),
+    LESS_THAN_EQUALS    (":field <= :value"),
+    GREATER_THAN        (":field > :value"),
+    GREATER_THAN_EQUALS (":field >= :value"),
+    ILIKE               ("LOWER(:field) LIKE LOWER(:value)"),
+    LIKE                (":field LIKE :value"),
+    EQUALS              (":field = :value"),
+    NOT_EQUAL           (":field <> :value"),
+    IS_NOT_NULL         (":field IS NOT NULL"),
+    IS_NULL             (":field IS NULL"),
+    NOT                 ("NOT :field"),
+    BETWEEN             (":field BETWEEN :min AND :max"),
+    NOT_BETWEEN         (":field NOT BETWEEN :min AND :max");
 
-	private final String sqlExpression;
+    private final String sqlExpression;
 
-	private FindOperator(String sqlExpression) {
-		this.sqlExpression = sqlExpression;
-	}
+    private FindOperator(String sqlExpression) {
+        this.sqlExpression = sqlExpression;
+    }
 
-	String getSqlExpression(String field, String...valueKeys) {
-		switch (this) {
-			case BETWEEN:
-			case NOT_BETWEEN:
-				return sqlExpression.replace(":field", field).replace(":min", valueKeys[0]).replace(":max", valueKeys[1]);
-				
-			default:
-				return sqlExpression.replace(":field", field).replace(":value", valueKeys[0]);
-		}
-	}
+    String getSqlExpression(String field, String...valueKeys) {
+        switch (this) {
+            case BETWEEN:
+            case NOT_BETWEEN:
+                return sqlExpression.replace(":field", field).replace(":min", valueKeys[0]).replace(":max", valueKeys[1]);
+                
+            default:
+                return sqlExpression.replace(":field", field).replace(":value", valueKeys[0]);
+        }
+    }
 }
-	
+    

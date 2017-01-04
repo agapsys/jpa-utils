@@ -27,31 +27,31 @@ import org.junit.Test;
  */
 
 public class CountBuilderTest {
-	// CLASS SCOPE =============================================================
-	private static class TestCountBuilder<T extends EntityObject> extends CountBuilder<T> {
-		public TestCountBuilder(Class<T> entiClass) {
-			super(entiClass);
-		}
+    // CLASS SCOPE =============================================================
+    private static class TestCountBuilder<T extends EntityObject> extends CountBuilder<T> {
+        public TestCountBuilder(Class<T> entiClass) {
+            super(entiClass);
+        }
 
-		@Override
-		public String getQueryString() {
-			return super.getQueryString();
-		}
+        @Override
+        public String getQueryString() {
+            return super.getQueryString();
+        }
 
-		@Override
-		public Map<String, Object> getValues() {
-			return super.getValues();
-		}
-	}
-	// =========================================================================
+        @Override
+        public Map<String, Object> getValues() {
+            return super.getValues();
+        }
+    }
+    // =========================================================================
 
-	// INSTANCE SCOPE ==========================================================
-	@Test
-	public void testQueryBuilder() {
-		TestCountBuilder countBuilder;
-		
-		countBuilder = new TestCountBuilder(TestEntity.class);
-		Assert.assertEquals("SELECT COUNT(1) FROM TestEntity t", countBuilder.getQueryString());
-	}
-	// =========================================================================
+    // INSTANCE SCOPE ==========================================================
+    @Test
+    public void testQueryBuilder() {
+        TestCountBuilder countBuilder;
+        
+        countBuilder = new TestCountBuilder(TestEntity.class);
+        Assert.assertEquals("SELECT COUNT(1) FROM TestEntity t", countBuilder.getQueryString());
+    }
+    // =========================================================================
 }

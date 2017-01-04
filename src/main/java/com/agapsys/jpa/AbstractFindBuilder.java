@@ -23,153 +23,153 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 public abstract class AbstractFindBuilder<T extends EntityObject> extends AbstractQueryBuilder<T> {
-	// CLASS SCOPE =============================================================
-	private static final String DEFAULT_PARAM_PREFIX = "f";
-	// =========================================================================
-	
-	// INSTANCE SCOPE ==========================================================
-	private final WhereClauseBuilder whereBuilder = new WhereClauseBuilder(DEFAULT_PARAM_PREFIX);
+    // CLASS SCOPE =============================================================
+    private static final String DEFAULT_PARAM_PREFIX = "f";
+    // =========================================================================
+    
+    // INSTANCE SCOPE ==========================================================
+    private final WhereClauseBuilder whereBuilder = new WhereClauseBuilder(DEFAULT_PARAM_PREFIX);
 
-	
-	public AbstractFindBuilder(Class<T> entityClass) {
-		super(entityClass);
-	}
-	
-	public AbstractFindBuilder(Class<T> entityClass, String alias) {
-		super(entityClass, alias);
-	}
-	
-	public AbstractFindBuilder(boolean distinct, Class<T> entityClass) {
-		super(distinct, entityClass);
-	}
-	
-	public AbstractFindBuilder(boolean distinct, Class<T> entityClass, String alias) {
-		super(distinct, entityClass, alias);
-	}
-	
-	
-	private String getFieldName(String field) {
-		if (field == null || field.trim().isEmpty())
-			throw new IllegalArgumentException("Null/Empty field");
-		
-		return String.format("%s.%s", getAlias(), field);
-	}
-	
-	
-	protected AbstractFindBuilder<T> by(String field, Object...values) {
-		return by(field, FindOperator.EQUALS, values);
-	}
-	
-	protected AbstractFindBuilder<T> by(String field, FindOperator operator, Object...values) {
-		whereBuilder.initialCondition(getFieldName(field), operator, values);
-		return this;
-	}
-	
-	protected AbstractFindBuilder<T> by(String literal, QueryParameter...parameters) {
-		whereBuilder.initialCondition(literal, parameters);
-		return this;
-	}
-	
-	
-	protected AbstractFindBuilder<T> and(String field, Object...values) {
-		return and(field, FindOperator.EQUALS, values);
-	}	
-	
-	protected AbstractFindBuilder<T> and(String field, FindOperator operator, Object...values) {
-		whereBuilder.and(getFieldName(field), operator, values);
-		return this;
-	}
-	
-	protected AbstractFindBuilder<T> and(String literal, QueryParameter...parameters) {
-		whereBuilder.and(literal, parameters);
-		return this;
-	}
-	
-	
-	protected AbstractFindBuilder<T> or(String field, Object...values) {
-		return or(field, FindOperator.EQUALS, values);
-	}
-	
-	protected AbstractFindBuilder<T> or(String field, FindOperator operator, Object...values) {
-		whereBuilder.or(getFieldName(field), operator, values);
-		return this;
-	}
-	
-	protected AbstractFindBuilder<T> or(String literal, QueryParameter...parameters) {
-		whereBuilder.or(literal, parameters);
-		return this;
-	}
-	
-		
-	protected AbstractFindBuilder<T> beginAndGroup() {
-		whereBuilder.beginAndGroup();
-		return this;
-	}
-	
-	protected AbstractFindBuilder<T> beginOrGroup() {
-		whereBuilder.beginOrGroup();
-		return this;
-	}
-	
-	protected AbstractFindBuilder<T> closeGroup() {
-		whereBuilder.closeGroup();
-		return this;
-	}
-	
-	
-	@Override
-	protected AbstractFindBuilder<T> offset(Integer offset) {
-		return (AbstractFindBuilder<T>) super.offset(offset);
-	}
+    
+    public AbstractFindBuilder(Class<T> entityClass) {
+        super(entityClass);
+    }
+    
+    public AbstractFindBuilder(Class<T> entityClass, String alias) {
+        super(entityClass, alias);
+    }
+    
+    public AbstractFindBuilder(boolean distinct, Class<T> entityClass) {
+        super(distinct, entityClass);
+    }
+    
+    public AbstractFindBuilder(boolean distinct, Class<T> entityClass, String alias) {
+        super(distinct, entityClass, alias);
+    }
+    
+    
+    private String getFieldName(String field) {
+        if (field == null || field.trim().isEmpty())
+            throw new IllegalArgumentException("Null/Empty field");
+        
+        return String.format("%s.%s", getAlias(), field);
+    }
+    
+    
+    protected AbstractFindBuilder<T> by(String field, Object...values) {
+        return by(field, FindOperator.EQUALS, values);
+    }
+    
+    protected AbstractFindBuilder<T> by(String field, FindOperator operator, Object...values) {
+        whereBuilder.initialCondition(getFieldName(field), operator, values);
+        return this;
+    }
+    
+    protected AbstractFindBuilder<T> by(String literal, QueryParameter...parameters) {
+        whereBuilder.initialCondition(literal, parameters);
+        return this;
+    }
+    
+    
+    protected AbstractFindBuilder<T> and(String field, Object...values) {
+        return and(field, FindOperator.EQUALS, values);
+    }    
+    
+    protected AbstractFindBuilder<T> and(String field, FindOperator operator, Object...values) {
+        whereBuilder.and(getFieldName(field), operator, values);
+        return this;
+    }
+    
+    protected AbstractFindBuilder<T> and(String literal, QueryParameter...parameters) {
+        whereBuilder.and(literal, parameters);
+        return this;
+    }
+    
+    
+    protected AbstractFindBuilder<T> or(String field, Object...values) {
+        return or(field, FindOperator.EQUALS, values);
+    }
+    
+    protected AbstractFindBuilder<T> or(String field, FindOperator operator, Object...values) {
+        whereBuilder.or(getFieldName(field), operator, values);
+        return this;
+    }
+    
+    protected AbstractFindBuilder<T> or(String literal, QueryParameter...parameters) {
+        whereBuilder.or(literal, parameters);
+        return this;
+    }
+    
+        
+    protected AbstractFindBuilder<T> beginAndGroup() {
+        whereBuilder.beginAndGroup();
+        return this;
+    }
+    
+    protected AbstractFindBuilder<T> beginOrGroup() {
+        whereBuilder.beginOrGroup();
+        return this;
+    }
+    
+    protected AbstractFindBuilder<T> closeGroup() {
+        whereBuilder.closeGroup();
+        return this;
+    }
+    
+    
+    @Override
+    protected AbstractFindBuilder<T> offset(Integer offset) {
+        return (AbstractFindBuilder<T>) super.offset(offset);
+    }
 
-	@Override
-	protected AbstractFindBuilder<T> maxResults(Integer maxResults) {
-		return (AbstractFindBuilder<T>) super.maxResults(maxResults);
-	}
+    @Override
+    protected AbstractFindBuilder<T> maxResults(Integer maxResults) {
+        return (AbstractFindBuilder<T>) super.maxResults(maxResults);
+    }
 
-	@Override
-	protected AbstractFindBuilder<T> orderBy(String ordering) {
-		return (AbstractFindBuilder<T>) super.orderBy(ordering);
-	}
-	
-	@Override
-	protected String getWhereClause() {
-		if (whereBuilder == null)
-			return null;
-		
-		return whereBuilder.build();
-	}
+    @Override
+    protected AbstractFindBuilder<T> orderBy(String ordering) {
+        return (AbstractFindBuilder<T>) super.orderBy(ordering);
+    }
+    
+    @Override
+    protected String getWhereClause() {
+        if (whereBuilder == null)
+            return null;
+        
+        return whereBuilder.build();
+    }
 
-	@Override
-	protected Map<String, Object> getValues() {
-		if (whereBuilder == null)
-			return new LinkedHashMap<>();
-		
-		return whereBuilder.getValues();
-	}
-	
+    @Override
+    protected Map<String, Object> getValues() {
+        if (whereBuilder == null)
+            return new LinkedHashMap<>();
+        
+        return whereBuilder.getValues();
+    }
+    
 
-	protected List<T> find(EntityManager entityManager) {
-		return  (List<T>) super.select(entityManager);
-	}
-	
-	protected T findFirst(EntityManager entityManager) {
-		Integer previousMaxResults = getMaxResults();
-		
-		setLocked(false); // <-- allows attribute change
-		maxResults(1);		
-		
-		List<T> results = (List<T>) find(entityManager);
+    protected List<T> find(EntityManager entityManager) {
+        return  (List<T>) super.select(entityManager);
+    }
+    
+    protected T findFirst(EntityManager entityManager) {
+        Integer previousMaxResults = getMaxResults();
+        
+        setLocked(false); // <-- allows attribute change
+        maxResults(1);        
+        
+        List<T> results = (List<T>) find(entityManager);
 
-		maxResults(previousMaxResults);
-		setLocked(true); // <-- restores locking state
-		
-		setLocked(true);
-		
-		if (results.isEmpty())
-			return null;
-		else
-			return results.get(0);
-	}
-	// =========================================================================
+        maxResults(previousMaxResults);
+        setLocked(true); // <-- restores locking state
+        
+        setLocked(true);
+        
+        if (results.isEmpty())
+            return null;
+        else
+            return results.get(0);
+    }
+    // =========================================================================
 }

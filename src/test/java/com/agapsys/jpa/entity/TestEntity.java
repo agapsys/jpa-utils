@@ -24,30 +24,30 @@ import javax.persistence.Id;
 
 @Entity
 public class TestEntity extends AbstractEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
-	private String field;
+    private String field;
 
-	@Override
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	
-	public String getField() {
-		return field;
-	}
-	public void setField(String field) {
-		this.field = field;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    
+    public String getField() {
+        return field;
+    }
+    public void setField(String field) {
+        this.field = field;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("{id=%d, field=%s}", id, field);
-	}
+    @Override
+    public String toString() {
+        return String.format("{id=%d, field=%s}", id, field);
+    }
 }

@@ -26,79 +26,79 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SelectBuilderIntegrationTest {
-	// CLASS SCOPE =============================================================
-	private static final int ROWS = 100;
-	// =========================================================================
-	
-	// INSTANCE SCOPE ==========================================================
-	private EntityManager em;
-	
-	@Before
-	public void before() {
-		em = PersistenceUnit.getEntityManager();
-		EntityTransaction transaction =  em.getTransaction();
-		transaction.begin();
-		
-		for (int i = 0; i < ROWS; i++) {
-			TestEntity testEntity = new TestEntity();
-			testEntity.setField(String.format("test_%d", i+1));
-			em.persist(testEntity);
-		}
-		
-		transaction.commit();
-	}
-	
-	@After
-	public void after() {
-		em.close();
-		PersistenceUnit.close();
-	}
-	
-	@Test
-	public void simpleSelect() {
-		SelectBuilder selectBuilder = new SelectBuilder(TestEntity.class, "t");
-		List<TestEntity> list = selectBuilder.select(em);
-		Assert.assertEquals(ROWS, list.size());
-		for (TestEntity t : list)
-			System.out.println(t);
-	}
-	
-	@Test
-	public void offsetTest() {
-		final int offset = 85;
-		Assert.assertTrue(offset < ROWS);
-		
-		SelectBuilder selectBuilder = new SelectBuilder(TestEntity.class, "t");
-		selectBuilder.orderBy("id ASC");
-		selectBuilder.offset(offset);
-		
-		List<TestEntity> list = selectBuilder.select(em);
-		Assert.assertEquals(ROWS - offset, list.size());
-		Assert.assertEquals(offset + 1, (long)list.get(0).getId());
-		
-		for (TestEntity t : list)
-			System.out.println(t);
-	}
-	
-	@Test
-	public void maxResultsTest() {
-		final int offset = 85;
-		Assert.assertTrue(offset < ROWS);
+    // CLASS SCOPE =============================================================
+    private static final int ROWS = 100;
+    // =========================================================================
+    
+    // INSTANCE SCOPE ==========================================================
+    private EntityManager em;
+    
+    @Before
+    public void before() {
+        em = PersistenceUnit.getEntityManager();
+        EntityTransaction transaction =  em.getTransaction();
+        transaction.begin();
+        
+        for (int i = 0; i < ROWS; i++) {
+            TestEntity testEntity = new TestEntity();
+            testEntity.setField(String.format("test_%d", i+1));
+            em.persist(testEntity);
+        }
+        
+        transaction.commit();
+    }
+    
+    @After
+    public void after() {
+        em.close();
+        PersistenceUnit.close();
+    }
+    
+    @Test
+    public void simpleSelect() {
+        SelectBuilder selectBuilder = new SelectBuilder(TestEntity.class, "t");
+        List<TestEntity> list = selectBuilder.select(em);
+        Assert.assertEquals(ROWS, list.size());
+        for (TestEntity t : list)
+            System.out.println(t);
+    }
+    
+    @Test
+    public void offsetTest() {
+        final int offset = 85;
+        Assert.assertTrue(offset < ROWS);
+        
+        SelectBuilder selectBuilder = new SelectBuilder(TestEntity.class, "t");
+        selectBuilder.orderBy("id ASC");
+        selectBuilder.offset(offset);
+        
+        List<TestEntity> list = selectBuilder.select(em);
+        Assert.assertEquals(ROWS - offset, list.size());
+        Assert.assertEquals(offset + 1, (long)list.get(0).getId());
+        
+        for (TestEntity t : list)
+            System.out.println(t);
+    }
+    
+    @Test
+    public void maxResultsTest() {
+        final int offset = 85;
+        Assert.assertTrue(offset < ROWS);
 
-		final int maxResults = 10;
-		final int results = Math.min(maxResults, ROWS - offset);
-		
-		SelectBuilder selectBuilder = new SelectBuilder(TestEntity.class, "t");
-		selectBuilder.orderBy("id ASC");
-		selectBuilder.offset(offset);
-		selectBuilder.maxResults(maxResults);
-		
-		List<TestEntity> list = selectBuilder.select(em);
-		Assert.assertEquals(results, list.size());
-		Assert.assertEquals(offset + 1, (long)list.get(0).getId());
-		
-		for (TestEntity t : list)
-			System.out.println(t);
-	}
-	// =========================================================================
+        final int maxResults = 10;
+        final int results = Math.min(maxResults, ROWS - offset);
+        
+        SelectBuilder selectBuilder = new SelectBuilder(TestEntity.class, "t");
+        selectBuilder.orderBy("id ASC");
+        selectBuilder.offset(offset);
+        selectBuilder.maxResults(maxResults);
+        
+        List<TestEntity> list = selectBuilder.select(em);
+        Assert.assertEquals(results, list.size());
+        Assert.assertEquals(offset + 1, (long)list.get(0).getId());
+        
+        for (TestEntity t : list)
+            System.out.println(t);
+    }
+    // =========================================================================
 }

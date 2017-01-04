@@ -17,15 +17,15 @@
 package com.agapsys.jpa;
 
 public enum JoinType {
-	INNER_JOIN      ("JOIN"),
-	LEFT_OUTER_JOIN ("LEFT JOIN");
-	
-	private final String sql;
-	private JoinType(String sql) {
-		this.sql = sql;
-	}
-	
-	String getSQl() {
-		return sql;
-	}
+    INNER_JOIN      ("JOIN"),
+    LEFT_OUTER_JOIN ("LEFT JOIN");
+    
+    private final String sql;
+    private JoinType(String sql) {
+        this.sql = sql;
+    }
+    
+    String getSQl() {
+        return sql;
+    }
 }

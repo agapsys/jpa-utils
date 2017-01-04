@@ -20,23 +20,23 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 public abstract class AbstractEntity<T extends AbstractEntity> implements EntityObject {
-	
-	public T save(EntityManager em) {
-		EntityTransaction transaction = em.getTransaction();
-		if (!transaction.isActive())
-			transaction.begin();
-		
-		em.persist(this);
-		return (T) this;
-	}
-	
-	public void delete(EntityManager em) {
-		em.remove(this);
-	}
+    
+    public T save(EntityManager em) {
+        EntityTransaction transaction = em.getTransaction();
+        if (!transaction.isActive())
+            transaction.begin();
+        
+        em.persist(this);
+        return (T) this;
+    }
+    
+    public void delete(EntityManager em) {
+        em.remove(this);
+    }
 
-	@Override
-	public String toString() {
-		Object id = getId();
-		return String.format("%s:%s", getClass().getName(), id != null ? id.toString() : "null");
-	}
+    @Override
+    public String toString() {
+        Object id = getId();
+        return String.format("%s:%s", getClass().getName(), id != null ? id.toString() : "null");
+    }
 }

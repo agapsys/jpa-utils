@@ -17,28 +17,28 @@
 package com.agapsys.jpa;
 
 public class Range<T extends Comparable> {
-	private final T min;
-	private final T max;
-	
-	public Range(T min, T max) {
-		if (min == null)
-			throw new IllegalArgumentException("Null min");
-		
-		if (max == null)
-			throw new IllegalArgumentException("Null max");
-		
-		if (min.compareTo(max) > 0)
-			throw new IllegalArgumentException(String.format("min (%s) is greater than max (%s)", min, max));
-		
-		this.min = min;
-		this.max = max;
-	}
+    private final T min;
+    private final T max;
+    
+    public Range(T min, T max) {
+        if (min == null)
+            throw new IllegalArgumentException("Null min");
+        
+        if (max == null)
+            throw new IllegalArgumentException("Null max");
+        
+        if (min.compareTo(max) > 0)
+            throw new IllegalArgumentException(String.format("min (%s) is greater than max (%s)", min, max));
+        
+        this.min = min;
+        this.max = max;
+    }
 
-	public T getMin() {
-		return min;
-	}
-	
-	public T getMax() {
-		return max;
-	}
+    public T getMin() {
+        return min;
+    }
+    
+    public T getMax() {
+        return max;
+    }
 }

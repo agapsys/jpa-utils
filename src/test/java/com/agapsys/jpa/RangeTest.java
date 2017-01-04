@@ -20,28 +20,28 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class RangeTest {
-	@Test(expected = IllegalArgumentException.class)
-	public void nullMin() {
-		new Range<Integer>(null, 2);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void nullMax() {
-		new Range<Integer>(2, null);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void invalidRange() {
-		new Range<Integer>(3, 2);
-	}
-	
-	@Test
-	public void checkGetters() {
-		Integer min = 2;
-		Integer max = 3;
-		
-		Range<Integer> range = new Range<>(min, max);
-		Assert.assertEquals(min, range.getMin());
-		Assert.assertEquals(max, range.getMax());
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void nullMin() {
+        new Range<Integer>(null, 2);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void nullMax() {
+        new Range<Integer>(2, null);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void invalidRange() {
+        new Range<Integer>(3, 2);
+    }
+    
+    @Test
+    public void checkGetters() {
+        Integer min = 2;
+        Integer max = 3;
+        
+        Range<Integer> range = new Range<>(min, max);
+        Assert.assertEquals(min, range.getMin());
+        Assert.assertEquals(max, range.getMax());
+    }
 }

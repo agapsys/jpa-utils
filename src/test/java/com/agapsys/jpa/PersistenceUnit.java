@@ -23,27 +23,27 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class PersistenceUnit {
-	// CLASS SCOPE =============================================================
-	private static EntityManagerFactory emf = null;
-	
-	public static EntityManager getEntityManager() {
-		if (emf == null) {
-			Logger.getLogger("org.hibernate").setLevel(Level.OFF);
-			emf = Persistence.createEntityManagerFactory("test-pu");
-		}
-		
-		return emf.createEntityManager();
-	}
-	
-	public static void close() {
-		if (emf != null) {
-			emf.close();
-			emf = null;
-		}
-	}
-	// =========================================================================
+    // CLASS SCOPE =============================================================
+    private static EntityManagerFactory emf = null;
+    
+    public static EntityManager getEntityManager() {
+        if (emf == null) {
+            Logger.getLogger("org.hibernate").setLevel(Level.OFF);
+            emf = Persistence.createEntityManagerFactory("test-pu");
+        }
+        
+        return emf.createEntityManager();
+    }
+    
+    public static void close() {
+        if (emf != null) {
+            emf.close();
+            emf = null;
+        }
+    }
+    // =========================================================================
 
-	// INSTANCE SCOPE ==========================================================
-	private PersistenceUnit() {}
-	// =========================================================================
+    // INSTANCE SCOPE ==========================================================
+    private PersistenceUnit() {}
+    // =========================================================================
 }

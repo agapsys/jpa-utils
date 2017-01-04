@@ -25,31 +25,31 @@ import javax.persistence.OneToOne;
 
 @Entity(name = "NamedTestEntity")
 public class NamedEntity extends AbstractEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
-	
-	@OneToOne
-	private TestEntity testEntity;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    
+    @OneToOne
+    private TestEntity testEntity;
 
-	@Override
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Override
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	
-	public TestEntity getTestEntity() {
-		return testEntity;
-	}
-	public void setTestEntity(TestEntity testEntity) {
-		this.testEntity = testEntity;
-	}
-	
-	@Override
-	public String toString() {
-		return String.format("{id=%d, testEntity=%s}", id, testEntity);
-	}
+    
+    public TestEntity getTestEntity() {
+        return testEntity;
+    }
+    public void setTestEntity(TestEntity testEntity) {
+        this.testEntity = testEntity;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("{id=%d, testEntity=%s}", id, testEntity);
+    }
 }

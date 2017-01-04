@@ -25,47 +25,47 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DeleteBuilderIntegrationTest {
-	// CLASS SCOPE =============================================================
-	private static final int ROWS = 100;
-	// =========================================================================
-	
-	// INSTANCE SCOPE ==========================================================
-	private EntityManager em;
-	
-	@Before
-	public void before() {
-		em = PersistenceUnit.getEntityManager();
+    // CLASS SCOPE =============================================================
+    private static final int ROWS = 100;
+    // =========================================================================
+    
+    // INSTANCE SCOPE ==========================================================
+    private EntityManager em;
+    
+    @Before
+    public void before() {
+        em = PersistenceUnit.getEntityManager();
 
-		EntityTransaction transaction =  em.getTransaction();
-		transaction.begin();
-		
-		for (int i = 0; i < ROWS; i++) {
-			TestEntity testEntity = new TestEntity();
-			testEntity.setField(String.format("test_%d", i+1));
-			em.persist(testEntity);
-		}
-		
-		transaction.commit();
-	}
-	
-	@After
-	public void after() {
-		em.close();
-		PersistenceUnit.close();
-	}
-	
-	@Test
-	public void simpleDelete() {
-		int deleteCount = new DeleteBuilder(TestEntity.class).delete(em);
-		em.getTransaction().commit();
-		Assert.assertEquals(ROWS, deleteCount);
-	}
-	
-	@Test
-	public void completeTest() {
-		long deleteCount = new DeleteBuilder(TestEntity.class).where("id", FindOperator.BETWEEN, new Range(60l, 80l)).or("id", FindOperator.BETWEEN, new Range(20l, 40l)).delete(em);
-		em.getTransaction().commit();
-		Assert.assertEquals(42, deleteCount);
-	}
-	// =========================================================================
+        EntityTransaction transaction =  em.getTransaction();
+        transaction.begin();
+        
+        for (int i = 0; i < ROWS; i++) {
+            TestEntity testEntity = new TestEntity();
+            testEntity.setField(String.format("test_%d", i+1));
+            em.persist(testEntity);
+        }
+        
+        transaction.commit();
+    }
+    
+    @After
+    public void after() {
+        em.close();
+        PersistenceUnit.close();
+    }
+    
+    @Test
+    public void simpleDelete() {
+        int deleteCount = new DeleteBuilder(TestEntity.class).delete(em);
+        em.getTransaction().commit();
+        Assert.assertEquals(ROWS, deleteCount);
+    }
+    
+    @Test
+    public void completeTest() {
+        long deleteCount = new DeleteBuilder(TestEntity.class).where("id", FindOperator.BETWEEN, new Range(60l, 80l)).or("id", FindOperator.BETWEEN, new Range(20l, 40l)).delete(em);
+        em.getTransaction().commit();
+        Assert.assertEquals(42, deleteCount);
+    }
+    // =========================================================================
 }

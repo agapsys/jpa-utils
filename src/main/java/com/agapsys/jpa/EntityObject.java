@@ -19,5 +19,5 @@ package com.agapsys.jpa;
 import java.io.Serializable;
 
 public interface EntityObject extends Serializable {
-	public Object getId();
+    public Object getId();
 }
