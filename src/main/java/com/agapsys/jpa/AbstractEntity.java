@@ -18,15 +18,33 @@ package com.agapsys.jpa;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Transient;
 
 public abstract class AbstractEntity<T extends AbstractEntity> implements EntityObject {
     
+    @Transient
+    private boolean modified = true;
+    public boolean isModified() {
+        return modified;
+    }
+    
+    protected void setModified(boolean modified) {
+        this.modified = modified;
+    }
+    
+    protected void setModified() {
+        setModified(true);
+    }
+    
     public T save(EntityManager em) {
-        EntityTransaction transaction = em.getTransaction();
-        if (!transaction.isActive())
-            transaction.begin();
-        
-        em.persist(this);
+        if (isModified()) {
+            EntityTransaction transaction = em.getTransaction();
+            if (!transaction.isActive())
+                transaction.begin();
+
+            em.persist(this);
+            setModified(false);
+        }
         return (T) this;
     }
     
