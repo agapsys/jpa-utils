@@ -390,9 +390,7 @@ public final class WhereClauseBuilder {
 
         checkQueryParameters(parameters);
         
-        Boolean isAnd = (tokens.isEmpty() ? null : true);
-
-        tokens.add(new FindToken(isAnd, literal, parameters));
+        tokens.add(new FindToken(null, literal, parameters));
         return this;
     }
 

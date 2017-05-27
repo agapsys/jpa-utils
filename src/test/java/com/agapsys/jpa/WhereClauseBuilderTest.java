@@ -160,6 +160,32 @@ public class WhereClauseBuilderTest {
         Assert.assertEquals(10, (int)wcb.getValues().get("x5"));
         Assert.assertEquals( 8, (int)wcb.getValues().get("x6"));
         // ---------------------------------------------------------------------
+        // Nested groups (valid)
+        wcb = new WhereClauseBuilder("x")
+            .beginGroup()
+                .by("field1", 1)
+                .or("field2", 2)
+                .beginGroup() // <-- equivalent to beginAndGroup()
+                    .by("field3", 3)
+                    .or("field4", 4)
+                    .beginOrGroup()
+                        .by("field5", 5)
+                        .and("field6", 6)
+                    .closeGroup()
+                    .or("field7", 7)
+                .closeGroup()
+            .closeGroup()
+            .and("field8", 8);
+        
+        Assert.assertEquals("((field1 = :x0) OR (field2 = :x1) AND ((field3 = :x2) OR (field4 = :x3) OR ((field5 = :x4) AND (field6 = :x5)) OR (field7 = :x6))) AND (field8 = :x7)", wcb.build());
+        Assert.assertEquals(1, (int)wcb.getValues().get("x0"));
+        Assert.assertEquals(2, (int)wcb.getValues().get("x1"));
+        Assert.assertEquals(3, (int)wcb.getValues().get("x2"));
+        Assert.assertEquals(4, (int)wcb.getValues().get("x3"));
+        Assert.assertEquals(5, (int)wcb.getValues().get("x4"));
+        Assert.assertEquals(6, (int)wcb.getValues().get("x5"));
+        Assert.assertEquals(7, (int)wcb.getValues().get("x6"));
+        Assert.assertEquals(8, (int)wcb.getValues().get("x7"));
     }
 
     @Test
