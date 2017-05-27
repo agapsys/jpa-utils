@@ -81,7 +81,12 @@ public class DeleteBuilder<T extends EntityObject> extends AbstractFindBuilder<T
     public DeleteBuilder<T> and(String literal, QueryParameter...parameters) {
         return (DeleteBuilder<T>) super.and(literal, parameters);
     }
+
     
+    @Override
+    protected DeleteBuilder<T> beginGroup() {
+        return (DeleteBuilder<T>) super.beginGroup();
+    }
     
     @Override
     public DeleteBuilder<T> beginAndGroup() {

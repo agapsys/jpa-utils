@@ -104,6 +104,11 @@ public class FindBuilder<T extends EntityObject> extends AbstractFindBuilder<T> 
     
     
     @Override
+    public FindBuilder<T> beginGroup() {
+        return (FindBuilder<T>) super.beginGroup();
+    }
+    
+    @Override
     public FindBuilder<T> beginAndGroup() {
         return (FindBuilder<T>) super.beginAndGroup();
     }

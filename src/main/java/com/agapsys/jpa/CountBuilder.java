@@ -86,7 +86,12 @@ public class CountBuilder<T extends EntityObject> extends AbstractFindBuilder<T>
     public CountBuilder<T> and(String literal, QueryParameter...parameters) {
         return (CountBuilder<T>) super.and(literal, parameters);
     }
+
     
+    @Override
+    public CountBuilder<T> beginGroup() {
+        return (CountBuilder <T>) super.beginGroup();
+    }
     
     @Override
     public CountBuilder<T> beginAndGroup() {

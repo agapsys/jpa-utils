@@ -17,6 +17,7 @@
 package com.agapsys.jpa;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class WhereClauseBuilderTest {
@@ -26,7 +27,16 @@ public class WhereClauseBuilderTest {
 
     // INSTANCE SCOPE ==========================================================
     private WhereClauseBuilder wcb;
+    private Throwable error;
+    
+    @Before
+    public void before() {
+        error = null;
+        wcb = null;
+    }
+    
 
+    
     @Test
     public void testClauseGeneration() {
         // Deprecated API ------------------------------------------------------
@@ -71,6 +81,7 @@ public class WhereClauseBuilderTest {
         // ---------------------------------------------------------------------
 
         // New API -------------------------------------------------------------
+        // Valid query!
         wcb = new WhereClauseBuilder("x")
             .by("field1", 1)
             .beginAndGroup()
@@ -86,13 +97,73 @@ public class WhereClauseBuilderTest {
         Assert.assertEquals(5, (int)wcb.getValues().get("x3"));
         Assert.assertEquals(6, (int)wcb.getValues().get("x4"));
         Assert.assertEquals(8, (int)wcb.getValues().get("x5"));
+        // ---------------------------------------------------------------------    
+        // Unbalanced close...
+        wcb = new WhereClauseBuilder("x")
+            .beginGroup()
+                .by("field1", 1)
+                .or("field2", FindOperator.BETWEEN, new Range(2, 10))
+            .closeGroup()
+            .beginAndGroup()
+                .by("field3", 1)
+                .or("field4", FindOperator.BETWEEN, new Range(2, 10))
+            .closeGroup();
+        
+        error = null;
+        try {
+            wcb.closeGroup(); // <-- unbalanced close;
+        } catch(IllegalStateException ex) {
+            error = ex;
+        }
+        
+        Assert.assertNotNull(error);
+        Assert.assertEquals("There is no open group", error.getMessage());
+        // ---------------------------------------------------------------------
+        // Missing close (unbalanced group)...
+        wcb = new WhereClauseBuilder("x")
+            .beginGroup()
+                .by("field1", 1)
+                .or("field2", FindOperator.BETWEEN, new Range(2, 10))
+            .closeGroup()
+            .beginAndGroup()
+                .by("field3", 1)
+                .or("field4", FindOperator.BETWEEN, new Range(2, 10))
+            .and("field5", 8); // <-- there is no closeGroup()!
+        
+        error = null;
+        try {
+            wcb.build();
+        } catch(IllegalStateException ex) {
+            error = ex;
+        }
+        Assert.assertNotNull(error);
+        Assert.assertEquals("There is an open group", error.getMessage());
+        // ---------------------------------------------------------------------
+        // Multiple beginGroup (valid!)...
+        wcb = new WhereClauseBuilder("x")
+            .beginGroup()
+                .by("field1", 1)
+                .or("field2", FindOperator.BETWEEN, new Range(2, 10))
+            .closeGroup()
+            .beginGroup() // <-- equivalent to beginAndGroup()
+                .by("field3", 1)
+                .or("field4", FindOperator.BETWEEN, new Range(2, 10))
+            .closeGroup()
+            .and("field5", 8);
+        
+        Assert.assertEquals("((field1 = :x0) OR (field2 BETWEEN :x1 AND :x2)) AND ((field3 = :x3) OR (field4 BETWEEN :x4 AND :x5)) AND (field5 = :x6)", wcb.build());
+        Assert.assertEquals( 1, (int)wcb.getValues().get("x0"));
+        Assert.assertEquals( 2, (int)wcb.getValues().get("x1"));
+        Assert.assertEquals(10, (int)wcb.getValues().get("x2"));
+        Assert.assertEquals( 1, (int)wcb.getValues().get("x3"));
+        Assert.assertEquals( 2, (int)wcb.getValues().get("x4"));
+        Assert.assertEquals(10, (int)wcb.getValues().get("x5"));
+        Assert.assertEquals( 8, (int)wcb.getValues().get("x6"));
         // ---------------------------------------------------------------------
     }
 
     @Test
     public void testInitialCondition() {
-        Exception error;
-
         // ---------------------------------------------------------------------
         error = null;
         wcb = new WhereClauseBuilder();
@@ -215,8 +286,15 @@ public class WhereClauseBuilderTest {
         Assert.assertEquals("(field1 = :x0) AND (NOT EXISTS (SELECT 1 FROM SomeEntity se WHERE se.value > :lit1))", wcb.build());
         Assert.assertEquals(5, (int)wcb.getValues().get("x0"));
         Assert.assertEquals(28, (int)wcb.getValues().get("lit1"));
-
         // ---------------------------------------------------------------------
+        // By followed by another by
+        wcb = new WhereClauseBuilder("x")
+            .by("field1", 5)
+            .by("field2", 3); // <-- equivalent to and(...)
+        
+        Assert.assertEquals("(field1 = :x0) AND (field2 = :x1)", wcb.build());
+        Assert.assertEquals(5, (int)wcb.getValues().get("x0"));
+        Assert.assertEquals(3, (int)wcb.getValues().get("x1"));
     }
     // =========================================================================
 }

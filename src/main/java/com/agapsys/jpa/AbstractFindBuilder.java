@@ -100,6 +100,11 @@ public abstract class AbstractFindBuilder<T extends EntityObject> extends Abstra
         return this;
     }
     
+    
+    protected AbstractFindBuilder<T> beginGroup() {
+        whereBuilder.beginGroup();
+        return this;
+    }
         
     protected AbstractFindBuilder<T> beginAndGroup() {
         whereBuilder.beginAndGroup();

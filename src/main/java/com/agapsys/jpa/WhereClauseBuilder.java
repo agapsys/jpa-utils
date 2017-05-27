@@ -65,7 +65,9 @@ public final class WhereClauseBuilder {
                 } else if (token.isGroupToken()) {
                     // Group token ---------------------------------------------
                     if (token.isGroupOpen()) {
-                        sb.append(token.isAnd() ? " AND " : " OR ");
+                        if (!token.isInitialCondition())
+                            sb.append(token.isAnd() ? " AND " : " OR ");
+                        
                         sb.append("(");
                     } else {
                         sb.append(")");
@@ -305,6 +307,8 @@ public final class WhereClauseBuilder {
     private WhereClause whereClause = null;
     private boolean whereClauseGenerated = false;
     private boolean isGroupOpen = false;
+    
+    private int groupOpenCount = 0;
 
 
     public WhereClauseBuilder(String paramPrefix) {
@@ -385,8 +389,10 @@ public final class WhereClauseBuilder {
         whereClauseGenerated = false;
 
         checkQueryParameters(parameters);
+        
+        Boolean isAnd = (tokens.isEmpty() ? null : true);
 
-        tokens.add(new FindToken(null, literal, parameters));
+        tokens.add(new FindToken(isAnd, literal, parameters));
         return this;
     }
 
@@ -444,6 +450,17 @@ public final class WhereClauseBuilder {
         return this;
     }
 
+    
+    public WhereClauseBuilder beginGroup () {
+        whereClauseGenerated = false;
+        
+        Boolean isAnd = (tokens.isEmpty() ? null : true);
+
+        tokens.add(new FindToken(true, isAnd));
+        isGroupOpen = true;
+        groupOpenCount++;
+        return this;
+    }
 
     public WhereClauseBuilder beginAndGroup() {
         whereClauseGenerated = false;
@@ -453,6 +470,7 @@ public final class WhereClauseBuilder {
 
         tokens.add(new FindToken(true, true));
         isGroupOpen = true;
+        groupOpenCount++;
         return this;
     }
 
@@ -464,6 +482,7 @@ public final class WhereClauseBuilder {
 
         tokens.add(new FindToken(true, false));
         isGroupOpen = true;
+        groupOpenCount++;
         return this;
     }
 
@@ -473,7 +492,9 @@ public final class WhereClauseBuilder {
         if (tokens.isEmpty())
             throw new IllegalStateException("Group cannot be closed at current state");
 
-        if (!isGroupOpen)
+        groupOpenCount--;
+        
+        if (!isGroupOpen || groupOpenCount < 0)
             throw new IllegalStateException("There is no open group");
 
         tokens.add(new FindToken(false, null));
@@ -490,6 +511,10 @@ public final class WhereClauseBuilder {
 
     public String build() {
         _build();
+        
+        if (groupOpenCount > 0)
+            throw new IllegalStateException("There is an open group");
+        
         return whereClause.clause;
     }
 
